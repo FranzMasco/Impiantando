@@ -1,0 +1,10 @@
+Impianti:
+- Nome impianto
+- Foto
+- descrizione
+- tipo:
+    - tipologia_impianto (piscina, palestra basket, palestra danza, sala pesi)
+    - lunghezza
+    - larghezza
+    - vasche (se piscina)
+    - ... (tutte le varie informazioni che vogliamo inserire per gli impianti)

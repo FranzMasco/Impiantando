@@ -1,0 +1,12 @@
+Utente amministratore:
+- nome
+- cognome
+- email
+- data di nascita
+- username
+- password
+- centro_sportivo:
+    - nome_centro_sportivo
+    - indirizzo
+    - descrizione
+    
