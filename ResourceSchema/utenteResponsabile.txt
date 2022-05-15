@@ -1,9 +1,8 @@
-Utente amministratore:
+Utente responsabile:
 - nome
 - cognome
 - email
 - data di nascita
 - username
 - password
-- centro_sportivo(?)
-    
+- società

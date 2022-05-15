@@ -1,0 +1,5 @@
+centro_sportivo
+- nome_centro_sportivo
+- indirizzo
+- descrizione
+- id_amministratore

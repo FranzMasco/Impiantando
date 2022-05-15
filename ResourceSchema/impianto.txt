@@ -2,6 +2,7 @@ Impianti:
 - Nome impianto
 - Foto
 - descrizione
+- amministratore (OBJECT_1)
 - tipo:
     - tipologia_impianto (piscina, palestra basket, palestra danza, sala pesi)
     - lunghezza

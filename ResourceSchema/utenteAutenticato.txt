@@ -1,0 +1,8 @@
+Utente autenticato:
+- nome
+- cognome
+- email
+- data di nascita
+- username
+- password
+- corsi ai quali sono iscritto (lista di identificativi corso)
