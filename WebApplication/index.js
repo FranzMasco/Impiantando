@@ -1,8 +1,8 @@
 const app = require("./app.js");
 const mongoose = require("mongoose");
 
-const port = 5000;
-const db_url = "mongodb+srv://impiantando_db_admin:pswdbimpiantando@cluster0.pb11w.mongodb.net/db_test?retryWrites=true&w=majority"
+const port = process.env.PORT || 8080;
+const db_url = process.env.DB_URL;
 
 /**CONFIGURE MONGOOSE*/
 mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true})
