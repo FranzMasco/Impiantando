@@ -1,9 +1,10 @@
 Impianti:
+- id_impianto
+- id_centro_sportivo
 - Nome impianto
 - Foto
 - descrizione
-- amministratore (OBJECT_1)
-- tipo:
+- tipo: (molto probabilmente solamente tipologia_impianto e il resto va in descrizione)
     - tipologia_impianto (piscina, palestra basket, palestra danza, sala pesi)
     - lunghezza
     - larghezza

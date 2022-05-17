@@ -1,8 +1,0 @@
-Corso:
-- nome
-- descrizione
-- sport
-- impianto
-- responsabile
-- orario
-- recensioni (lista di recensioni)

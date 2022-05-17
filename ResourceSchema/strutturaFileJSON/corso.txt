@@ -1,0 +1,20 @@
+Corso:
+- id_corso
+- nome
+- descrizione
+- sport
+- id_impianto
+- id_responsabile [id_resp1, id_resp2]
+- periodico (boolean)
+- orario: [
+    {giorno: lunedì, ora: [{da: 16:00, a: 17:00}, {da: 18:00, a: 20:00}]},
+    {giorno: venerdì, ora: {da: 16:00, a: 17:30}}
+  ] #struttura orario se periodico = true
+- orario: [
+    {giorno: 20/05/2022, ora: {da: 17:00, a: 19:00}},
+    {giorno: 01/06/2023, ora: {da: 16:00, a: 20:00}}
+  ] #struttura orario se periodico = false
+- recensioni: [
+    {voto1: voto}
+    {voto2: voto}
+  ]

@@ -1,4 +1,5 @@
 Utente autenticato:
+- id_utente_autenticato
 - nome
 - cognome
 - email
