@@ -1,0 +1,9 @@
+Utente responsabile:
+- id_utente_responsabile
+- nome
+- cognome
+- email
+- data di nascita
+- username
+- password
+- società

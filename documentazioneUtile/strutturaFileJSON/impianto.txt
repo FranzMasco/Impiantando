@@ -1,0 +1,12 @@
+Impianti:
+- id_impianto
+- id_centro_sportivo
+- Nome impianto
+- Foto
+- descrizione
+- tipo: (molto probabilmente solamente tipologia_impianto e il resto va in descrizione)
+    - tipologia_impianto (piscina, palestra basket, palestra danza, sala pesi)
+    - lunghezza
+    - larghezza
+    - vasche (se piscina)
+    - ... (tutte le varie informazioni che vogliamo inserire per gli impianti)
