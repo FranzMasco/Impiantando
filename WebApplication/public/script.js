@@ -55,21 +55,25 @@ function loadFacilities() {
 
             let name = sport_facility["name"];
             let description = sport_facility["description"];
+            let id_s_c = sport_facility["id_s_c"];
 
             let div = document.createElement("div")
             let html_sport_facility_title = document.createElement("h2");
             let html_sport_facility_name = document.createElement("p");
             let html_sport_facility_description = document.createElement("p");
+            let html_sport_facility_id_s_c = document.createElement("p");
             let html_sport_facility_moreInfo = document.createElement("a");
             
             html_sport_facility_title.innerHTML = name;
             html_sport_facility_name.innerHTML = "<b>Name: </b>"+name;
             html_sport_facility_description.innerHTML = "<b>Description: </b>"+description;
+            html_sport_facility_id_s_c.innerHTML= "<b>Centro sportivo: </b>"+id_s_c;
             html_sport_facility_moreInfo.innerHTML = `<a href="`+sport_facility["self"]+`">Get more information</a>`;
 
             div.appendChild(html_sport_facility_title);
             div.appendChild(html_sport_facility_name);
             div.appendChild(html_sport_facility_description);
+            div.appendChild(html_sport_facility_id_s_c);
             div.appendChild(html_sport_facility_moreInfo);
 
             html_sport_facility.appendChild(div);

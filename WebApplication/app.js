@@ -7,6 +7,7 @@ const app = express();
 const r_centri_sportivi = require('./routes/r_centri_sportivi.js');
 const r_utenti_prova = require('./routes/r_utenti_prova.js');
 const sport_centers = require('./routes/sport_centers.js');
+const sport_facilities = require('./routes/sport_facilities.js');
 //...
 
 //Configure Express.js parsing middleware
@@ -22,6 +23,7 @@ app.use('/', express.static('public'));
 app.use("/api/v1", r_centri_sportivi)
 app.use("/api/v1", r_utenti_prova)
 app.use("/api/v1", sport_centers)
+app.use("/api/v1", sport_facilities)
 //...
 
 //Default 404 handler
