@@ -43,3 +43,52 @@ function loadSportCenters() {
     .catch( error => console.error(error) ); //catch dell'errore
 }
 //...
+
+//Display login form
+//@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
+function display_loginForm(login_type){
+    const output = document.getElementById("output_js");
+
+    if(login_type=='A'){    //login administrator
+        output.innerHTML=
+    `
+        <hr>
+        <h2>Login administrator: </h2>
+        <form action="adminhome.html" method="post" >
+            <label for="userfield">Nome Utente: </label>
+            <input type="text" name="userfield"> <br>
+            <label for="passwordfield">Password: </label>
+            <input type="text" name="passwordfield"> <br>
+            <input type="submit" value="Accedi">
+        </form>
+    `;
+    }else if(login_type=='R'){
+        output.innerHTML=
+    `
+        <hr>
+        <h2>Login course manager: </h2>
+        <form action="adminhome.html" method="post" >
+            <label for="userfield">Nome Utente: </label>
+            <input type="text" name="userfield"> <br>
+            <label for="passwordfield">Password: </label>
+            <input type="text" name="passwordfield"> <br>
+            <input type="submit" value="Accedi">
+        </form>
+    `;
+
+    }else if(login_type=='U'){
+        output.innerHTML=
+    `
+        <hr>
+        <h2>Login user: </h2>
+        <form action="adminhome.html" method="post" >
+            <label for="userfield">Nome Utente: </label>
+            <input type="text" name="userfield"> <br>
+            <label for="passwordfield">Password: </label>
+            <input type="text" name="passwordfield"> <br>
+            <input type="submit" value="Accedi">
+        </form>
+    `;
+    }
+}
+//...
