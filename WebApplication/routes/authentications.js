@@ -15,8 +15,8 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 router.post('/authentications/admin', async function(req, res) {
 	
 	// find the user
-	let user = await Student.findOne({
-		email: req.body.email
+	let user = await AdminUser.findOne({
+		username: req.body.username
 	}).exec();
 	
 	// user not found
@@ -31,7 +31,7 @@ router.post('/authentications/admin', async function(req, res) {
 	
 	// if user is found and password is right create a token
 	var payload = {
-		email: user.email,
+		username: user.username,
 		id: user._id
 		// other data encrypted in the token	
 	}
@@ -42,11 +42,12 @@ router.post('/authentications/admin', async function(req, res) {
 
 	res.json({
 		success: true,
-		message: 'Enjoy your token!',
+		message: 'Authentication OK',
+		user: "administrator",
 		token: token,
-		email: user.email,
+		username: user.username,
 		id: user._id,
-		self: "api/v1/" + user._id
+		self: "api/v1/administrators/" + user._id
 	});
 
 });

@@ -4,6 +4,7 @@ const app = express();
 //...
 
 //Resource REST API
+const authentication = require('./routes/authentications.js');
 const tokenChecker = require('./routes/tokenChecker.js');
 
 const r_centri_sportivi = require('./routes/r_centri_sportivi.js');
@@ -19,6 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 //Serve front-end
 app.use('/', express.static('public'));
 //...
+
+//Authentication
+app.use('/api/v1/', authentication);
 
 //Resource routing
 app.use("/api/v1", r_centri_sportivi)

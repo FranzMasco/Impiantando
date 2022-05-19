@@ -54,12 +54,12 @@ function display_loginForm(login_type){
     `
         <hr>
         <h2>Login administrator: </h2>
-        <form action="adminhome.html" method="post" >
-            <label for="userfield">Nome Utente: </label>
-            <input type="text" name="userfield"> <br>
-            <label for="passwordfield">Password: </label>
-            <input type="text" name="passwordfield"> <br>
-            <input type="submit" value="Accedi">
+        <form action="/api/v1/authentications/admin" method="post" >
+            <label for="username">Username: </label>
+            <input type="text" name="username"> <br>
+            <label for="password">Password: </label>
+            <input type="password" name="password"> <br>
+            <input type="submit" value="Sign in">
         </form>
     `;
     }else if(login_type=='R'){
@@ -68,11 +68,11 @@ function display_loginForm(login_type){
         <hr>
         <h2>Login course manager: </h2>
         <form action="adminhome.html" method="post" >
-            <label for="userfield">Nome Utente: </label>
-            <input type="text" name="userfield"> <br>
-            <label for="passwordfield">Password: </label>
-            <input type="text" name="passwordfield"> <br>
-            <input type="submit" value="Accedi">
+            <label for="username">Username: </label>
+            <input type="text" name="username"> <br>
+            <label for="password">Password: </label>
+            <input type="password" name="password"> <br>
+            <input type="submit" value="Sign in">
         </form>
     `;
 
@@ -82,11 +82,11 @@ function display_loginForm(login_type){
         <hr>
         <h2>Login user: </h2>
         <form action="adminhome.html" method="post" >
-            <label for="userfield">Nome Utente: </label>
-            <input type="text" name="userfield"> <br>
-            <label for="passwordfield">Password: </label>
-            <input type="text" name="passwordfield"> <br>
-            <input type="submit" value="Accedi">
+            <label for="username">Username: </label>
+            <input type="text" name="username"> <br>
+            <label for="password">Password: </label>
+            <input type="password" name="password"> <br>
+            <input type="submit" value="Sign in">
         </form>
     `;
     }
