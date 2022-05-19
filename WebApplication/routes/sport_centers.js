@@ -7,6 +7,7 @@ const express = require('express');
 const { response } = require('../app');
 const router = express.Router();
 const AdminUser = require('../models/admin_user'); // sport center is a user_admin's subdocutment
+const Facilities = require('../models/facilities'); 
 
 /**
  * Resource representation based on the following the pattern: 
@@ -76,5 +77,19 @@ router.post('/sport_centers', async (req, res) => {
     */
     res.location("/api/v1/sport_centers/" + sport_center_id).status(201).send();    
 });
+
+router.get('/sport_centers/:id/sport_facilities', async (req, res) => {
+    let facilities = await Facilities.findByID(req.params.id);
+    let response = facilities.map( (facility) => {
+        return {
+            self: "/api/v1/sport_centers/:id/sport_facilities" + facility.id,
+            name: facility.name,
+            description: facility.description,
+        };
+    });
+    res.status(200).json(response);
+});
+
+
 
 module.exports = router
