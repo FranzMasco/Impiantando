@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const schema = mongoose.Schema({
 	username: String,
     password: String
-},{collection: 'utente_prova'})
+},{collection: 'utenti'})
 
 
-module.exports = mongoose.model("Utente_prova", schema)
+module.exports = mongoose.model("Utente", schema)

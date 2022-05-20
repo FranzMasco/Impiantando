@@ -149,12 +149,13 @@ function display_loginForm(login_type){
     `
         <hr>
         <h2>Login course manager: </h2>
-        <form action="adminhome.html" method="post" >
+        <form action="responsabilehome.html" method="post" >
             <label for="username">Username: </label>
             <input type="text" name="username" id="loginUsername" required> <br>
             <label for="password">Password: </label>
             <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="submit" value="Sign in">
+            <input type="button" value="Sign in" onclick="login('`+login_type+`')">
+            <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
 
@@ -163,12 +164,13 @@ function display_loginForm(login_type){
     `
         <hr>
         <h2>Login user: </h2>
-        <form action="adminhome.html" method="post" >
+        <form action="autenticateduserhome.html" method="post" >
             <label for="username">Username: </label>
             <input type="text" name="username" id="loginUsername" required> <br>
             <label for="password">Password: </label>
             <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="submit" value="Sign in">
+            <input type="button" value="Sign in" onclick="login('`+login_type+`')">
+            <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
     }
@@ -197,14 +199,19 @@ function login(login_type){
                 let user_token = data.token;
                 let user_username = data.username;
                 let user_identifier = data.id;
+
                 let user_level = data.user;
                 let sport_center_name = data.sport_center.name;
                 let sport_center_id = data.sport_center._id;
-
+                
                 //Add user info into browser cookie document
                 setCookie("token", user_token, 1);
                 setCookie("username", user_username, 1);
                 setCookie("user_id", user_identifier, 1);
+                setCookie("user_level", user_level, 1);
+                setCookie("sport_center_name", sport_center_name, 1);
+                setCookie("sport_center_id", sport_center_id, 1);
+
                 setCookie("user_level", user_level, 1);
                 setCookie("sport_center_name", sport_center_name, 1);
                 setCookie("sport_center_id", sport_center_id, 1);
@@ -218,9 +225,60 @@ function login(login_type){
         })
         .catch( error => console.error(error) ); // If there is any error you will catch them here
     }else if(login_type=='R'){
-        console.log("login responsabile");
+        
+        fetch('/api/v1/authentications/responsabile', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify( { username: username, password: password } ),
+        })
+        .then((resp) => resp.json()) // Transform the data into json
+        .then(function(data) { // Here you get the data to modify as you please
+
+            if(data.success==true){ //authentication success!
+                let user_token = data.token;
+                let user_username = data.username;
+                let user_identifier = data.id;
+                
+                //Add user info into browser cookie document
+                setCookie("token", user_token, 1);
+                setCookie("username", user_username, 1);
+                setCookie("user_id", user_identifier, 1);
+                window.location.href="responsabilehome.html";
+            }else if(data.username==false){ //wrong username
+                wrongInput.innerHTML = "Bad username )-:";
+            }else if(data.password==false){ //wrong password
+                wrongInput.innerHTML = "Bad password )-:";
+            }            
+        })
+        .catch( error => console.error(error) );
+        
     }else if(login_type=='U'){
-        console.log("login utente standard");
+        
+        fetch('/api/v1/authentications/user', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify( { username: username, password: password } ),
+        })
+        .then((resp) => resp.json()) // Transform the data into json
+        .then(function(data) { // Here you get the data to modify as you please
+
+            if(data.success==true){ //authentication success!
+                let user_token = data.token;
+                let user_username = data.username;
+                let user_identifier = data.id;
+                
+                //Add user info into browser cookie document
+                setCookie("token", user_token, 1);
+                setCookie("username", user_username, 1);
+                setCookie("user_id", user_identifier, 1);
+                window.location.href="autenticateduserhome.html";
+            }else if(data.username==false){ //wrong username
+                wrongInput.innerHTML = "Bad username )-:";
+            }else if(data.password==false){ //wrong password
+                wrongInput.innerHTML = "Bad password )-:";
+            }            
+        })
+        .catch( error => console.error(error) );
     }else{
         window.location.href = "errorPage.html";
     }
