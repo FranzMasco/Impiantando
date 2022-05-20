@@ -8,6 +8,20 @@ const { response } = require('../app');
 const router = express.Router();
 const Facilities = require('../models/facilities'); 
 
+router.get('/sport_facilities', async (req, res) => {
+    let sport_facilities = await Facilities.find({});
+    let response = sport_facilities.map( (facility) => {
+        return {
+            self: "/api/v1/sport_facilities/"+facility.id,
+            name: facility.name,
+            description: facility.description,
+            id_s_c: facility.id_s_c,
+            sport_center: "/api/v1/sport_centers/"+facility.id_s_c
+        };
+    });
+    res.status(200).json(response);
+})
+
 router.post('/sport_facilities', async (req, res) => {
     let facility_name = req.body.name;
     let facility_description = req.body.description;
@@ -33,5 +47,17 @@ router.post('/sport_facilities', async (req, res) => {
     */
     res.location("/api/v1/sport_centers/:id/sport_facilities" + sport_facility_id).status(201).send();    
 });
+
+router.get('/sport_facilities/:id', async (req, res) => {
+    let facility = await Facilities.findOne({'_id':req.params.id});
+    let response = {
+            self: "/api/v1/sport_facilities/"+facility.id,
+            name: facility.name,
+            description: facility.description,
+            id_s_c: facility.id_s_c,
+            sport_center: "/api/v1/sport_centers/"+facility.id_s_c
+        };
+    res.status(200).json(response);
+})
 
 module.exports = router

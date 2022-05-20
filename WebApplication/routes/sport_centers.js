@@ -78,11 +78,23 @@ router.post('/sport_centers', async (req, res) => {
     res.location("/api/v1/sport_centers/" + sport_center_id).status(201).send();    
 });
 
+router.get('/sport_centers/:id', async (req, res) => {
+    let sp_c = await AdminUser.findOne({'sport_center.id':req.params.id});
+    let response = {
+        self: "/api/v1/sport_centers/"+sp_c.sport_center.id,
+        name: sp_c.sport_center.name,
+        address: sp_c.sport_center.address,
+        description: sp_c.sport_center.description,
+        administrator: "/api/v1/admin_users/"+sp_c.id
+    }
+    res.status(200).json(response);
+})
+
 router.get('/sport_centers/:id/sport_facilities', async (req, res) => {
     let facilities = await Facilities.find({id_s_c:req.params.id});
     let response = facilities.map( (facility) => {
         return {
-            self: "/api/v1/sport_centers/:id/sport_facilities/" + facility.id,
+            self: "/api/v1/sport_centers/"+facility.id_s_c+"/sport_facilities/" + facility.id,
             name: facility.name,
             description: facility.description,
             id_s_c:facility.id_s_c,
