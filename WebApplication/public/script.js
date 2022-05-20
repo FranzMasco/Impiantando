@@ -220,7 +220,7 @@ function insertSportFacility(){
 
     fetch('../api/v1/sport_facilities', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "x-access-token": token},
         body: JSON.stringify( { name: f_name, description: f_description, id_s_c: sport_center_id } ),
     })
     .then((resp) => {

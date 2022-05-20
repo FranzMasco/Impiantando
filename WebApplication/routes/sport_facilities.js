@@ -23,6 +23,7 @@ router.get('/sport_facilities', async (req, res) => {
     res.status(200).json(response);
 })
 
+router.post('/sport_facilities', tokenChecker);
 router.post('/sport_facilities', async (req, res) => {
     let facility_name = req.body.name;
     let facility_description = req.body.description;
