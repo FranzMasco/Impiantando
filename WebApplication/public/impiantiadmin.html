@@ -30,12 +30,23 @@
                     <p><b>Administrator user: </b>`+username+`</p>
                     <p><b>Sport center: </b>`+sport_center_name+`</p>
                     <br>
+                    <button onclick="show_insert_form()">Add new sport facility</button>
+                    <div id="insertNewFacility" hidden="true">
+                        <br>
+                        <p>Fill the following gaps in order to registrer a new sport facility in your sport center</p>
+                        <input type="text" id="insertNewFacility_name" name="name" placeholder="Insert name new facility..."><br>
+                        <textarea name="description" id="insertNewFacility_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
+                        <input type="button" name="confirm_insert" value="Confirm" onclick="insertSportFacility()">
+                        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_form()">
+                        <br>
+                    </div>
+                    <br>
+                    <hr>
                     <p>Here is the list of the sport facilities that has been inserted: </p><br>
                     <div id="output_facilities">
                         There are no sport facilities registered yet
                     </div>
                     <br>
-                    <button>Add new sport facility</button>
                     `;
                     loadFacilities_administrator(sport_center_id);
                 }
@@ -51,6 +62,21 @@
             function show_form(id_sport_facility){
                 document.getElementById("editForm"+id_sport_facility).hidden=false
             }
+            
+            //Show form to insert a new sport facility
+            function show_insert_form(){
+                document.getElementById("insertNewFacility").hidden=false
+            }
+
+            //Show form to insert a new sport facility
+            function close_insert_form(){
+                //reset fields
+                document.getElementById("insertNewFacility_name").value="";
+                document.getElementById("insertNewFacility_description").value="";
+
+                document.getElementById("insertNewFacility").hidden=true;
+            }
+
         </script>
     </head>
     <body>

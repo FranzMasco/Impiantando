@@ -194,6 +194,42 @@ function updateSportFacility(id_sport_facility, sport_center_id){
 }
 //...
 
+//Insert new sport facility
+function insertSportFacility(){
+
+    //New facility name
+    var f_name = document.getElementById("insertNewFacility_name").value;
+
+    //New facility description
+    var f_description = document.getElementById("insertNewFacility_description").value;
+
+    //Sport center id
+    var sport_center_id="";
+    sport_center_id = getCookie("sport_center_id");
+
+    //Athentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+
+    //Check that all required fileds are not empty
+    if(f_name=="" || f_description=="" || sport_center_id=="" || auth_level!="administrator"){
+        return ;
+    }
+
+    fetch('../api/v1/sport_facilities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', "x-access-token": token},
+        body: JSON.stringify( { name: f_name, description: f_description, id_s_c: sport_center_id } ),
+    })
+    .then((resp) => {
+        close_insert_form();
+        loadFacilities_administrator(sport_center_id);
+    })
+    .catch( error => console.error(error) ); // If there is any error you will catch them here
+}
+
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
 function display_loginForm(login_type){
