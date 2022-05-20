@@ -73,7 +73,7 @@ router.delete('/sport_facilities/:id', async (req, res) => {
     res.status(204).json({status: "success"});
 });
 
-
+router.patch('/sport_facilities/:id', tokenChecker);
 router.patch('/sport_facilities/:id', async (req, res) => {
     Facilities.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((sport_facility) => {
         if (!sport_facility) {
