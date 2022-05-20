@@ -20,7 +20,10 @@ router.get('/courses', async (req, res) => {
             name: course.name,
             description: course.description,
             sport: course.sport,
+            sport_facility_id:course.sport_facility_id,
+            sport_center_id:course.sport_center_id,
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
+            sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
             managers: course.managers,
             reviews: course.reviews,
             periodic: course.periodic,
@@ -46,6 +49,7 @@ router.post('/courses', async (req, res) => {
     let course_description = req.body.description;
     let course_sport = req.body.sport;
     let course_sport_facility_id = req.body.sport_facility_id;
+    let course_sport_center_id = req.body.sport_center_id;
     let course_managers_id = [];
     let course_reviews = [];
     let course_periodic = req.body.periodic;
@@ -78,6 +82,7 @@ router.post('/courses', async (req, res) => {
         description: course_description,
         sport: course_sport,
         sport_facility_id: course_sport_facility_id,
+        sport_center_id: course_sport_center_id,
         managers: course_managers_id,
         reviews: course_reviews,
         periodic: course_periodic,
@@ -117,7 +122,10 @@ router.get('/courses/:id', async (req, res) => {
             name: course.name,
             description: course.description,
             sport: course.sport,
+            sport_facility_id:course.sport_facility_id,
+            sport_center_id:course.sport_center_id,
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
+            sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
             managers: course.managers,
             reviews: course.reviews,
             periodic: course.periodic,
