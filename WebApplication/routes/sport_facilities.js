@@ -31,7 +31,20 @@ router.post('/sport_facilities', async (req, res) => {
      * Link to the newly created resource is returned in the Location header
      * https://www.restapitutorial.com/lessons/httpmethods.html
     */
-    res.location("/api/v1/sport_centers/:id/sport_facilities" + sport_facility_id).status(201).send();    
+    res.location("/api/v1/sport_facilities/:id" + sport_facility_id).status(201).send();    
 });
+
+router.delete('/sport_facilities/:id', async (req, res) => {
+    let sport_facility = await Facilities.findById(req.params.id).exec();
+    if (!sport_facility) {
+        res.status(404).send()
+        console.log('resource not found')
+        return;
+    }
+    await sport_facility.deleteOne()
+    console.log('resource removed')
+    res.status(204).send()
+});
+
 
 module.exports = router
