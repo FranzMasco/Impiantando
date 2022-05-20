@@ -230,6 +230,11 @@ function insertSportFacility(){
     .catch( error => console.error(error) ); // If there is any error you will catch them here
 }
 
+function loadCourses_administrator(){
+    console.log("Load courses admin");
+}
+
+
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
 function display_loginForm(login_type){
