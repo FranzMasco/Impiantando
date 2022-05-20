@@ -158,11 +158,17 @@ function login(login_type){
                 let user_token = data.token;
                 let user_username = data.username;
                 let user_identifier = data.id;
-                
+                let user_level = data.user;
+                let sport_center_name = data.sport_center.name;
+                let sport_center_id = data.sport_center._id;
+
                 //Add user info into browser cookie document
                 setCookie("token", user_token, 1);
                 setCookie("username", user_username, 1);
                 setCookie("user_id", user_identifier, 1);
+                setCookie("user_level", user_level, 1);
+                setCookie("sport_center_name", sport_center_name, 1);
+                setCookie("sport_center_id", sport_center_id, 1);
 
                 window.location.href="impiantiadmin.html";
             }else if(data.username==false){ //wrong username

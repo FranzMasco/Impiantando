@@ -48,6 +48,8 @@ router.post('/authentications/admin', async function(req, res) {
 		token: token,
 		username: user.username,
 		id: user._id,
+		sport_center: user.sport_center,
+		sport_center_ref: "api/v1/sport_centers/"+user.sport_center._id,
 		self: "api/v1/administrators/" + user._id
 	});
 
