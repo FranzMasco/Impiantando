@@ -30,16 +30,14 @@
                     <p><b>Administrator user: </b>`+username+`</p>
                     <p><b>Sport center: </b>`+sport_center_name+`</p>
                     <br>
-                    <p>Here is the list of the sport facilities that has been inserted: </p>
-                    <div>
-                        <p><b>Name:</b></p>
-                        <p><b>Description:</b></p>
-                        <button>Edit</button>
-                        <button>Delete</button>
-                        <hr>
+                    <p>Here is the list of the sport facilities that has been inserted: </p><br>
+                    <div id="output_facilities">
+                        There are no sport facilities registered yet
                     </div>
+                    <br>
                     <button>Add new sport facility</button>
                     `;
+                    loadFacilities_administrator(sport_center_id);
                 }
 
             }

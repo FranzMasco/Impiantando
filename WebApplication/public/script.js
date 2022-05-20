@@ -85,6 +85,45 @@ function loadFacilities() {
 
 //...
 
+//The administraror facility fetching is different
+//Display edit and delete button
+//@param[sport_center_id]: sport center identifier
+function loadFacilities_administrator(sport_center_id){
+    const html_facilities = document.getElementById('output_facilities');
+
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        //console.log(data);
+        if(data.length>0){
+            html_facilities.innerHTML = "";
+        }
+        
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var sport_facility = data[i];
+            console.log(sport_facility);
+
+            let name = sport_facility["name"];
+            let description = sport_facility["description"];
+            html_facilities.innerHTML += `
+                <p><b>Name:</b>`+name+`</p>
+                <p><b>Description:</b>`+description+`</p>
+                <button>Edit</button>
+                <button>Delete</button>
+                <hr>
+            `;
+        }
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+//...
+
+
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
 function display_loginForm(login_type){
