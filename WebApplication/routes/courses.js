@@ -141,4 +141,28 @@ router.get('/courses/:id', async (req, res) => {
     res.status(200).json(response);
 });
 
+router.delete('/courses/:id', tokenChecker);
+router.delete('/courses/:id', async (req, res) => {
+    let course = await Course.findById(req.params.id).exec();
+    if (!course) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+    await course.deleteOne()
+    res.status(204).json({status: "success"});
+});
+
+router.patch('/courses/:id', tokenChecker);
+router.patch('/courses/:id', async (req, res) => {
+    Course.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((course) => {
+        if (!course) {
+            return res.status(404).send();
+        }
+        res.status(200).send(course);
+    }).catch((error) => {
+        res.status(500).send(error);
+    })
+});
+
 module.exports = router
