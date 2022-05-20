@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Facilities = require('../models/facilities'); 
 
@@ -34,6 +35,7 @@ router.post('/sport_facilities', async (req, res) => {
     res.location("/api/v1/sport_facilities/:id" + sport_facility_id).status(201).send();    
 });
 
+router.delete('/sport_facilities/:id', tokenChecker);
 router.delete('/sport_facilities/:id', async (req, res) => {
     let sport_facility = await Facilities.findById(req.params.id).exec();
     if (!sport_facility) {

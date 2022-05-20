@@ -130,10 +130,19 @@ function loadFacilities_administrator(sport_center_id){
 //@param[id_sport_facility]: id of the sport facility that has to be deleted
 //@param[sport_center_id]: id of the sport center where the sport facility is
 function deleteSportFacility(id_sport_facility, sport_center_id){
+    var token = "empty";
+    token = getCookie("token");
     fetch('../api/v1/sport_facilities/'+id_sport_facility, {
         method: 'DELETE',
+        headers: { "x-access-token": token },
     })
-    .then((resp) => {loadFacilities_administrator(sport_center_id)}) //trasfor data into JSON
+    .then((resp) => {
+        if(resp.status==403){
+            console.log("Authentication error");
+        }else{
+            loadFacilities_administrator(sport_center_id);
+        }
+    })
 }
 //...
 
