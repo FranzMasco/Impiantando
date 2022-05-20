@@ -37,13 +37,12 @@ router.post('/sport_facilities', async (req, res) => {
 router.delete('/sport_facilities/:id', async (req, res) => {
     let sport_facility = await Facilities.findById(req.params.id).exec();
     if (!sport_facility) {
-        res.status(404).send()
+        res.status(404).json({status: "error"})
         console.log('resource not found')
         return;
     }
     await sport_facility.deleteOne()
-    console.log('resource removed')
-    res.status(204).send()
+    res.status(204).json({"esito": "success"});
 });
 
 
