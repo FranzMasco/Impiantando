@@ -36,7 +36,7 @@
                         <p>Fill the following gaps in order to registrer a new sport facility in your sport center</p>
                         <input type="text" id="insertNewFacility_name" name="name" placeholder="Insert name new facility..."><br>
                         <textarea name="description" id="insertNewFacility_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
-                        <input type="button" name="confirm_insert" value="Confirm" onclick="concole.log('ciao')">
+                        <input type="button" name="confirm_insert" value="Confirm" onclick="insertSportFacility()">
                         <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_form()">
                         <br>
                     </div>
@@ -73,7 +73,7 @@
                 //reset fields
                 document.getElementById("insertNewFacility_name").value="";
                 document.getElementById("insertNewFacility_description").value="";
-                
+
                 document.getElementById("insertNewFacility").hidden=true;
             }
 
