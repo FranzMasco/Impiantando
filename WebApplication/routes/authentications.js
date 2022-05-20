@@ -7,7 +7,7 @@
 const express = require('express');
 const router = express.Router();
 const AdminUser = require('../models/admin_user');
-const Utente = require('../models/utente_prova');
+const Utente = require('../models/utente');
 const Responsabile = require('../models/utente_responsabile');
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
@@ -30,6 +30,7 @@ router.post('/authentications/admin', async function(req, res) {
 	// check if password matches
 	if (user.password != req.body.password) {
 		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
+		return;
 	}
 	
 	// if user is found and password is right create a token
@@ -50,6 +51,8 @@ router.post('/authentications/admin', async function(req, res) {
 		token: token,
 		username: user.username,
 		id: user._id,
+		sport_center: user.sport_center,
+		sport_center_ref: "api/v1/sport_centers/"+user.sport_center._id,
 		self: "api/v1/administrators/" + user._id
 	});
 
@@ -71,6 +74,7 @@ router.post('/authentications/user', async function(req, res) {
 	// check if password matches
 	if (user.password != req.body.password) {
 		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
+		return;
 	}
 	
 	// if user is found and password is right create a token
@@ -112,6 +116,7 @@ router.post('/authentications/responsabile', async function(req, res) {
 	// check if password matches
 	if (user.password != req.body.password) {
 		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
+		return;
 	}
 	
 	// if user is found and password is right create a token
@@ -128,11 +133,11 @@ router.post('/authentications/responsabile', async function(req, res) {
 	res.json({
 		success: true,
 		message: 'Authentication OK',
-		user: "user",
+		user: "responsabile",
 		token: token,
 		username: user.username,
 		id: user._id,
-		self: "api/v1/users/" + user._id
+		self: "api/v1/responsabili/" + user._id
 	});
 
 });
