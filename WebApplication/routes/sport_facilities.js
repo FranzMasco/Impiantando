@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Facilities = require('../models/facilities'); 
 
@@ -45,7 +46,7 @@ router.post('/sport_facilities', async (req, res) => {
      * Link to the newly created resource is returned in the Location header
      * https://www.restapitutorial.com/lessons/httpmethods.html
     */
-    res.location("/api/v1/sport_centers/:id/sport_facilities" + sport_facility_id).status(201).send();    
+    res.location("/api/v1/sport_facilities/:id" + sport_facility_id).status(201).send();    
 });
 
 router.get('/sport_facilities/:id', async (req, res) => {
@@ -59,5 +60,17 @@ router.get('/sport_facilities/:id', async (req, res) => {
         };
     res.status(200).json(response);
 })
+router.delete('/sport_facilities/:id', tokenChecker);
+router.delete('/sport_facilities/:id', async (req, res) => {
+    let sport_facility = await Facilities.findById(req.params.id).exec();
+    if (!sport_facility) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+    await sport_facility.deleteOne()
+    res.status(204).json({status: "success"});
+});
+
 
 module.exports = router

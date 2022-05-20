@@ -6,7 +6,6 @@ const cors = require("cors");
 
 //Resource REST API
 const authentication = require('./routes/authentications.js');
-const tokenChecker = require('./routes/tokenChecker.js');
 
 const r_centri_sportivi = require('./routes/r_centri_sportivi.js');
 const r_utenti_prova = require('./routes/r_utenti_prova.js');
@@ -38,9 +37,12 @@ app.use("/api/v1", r_utenti_prova)
 
 //Sport center API
 app.use("/api/v1", sport_centers)
-app.use("/api/v1", sport_facilities)
-app.use("/api/v1", courses)
 
+//Sport facilities API
+app.use("/api/v1", sport_facilities)
+
+//Courses API
+app.use("/api/v1", courses)
 //...
 
 //Default 404 handler

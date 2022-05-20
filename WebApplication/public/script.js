@@ -110,16 +110,46 @@ function loadFacilities_administrator(sport_center_id){
 
             let name = sport_facility["name"];
             let description = sport_facility["description"];
+            let self = sport_facility["self"];
+            let self_id = self.substring(self.lastIndexOf('/') + 1);
+
             html_facilities.innerHTML += `
                 <p><b>Name:</b>`+name+`</p>
                 <p><b>Description:</b>`+description+`</p>
                 <button>Edit</button>
-                <button>Delete</button>
+                <button onclick="deleteSportFacility('`+self_id+`', '`+sport_center_id+`');">Delete</button>
                 <hr>
             `;
         }
     })
     .catch( error => console.error(error) ); //catch dell'errore
+}
+//...
+
+//Delete sport facility
+//@param[id_sport_facility]: id of the sport facility that has to be deleted
+//@param[sport_center_id]: id of the sport center where the sport facility is
+function deleteSportFacility(id_sport_facility, sport_center_id){
+    var token = "empty";
+    var auth_level = "empty";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+
+    if(auth_level=="administrator"){
+        fetch('../api/v1/sport_facilities/'+id_sport_facility, {
+            method: 'DELETE',
+            headers: { "x-access-token": token },
+        })
+        .then((resp) => {
+            if(resp.status==403){
+                console.log("Authentication error");
+            }else{
+                loadFacilities_administrator(sport_center_id);
+            }
+        })
+    }else{
+        console.log("Authentication error");
+    }
 }
 //...
 
