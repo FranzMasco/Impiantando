@@ -29,7 +29,7 @@ router.post('/sport_facilities', async (req, res) => {
     let facility_id_s_c = req.body.id_s_c;
 
     //Check if a facility already exists
-    const facilitiesExists = await Facilities.findOne({ 'name': facility_name, 'description': facility_description,'id_s_c':facility_id_s_c}).select("name").lean();
+    const facilitiesExists = await Facilities.findOne({ 'name': facility_name,'id_s_c':facility_id_s_c}).select("name").lean();
     if (facilitiesExists) {res.status(409).send('facility already exists'); return;}
 
     let facility = new Facilities({

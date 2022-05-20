@@ -38,6 +38,7 @@ const course_schema = mongoose.Schema({
     description: String,
     sport: String,
     sport_facility_id: mongoose.Schema.Types.ObjectId,
+    sport_center_id: mongoose.Schema.Types.ObjectId,
     managers: [mongoose.Schema.Types.ObjectId],
     reviews: [{_id: false, date: Date, vote: Number}],
     periodic: Boolean, //Se 0 si ripete una sola volta, se 1 si ripete periodicamente
