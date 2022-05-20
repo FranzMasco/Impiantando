@@ -44,7 +44,7 @@ router.delete('/sport_facilities/:id', async (req, res) => {
         return;
     }
     await sport_facility.deleteOne()
-    res.status(204).json({"esito": "success"});
+    res.status(204).json({status: "success"});
 });
 
 
