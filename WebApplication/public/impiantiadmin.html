@@ -41,6 +41,16 @@
                 }
 
             }
+            
+            //Hide sport facility modification form
+            function close_form(id_sport_facility){
+                document.getElementById("editForm"+id_sport_facility).hidden=true
+            }
+
+            //Show sport facility modification form
+            function show_form(id_sport_facility){
+                document.getElementById("editForm"+id_sport_facility).hidden=false
+            }
         </script>
     </head>
     <body>

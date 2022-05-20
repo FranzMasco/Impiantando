@@ -116,8 +116,16 @@ function loadFacilities_administrator(sport_center_id){
             html_facilities.innerHTML += `
                 <p><b>Name:</b>`+name+`</p>
                 <p><b>Description:</b>`+description+`</p>
-                <button>Edit</button>
+                <button onclick="show_form('`+self_id+`')">Edit</button>
                 <button onclick="deleteSportFacility('`+self_id+`', '`+sport_center_id+`');">Delete</button>
+                <div hidden="true" id="editForm`+self_id+`">
+                <br>
+                <input type="text" name="name" value="`+name+`"><br>
+                <textarea name="description" rows="4" cols="50">`+description+`</textarea><br>
+                <input type="button" name="confirm_edit" value="Confirm">
+                <input type="button" name="close_form" value="Cancel" onclick="close_form('`+self_id+`')">
+                <br>
+                </div>
                 <hr>
             `;
         }
