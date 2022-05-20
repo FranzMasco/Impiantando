@@ -1,6 +1,7 @@
 //Express App initialization
 const express = require("express");
 const app = express();
+const cors = require("cors");
 //...
 
 //Resource REST API
@@ -17,12 +18,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //...
 
+/**
+ * CORS requests
+ */
+ //app.use(cors());
+
 //Serve front-end
 app.use('/', express.static('public'));
 //...
 
 //Authentication
-app.use('/api/v1/', authentication);
+app.use('/api/v1', authentication);
 
 //Resource routing
 app.use("/api/v1", r_centri_sportivi)

@@ -13,20 +13,21 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
  * Route to authenticate admin user and get a new token
 */
 router.post('/authentications/admin', async function(req, res) {
-	
+
 	// find the user
 	let user = await AdminUser.findOne({
 		username: req.body.username
 	}).exec();
-	
+
 	// user not found
 	if (!user) {
-		res.json({ success: false, message: 'Authentication failed. User not found.' });
+		res.json({ success: false, username: false, message: 'Authentication failed. User not found.' });
+		return;
 	}
 	
 	// check if password matches
 	if (user.password != req.body.password) {
-		res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
 	}
 	
 	// if user is found and password is right create a token

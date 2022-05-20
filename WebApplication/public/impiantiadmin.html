@@ -4,24 +4,49 @@
         <title> Gestione Centro Sportivo Admin </title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="script.js"></script>
+        <script>
+            function admin_homepage(){
+                var username = getCookie("username");
+                var user_id = getCookie("user_id");
+                var token = getCookie("token");
+                console.log(username);
+                console.log(user_id);
+                console.log(token);
+                var outputJS = document.getElementById("outputJS");
+
+                if(username=="" || user_id=="" || token==""){
+                    outputJS.innerHTML =
+                    `
+                        <p>Authentication required</p>
+                        <a href="index.html">Homepage</a>
+                    `;
+                }else{
+                    outputJS.innerHTML =
+                    `
+                    <p><b>Nome admin</b>: `+username+`</p>
+                    <p>Nome centro sportivo</p>
+                    <div>
+                        <hr>
+                        <img>
+                        <div>
+                            <p>Nome impianto</p>
+                            <p>Descrizione impianto</p>
+                            <button>Modifica</button>
+                            <button>Elimina</button>
+                        </div>
+                        <hr>
+                    </div>
+                    <button>Aggiungi</button>
+                    `;
+                }
+
+            }
+        </script>
     </head>
     <body>
         <h1>Impiantando</h1>
-        <br>
-        <br>
-        <p>Nome admin</p>
-        <p>Nome centro sportivo</p>
-        <div>
-            <hr>
-            <img>
-            <div>
-                <p>Nome impianto</p>
-                <p>Descrizione impianto</p>
-                <button>Modifica</button>
-                <button>Elimina</button>
-            </div>
-            <hr>
-        </div>
-        <button>Aggiungi</button>
+        <div id="outputJS"></div>
+        <script>admin_homepage()</script>
     </body>
 </html>
