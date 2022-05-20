@@ -60,6 +60,7 @@ router.get('/sport_facilities/:id', async (req, res) => {
         };
     res.status(200).json(response);
 })
+
 router.delete('/sport_facilities/:id', tokenChecker);
 router.delete('/sport_facilities/:id', async (req, res) => {
     let sport_facility = await Facilities.findById(req.params.id).exec();
@@ -70,6 +71,18 @@ router.delete('/sport_facilities/:id', async (req, res) => {
     }
     await sport_facility.deleteOne()
     res.status(204).json({status: "success"});
+});
+
+
+router.patch('/sport_facilities/:id', async (req, res) => {
+    Facilities.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((sport_facility) => {
+        if (!sport_facility) {
+            return res.status(404).send();
+        }
+        res.status(200).send(sport_facility);
+    }).catch((error) => {
+        res.status(500).send(error);
+    })
 });
 
 

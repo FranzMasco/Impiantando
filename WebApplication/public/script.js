@@ -116,8 +116,16 @@ function loadFacilities_administrator(sport_center_id){
             html_facilities.innerHTML += `
                 <p><b>Name:</b>`+name+`</p>
                 <p><b>Description:</b>`+description+`</p>
-                <button>Edit</button>
+                <button onclick="show_form('`+self_id+`')">Edit</button>
                 <button onclick="deleteSportFacility('`+self_id+`', '`+sport_center_id+`');">Delete</button>
+                <div hidden="true" id="editForm`+self_id+`">
+                <br>
+                <input type="text" id="newName`+self_id+`" name="name" value="`+name+`"><br>
+                <textarea name="description" id="newDescription`+self_id+`" rows="4" cols="50">`+description+`</textarea><br>
+                <input type="button" name="confirm_edit" value="Confirm" onclick="updateSportFacility('`+self_id+`', '`+sport_center_id+`')">
+                <input type="button" name="close_form" value="Cancel" onclick="close_form('`+self_id+`')">
+                <br>
+                </div>
                 <hr>
             `;
         }
@@ -155,6 +163,36 @@ function deleteSportFacility(id_sport_facility, sport_center_id){
 }
 //...
 
+//Update sport facility
+//@param[id_sport_facility]: id of the sport facility that has to be updated
+//@param[sport_center_id]: id of the sport center where the sport facility is
+function updateSportFacility(id_sport_facility, sport_center_id){
+    var new_name = document.getElementById("newName"+id_sport_facility).value;
+    var new_description = document.getElementById("newDescription"+id_sport_facility).value;
+
+    if(new_name=="" || new_description==""){
+        return;
+    }
+    
+    var token = "empty";
+    var auth_level = "empty";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+    if(auth_level=="administrator"){
+        fetch('../api/v1/sport_facilities/'+id_sport_facility, {
+            method: 'PATCH',
+            headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+            body: JSON.stringify( { name: new_name, description: new_description } ),
+        })
+        .then((resp) => {
+            console.log(resp);
+            loadFacilities_administrator(sport_center_id);
+        }).catch( error => console.error(error) ); //catch dell'errore
+    }else{
+        console.log("Authentication error");
+    }
+}
+//...
 
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
