@@ -5,9 +5,7 @@ const schema = mongoose.Schema({
     surname: String,
 	username: String,
     password: String,
-    courses: {
-        course:[{name:String,description:String,course_id:mongoose.Schema.Types.ObjectId}]
-    }
+    courses: [mongoose.Schema.Types.ObjectId]
 },{collection: 'utenti'})
 
 

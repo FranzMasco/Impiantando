@@ -26,6 +26,7 @@ router.get('/courses', async (req, res) => {
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
             sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
             managers: course.managers,
+            users: course.users,
             reviews: course.reviews,
             periodic: course.periodic,
             specific_date: course.specific_date,
@@ -53,6 +54,7 @@ router.post('/courses', async (req, res) => {
     let course_sport_facility_id = req.body.sport_facility_id;
     let course_sport_center_id = req.body.sport_center_id;
     let course_managers_id = [];
+    let course_users_id = [];
     let course_reviews = [];
     let course_periodic = req.body.periodic;
     let course_specific_date = req.body.specific_date;
@@ -86,6 +88,7 @@ router.post('/courses', async (req, res) => {
         sport_facility_id: course_sport_facility_id,
         sport_center_id: course_sport_center_id,
         managers: course_managers_id,
+        users: course_users_id,
         reviews: course_reviews,
         periodic: course_periodic,
         specific_date: course_specific_date,
@@ -129,6 +132,7 @@ router.get('/courses/:id', async (req, res) => {
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
             sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
             managers: course.managers,
+            users: course.users,
             reviews: course.reviews,
             periodic: course.periodic,
             specific_date: course.specific_date,

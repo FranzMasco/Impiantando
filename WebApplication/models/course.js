@@ -41,6 +41,7 @@ const course_schema = mongoose.Schema({
     sport_center_id: mongoose.Schema.Types.ObjectId,
     managers: [mongoose.Schema.Types.ObjectId],
     reviews: [{_id: false, date: Date, vote: Number}],
+    users:[mongoose.Schema.Types.ObjectId],
     periodic: Boolean, //Se 0 si ripete una sola volta, se 1 si ripete periodicamente
     specific_date: {type: Date, default: '0000-00-00'},
     specific_start_time: String, //Only 4 character: 2 for hours, 2 for minutes
