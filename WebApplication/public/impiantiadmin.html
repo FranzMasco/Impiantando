@@ -32,7 +32,7 @@
                     <button onclick="loadCourses_administrator('`+sport_center_id+`')">Display courses</button>
                     <button onclick="loadFacilities_administrator('`+sport_center_id+`')">Display facilities</button><br>
                     <br>
-                    <button onclick="show_insert_course_form()">Add new course</button><button onclick="show_insert_form()">Add new sport facility</button>
+                    <button onclick="show_insert_course_form('`+sport_center_id+`')">Add new course</button><button onclick="show_insert_form()">Add new sport facility</button>
                     <div id="insertNewFacility" hidden="true">
                         <br>
                         <p>Fill the following gaps in order to registrer a new sport facility in your sport center</p>
@@ -42,14 +42,7 @@
                         <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_form()">
                         <br>
                     </div>
-                    <div id="insertNewCourse" hidden="true">
-                        <br>
-                        <p>Fill the following gaps in order to registrer a new course in your sport center</p>
-                        <input type="text" id="insertNewFacility_name" name="name" placeholder="Insert name new facility..."><br>
-                        <textarea name="description" id="insertNewFacility_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
-                        <input type="button" name="confirm_insert" value="Confirm" onclick="insertSportFacility()">
-                        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
-                        <br>
+                    <div id="output_insertNewCourse">
                     </div>
                     <br>
                     <hr>
@@ -89,18 +82,15 @@
             }
 
             //Show form to insert a new sport course
-            function show_insert_course_form(){
+            function show_insert_course_form(sport_center_id){
                 close_insert_form();  //close the form to add a new sport facility which could be open
-                document.getElementById("insertNewCourse").hidden=false
+                load_formNewCourse(sport_center_id);
             }
 
             //Show form to insert a new sport course
             function close_insert_course_form(){
-                //reset fields
-                //document.getElementById("insertNewCourse_name").value="";
-                //document.getElementById("insertNewCourse_description").value="";
-
-                document.getElementById("insertNewCourse").hidden=true;
+                const html_form_new_course = document.getElementById('output_insertNewCourse');
+                html_form_new_course.innerHTML="";
             }
 
         </script>

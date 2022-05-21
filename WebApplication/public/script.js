@@ -85,6 +85,29 @@ function loadFacilities() {
 
 //...
 
+//Return an array with all the sport facilities of the specified sport center
+//@param[sport_center_id]: sport center identifier
+function getFacilities_array(sport_center_id){
+    var sportFacilities = [];
+
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {    
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var sport_facility = data[i];
+            sportFacilities.push(sport_facility);
+        }
+        //console.log(sportFacilities.length);
+        return sportFacilities;
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+
 //The administraror facility fetching is different
 //Display edit and delete button
 //@param[sport_center_id]: sport center identifier
@@ -101,12 +124,12 @@ function loadFacilities_administrator(sport_center_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_facilities.innerHTML = "";
+            html_facilities.innerHTML = "<p>Here is the list of the sport facilities that has been inserted: </p><br>";
         }
         
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
             var sport_facility = data[i];
-            console.log(sport_facility);
+            //console.log(sport_facility);
 
             let name = sport_facility["name"];
             let description = sport_facility["description"];
@@ -114,7 +137,6 @@ function loadFacilities_administrator(sport_center_id){
             let self_id = self.substring(self.lastIndexOf('/') + 1);
 
             html_facilities.innerHTML += `
-                <p>Here is the list of the sport facilities that has been inserted: </p><br>
                 <p><b>Name:</b>`+name+`</p>
                 <p><b>Description:</b>`+description+`</p>
                 <button onclick="show_form('`+self_id+`')">Edit</button>
@@ -252,7 +274,7 @@ function loadCourses_administrator(sport_center_id){
         
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
             var course = data[i];
-            console.log(course);
+            //console.log(course);
 
             let name = course["name"];
             let description = course["description"];
@@ -358,6 +380,211 @@ function deleteCourse(id_course, sport_center_id){
         }else{
             console.log("Authentication error");
         }
+    }
+}
+//...
+
+//Display a form to insert a new course
+//@param[sport_center_id]: id of the sport center where the course is
+function load_formNewCourse(sport_center_id){
+    const html_form_new_course = document.getElementById('output_insertNewCourse');
+    var output = "";
+
+    var sportFacilities = [];
+
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    //Load sport facilies in order to select where to add the course
+    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {    
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var sport_facility = data[i];
+            sportFacilities.push(sport_facility);
+        }
+        
+        //Name + Sport + Description
+        output += `
+            <br>
+            <p>Fill the following gaps in order to registrer a new course in your sport center</p>
+            <input type="text" id="insertNewCourse_name" name="name" placeholder="Insert name new course..."><br>
+            <input type="text" id="insertNewCourse_sport" name="sport" placeholder="Specify a meaningful sport category..."><br>
+            <textarea name="description" id="insertNewCourse_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
+        `
+
+        //Prepare sport facilities options
+        var sportFacilityOptions = "";
+
+        for(sf in sportFacilities){
+            let sf_name = sportFacilities[sf]["name"];
+            let sf_ref = sportFacilities[sf]["self"];
+            let sf_id = sf_ref.substring(sf_ref.lastIndexOf('/') + 1);
+            sportFacilityOptions += `<option value="`+sf_id+`">`+sf_name+`</option>`;
+        }
+        output +=`
+            Select sport facility:
+            <select name="course_sport_facility" id="insertNewCourse_sportFacility">
+                `+sportFacilityOptions+`
+            </select>
+            <br>
+        `
+        
+        //Select perodicity
+        output+=`
+            <input name="periodic" id="insertNewCourse_periodic_true" type="radio" value="true" onclick="displayPeriodicSchedule()">
+            <label for="insertNewCourse_periodic_true">Periodic course</label><br>
+            <input name="periodic" id="insertNewCourse_periodic_false" type="radio" value="false" onclick="displayNotPeriodicSchedule()">
+            <label for="insertNewCourse_periodic_false">Not periodic course</label><br>
+            <br>
+            <div id="timeSchedule">
+            </div>
+        `
+
+        html_form_new_course.innerHTML=output;
+
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+
+//Context: add new course
+//When: the administrator is adding a course which is not periodic
+//What to do: display the form in order to insert a new not periodic course
+function displayNotPeriodicSchedule(){
+    const html_form_schedule = document.getElementById('timeSchedule');
+
+    var output = `
+        <div id="form_not_periodic_course">
+            <p>--> not periodic course registration form</p>
+            <label for="insertNewCourse_specificDate">Date:</label>
+            <input type="date" id="insertNewCourse_specificDate" name="specific_date"><br>
+            <label for="insertNewCourse_specificStartTime">Start at:</label>
+            <input type="time" id="insertNewCourse_specificStartTime" name="specific_fromTime"><br>
+            <label for="insertNewCourse_specificEndTime">Finish at:</label>
+            <input type="time" id="insertNewCourse_specificEndTime" name="specific_toTime"><br>
+        </div>
+        <input type="button" name="confirm_insert" value="Confirm" onclick="insertCourse()">
+        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
+        <br>
+    `;
+
+    html_form_schedule.innerHTML = output;
+}
+//...
+
+//Context: add new course
+//When: the administrator is adding a course which is periodic
+//What to do: display the form in order to insert a new periodic course
+function displayPeriodicSchedule(){
+    const html_form_schedule = document.getElementById('timeSchedule');
+
+    var output = `
+        <div id="form_periodic_course">
+            <p>--> periodic course registration form</p>
+            <label for="insertNewCourse_startDate">Start date:</label>
+            <input type="date" id="insertNewCourse_startDate" name="start_date"><br>
+            <label for="insertNewCourse_endDate">End date:</label>
+            <input type="date" id="insertNewCourse_endDate" name="end_date"><br>
+            <p>Fill week schedule</p>
+            <ul>
+            <li>Mon</li>
+            <li>Tue</li>
+            <li>Wed</li>
+            <li>Thu</li>
+            <li>Fri</li>
+            <li>Sat</li>
+            <li>Sun</li>
+            </ul>
+        </div>
+        <input type="button" name="confirm_insert" value="Confirm" onclick="insertCourse()">
+        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
+        <br>
+    `;
+
+    html_form_schedule.innerHTML = output;
+}
+//...
+
+//Insert new course
+function insertCourse(){
+    //Check athentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+    sport_center_id = getCookie("sport_center_id");
+
+    if(token=="" || auth_level!="administrator" || sport_center_id==""){
+        console.log("Authentication error");
+        return;
+    }
+
+    //Course name
+    //Course sport
+    //Course description
+    //Course sport facility
+    var c_name = document.getElementById("insertNewCourse_name").value;
+    var c_sport = document.getElementById("insertNewCourse_sport").value;
+    var c_description = document.getElementById("insertNewCourse_description").value;
+    var c_sport_facility = document.getElementById("insertNewCourse_sportFacility").value;
+
+    //Read if the course is periodic or not
+    var periodicity_true = document.getElementById("insertNewCourse_periodic_true").checked;
+    var periodicity_false = document.getElementById("insertNewCourse_periodic_false").checked;
+
+
+    console.log("name: "+c_name);
+    console.log("sport: "+c_sport);
+    console.log("description: "+c_description);
+    console.log("c_sport_facility: "+c_sport_facility);
+    console.log("pt: "+periodicity_true);
+    console.log("pf: "+periodicity_false);
+    if(periodicity_true){
+        console.log("periodicity: true");
+    }else if(periodicity_false){
+        console.log("periodicity: false");
+
+        //Get date
+        //Get start time
+        //Get finish time
+        var specific_date = document.getElementById("insertNewCourse_specificDate").value;
+        var specific_start_time = document.getElementById("insertNewCourse_specificStartTime").value;
+        var specific_end_time = document.getElementById("insertNewCourse_specificEndTime").value;
+
+        console.log("specific_date: "+specific_date);
+        console.log("specific_start_time: "+specific_start_time);
+        console.log("specific_end_time: "+specific_end_time);
+
+        //Control that all required data has been inserted
+        if(c_name==""){
+            console.log("Missing required information")
+            return;
+        }
+
+        //Insert new course with using POST API
+        fetch('../api/v1/courses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', "x-access-token": token},
+            body: JSON.stringify(
+            { name: c_name,
+              sport: c_sport,
+              description: c_description,
+              sport_facility_id: c_sport_facility,
+              periodic: 0,
+              specific_date: specific_date,
+              specific_start_time: specific_start_time,
+              specific_end_time: specific_end_time,
+              sport_center_id: sport_center_id          
+            } ),
+        })
+        .then((resp) => {
+            close_insert_course_form();
+            loadCourses_administrator(sport_center_id);
+        })
+        .catch( error => console.error(error) ); // If there is any error you will catch them here
+
     }
 }
 //...
