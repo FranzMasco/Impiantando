@@ -8,6 +8,7 @@ const { response } = require('../app');
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Course = require('../models/course'); // sport center is a user_admin's subdocutment
+const Users = require('../models/utente');
 
 /**
  * Resource representation based on the following the pattern: 
@@ -144,6 +145,21 @@ router.get('/courses/:id', async (req, res) => {
             exceptions: course.exceptions,
             creation_date: course.creation_date
         };
+    res.status(200).json(response);
+});
+
+router.get('/courses/:id/users', async (req, res) => {
+    let courses = await Course.findOne({_id:req.params.id});
+    let users = await Users.find({_id: {$in: courses.users}});
+    let response = users.map( (user) => {
+        return {
+            self: "/api/v1/course/" + req.params.id+"/users/"+user.id,
+            name: user.name,
+            surname: user.surname,
+            username: user.username,
+            user: "/api/v1/users/"+user.id
+        };
+    });
     res.status(200).json(response);
 });
 
