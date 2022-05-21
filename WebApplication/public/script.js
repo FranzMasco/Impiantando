@@ -323,7 +323,7 @@ function loadCourses_administrator(sport_center_id){
             html_courses.innerHTML += `
                 <p><b>Creation timestamp: </b>`+date_format(creation_date)+`</p>
                 <button onclick="">Edit</button>
-                <button onclick="">Delete</button>
+                <button onclick="deleteCourse('`+self_id+`', '`+sport_center_id+`');">Delete</button>
                 <hr>
             `;
 
@@ -332,6 +332,35 @@ function loadCourses_administrator(sport_center_id){
     .catch( error => console.error(error) ); //catch dell'errore
 }
 
+
+//Delete course administrator
+//@param[id_course]: id of the course that has to be deleted
+//@param[sport_center_id]: id of the sport center where the course is
+function deleteCourse(id_course, sport_center_id){
+    if(confirm("Are you sure to delete the selected resource?")){
+        var token = "empty";
+        var auth_level = "empty";
+        token = getCookie("token");
+        auth_level = getCookie("user_level");
+
+        if(auth_level=="administrator"){
+            fetch('../api/v1/courses/'+id_course, {
+                method: 'DELETE',
+                headers: { "x-access-token": token },
+            })
+            .then((resp) => {
+                if(resp.status==403){
+                    console.log("Authentication error");
+                }else{
+                    loadCourses_administrator(sport_center_id);
+                }
+            })
+        }else{
+            console.log("Authentication error");
+        }
+    }
+}
+//...
 
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
