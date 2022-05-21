@@ -1,15 +1,62 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> Impianti</title>
+        <title>Dettagli centro sportivo</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script type="text/javascript" src="script.js"></script>
+        <script>
+            function load_homepage(){
+                var sport_center_id = findGetParameter("sport_center_id");
+
+                if(!sport_center_id){
+                    window.location.href = "errorPage.html";
+                    return;
+                }
+                
+                const html_sc_name = document.getElementById("sc_name");
+                const html_sc_description = document.getElementById("sc_description");
+                const html_sc_city = document.getElementById("sc_city");
+                const html_sc_location = document.getElementById("sc_location");
+
+                //Retrive sport center information from DB
+                fetch('../api/v1/sport_centers/'+sport_center_id)
+                .then((resp) => resp.json()) //trasfor data into JSON
+                .then(function(data) {
+                    //console.log(data);
+                    var sc_name = data["name"];
+                    var sc_description = data["description"];
+                    var sc_city = data["address"]["city"];
+                    var sc_location = data["address"]["location"];
+
+                    html_sc_name.innerHTML = sc_name;
+                    html_sc_description.innerHTML = sc_description;
+                    html_sc_city.innerHTML = sc_city;
+                    html_sc_location.innerHTML = sc_location;
+
+                })
+                .catch( error => console.error(error) ); //catch dell'errore
+
+            }
+        </script>
     </head>
     <body>
+        <script>
+            var sport_center_id = findGetParameter("sport_center_id");
+
+            if(!sport_center_id){
+                window.location.href = "errorPage.html";
+            }
+        </script>
         <h1>Impiantando</h1>
-        <div id="output_installations">
-        </div>
-        <!--<script type="text/javascript">loadFacilities();</script>-->
+        <h2><span id="sc_name">-</span></h2>
+        <p><b>City: </b><span id="sc_city">-</span></p>
+        <p><b>Location: </b><span id="sc_location">-</span></p>
+        <p><b>Descrizione: </b><span id="sc_description">-</span></p>
+        <button onclick="loadFacilities(sport_center_id)">Display sport facilities</button>
+        <button>Display courses</button>
+        <hr>
+        <div id="output_facilities"></div>
+        <script>load_homepage()</script>
     </body>
 </html>

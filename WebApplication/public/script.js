@@ -47,41 +47,39 @@ function loadSportCenters() {
     .catch( error => console.error(error) ); //catch dell'errore
 }
 
-function loadFacilities() {
+function loadFacilities(sport_center_id) {
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
     const html_facilities = document.getElementById('output_facilities');
 
-    fetch('../api/v1/sport_centers/:id/sport_facilities')
+    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
+        if(data.length>0){
+            html_facilities.innerHTML = "<p>Here is the list of the sport facilities: </p><br>";
+        }else{
+            html_facilities.innerHTML = "<p>There are no sport facilities registered yet</p><br>";
+        }
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
             var sport_facility = data[i];
 
             let name = sport_facility["name"];
             let description = sport_facility["description"];
-            let id_s_c = sport_facility["id_s_c"];
+            let self = sport_facility["self"];
+            let self_id = self.substring(self.lastIndexOf('/') + 1);
 
-            let div = document.createElement("div")
-            let html_sport_facility_title = document.createElement("h2");
-            let html_sport_facility_name = document.createElement("p");
-            let html_sport_facility_description = document.createElement("p");
-            let html_sport_facility_id_s_c = document.createElement("p");
-            let html_sport_facility_moreInfo = document.createElement("a");
+            html_facilities.innerHTML += `
+                <p><b>Name:</b>`+name+`</p>
+                <p><b>Description:</b>`+description+`</p>
+                <br>
+                </div>
+                <hr>
+            `;
             
-            html_sport_facility_title.innerHTML = name;
-            html_sport_facility_name.innerHTML = "<b>Name: </b>"+name;
-            html_sport_facility_description.innerHTML = "<b>Description: </b>"+description;
-            html_sport_facility_id_s_c.innerHTML= "<b>Centro sportivo: </b>"+id_s_c;
-            html_sport_facility_moreInfo.innerHTML = `<a href="`+sport_facility["self"]+`">Get more information</a>`;
-
-            div.appendChild(html_sport_facility_title);
-            div.appendChild(html_sport_facility_name);
-            div.appendChild(html_sport_facility_description);
-            div.appendChild(html_sport_facility_id_s_c);
-            div.appendChild(html_sport_facility_moreInfo);
-
-            html_sport_facility.appendChild(div);
-            html_sport_facility.appendChild(document.createElement("hr"))
         }
     })
     .catch( error => console.error(error) ); //catch dell'errore
@@ -920,5 +918,22 @@ function date_format_2(d){
     var hour = d.getHours();
 
     return hour+":"+minute;
+}
+//...
+
+//Find get parameter
+//INPUT: parameterName --> name of the parameter of which I want to know the value
+//OUTPUT: value of get parameter [parameterName]
+function findGetParameter(parameterName) {
+    var result = null,
+        tmp = [];
+    location.search
+        .substr(1)
+        .split("&")
+        .forEach(function (item) {
+          tmp = item.split("=");
+          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        });
+    return result;
 }
 //...
