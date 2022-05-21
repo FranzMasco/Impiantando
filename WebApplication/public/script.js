@@ -31,7 +31,7 @@ function loadSportCenters() {
             html_sport_center_description.innerHTML = "<b>Description: </b>"+description;
             html_sport_center_address_city.innerHTML = "<b>City: </b>"+address_city;
             html_sport_center_address_location.innerHTML = "<b>Location: </b>"+address_location;
-            html_sport_center_moreInfo.innerHTML = `<a href=impiantonotauthenticated.html?sport_center_id="`+sport_center_id+`">Get more information</a>`;
+            html_sport_center_moreInfo.innerHTML = `<a href="impiantonotauthenticated.html?sport_center_id=`+sport_center_id+`";'>Get more information</a>`;
 
             div.appendChild(html_sport_center_title);
             div.appendChild(html_sport_center_name);
