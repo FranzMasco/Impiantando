@@ -29,7 +29,7 @@
                     `
                     <p><b>Administrator user: </b>`+username+`</p>
                     <p><b>Sport center: </b>`+sport_center_name+`</p>
-                    <button>Display courses</button>
+                    <button onclick="loadCourses_administrator('`+sport_center_id+`')">Display courses</button>
                     <button>Display facilities</button><br>
                     <br>
                     <button onclick="show_insert_form()">Add new sport facility</button>
@@ -44,7 +44,6 @@
                     </div>
                     <br>
                     <hr>
-                    <p>Here is the list of the sport facilities that has been inserted: </p><br>
                     <div id="output_facilities">
                         There are no sport facilities registered yet
                     </div>
