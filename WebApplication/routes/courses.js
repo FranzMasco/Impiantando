@@ -45,6 +45,7 @@ router.get('/courses', async (req, res) => {
  * In order to create a new sport center it is necessary to create the correponding
  * administrator to ensure data consistency
 */
+router.post('/courses', tokenChecker);
 router.post('/courses', async (req, res) => {
     let course_name = req.body.name;
     let course_description = req.body.description;
