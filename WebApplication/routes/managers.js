@@ -85,6 +85,11 @@ router.get('/managers/:id/courses', async (req, res) => {
     let courses = await Courses.find({_id: {$in: managers.courses}});
     //console.log(courses);
     let response = courses.map( (course) => {
+        let managers_array = course.managers;
+        let links = [];
+        managers_array.forEach(manager => {
+            links.push("/api/v1/managers/"+manager);
+        })
         return {
             self: "/api/v1/courses/"+course.id,
             name: course.name,
@@ -92,7 +97,7 @@ router.get('/managers/:id/courses', async (req, res) => {
             sport: course.sport,
             sport_facility_id:course.sport_facility_id,
             sport_center_id:course.sport_center_id,
-            managers: course.managers,
+            managers_id: course.managers,
             reviews: course.reviews,
             periodic: course.periodic,
             specific_date: course.specific_date,
@@ -105,6 +110,7 @@ router.get('/managers/:id/courses', async (req, res) => {
             creation_date: course.creation_date,
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
             sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
+            managers: links
         };
     });
     res.status(200).json(response);

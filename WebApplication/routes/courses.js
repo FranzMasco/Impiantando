@@ -17,6 +17,11 @@ const Users = require('../models/utente');
 router.get('/courses', async (req, res) => {
     let courses = await Course.find({});
     let response = courses.map( (course) => {
+        let managers_array = course.managers;
+        let links = [];
+        managers_array.forEach(manager => {
+            links.push("/api/v1/managers/"+manager);
+        })
         return {
             self: "/api/v1/courses/" + course.id,
             name: course.name,
@@ -26,7 +31,7 @@ router.get('/courses', async (req, res) => {
             sport_center_id:course.sport_center_id,
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
             sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
-            managers: course.managers,
+            managers_id: course.managers,
             users: course.users,
             reviews: course.reviews,
             periodic: course.periodic,
@@ -37,7 +42,8 @@ router.get('/courses', async (req, res) => {
             end_date: course.end_date,
             time_schedules: course.time_schedules,
             exceptions: course.exceptions,
-            creation_date: course.creation_date
+            creation_date: course.creation_date,
+            managers: links
         };
     });
     res.status(200).json(response);
@@ -123,6 +129,11 @@ router.post('/courses', async (req, res) => {
 
 router.get('/courses/:id', async (req, res) => {
     let course = await Course.findOne({'_id':req.params.id});
+    let managers_array = course.managers;
+    let links = [];
+    managers_array.forEach(manager => {
+        links.push("/api/v1/managers/"+manager);
+    })
     let response = {
             self: "/api/v1/courses/" + course.id,
             name: course.name,
@@ -132,7 +143,7 @@ router.get('/courses/:id', async (req, res) => {
             sport_center_id:course.sport_center_id,
             sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
             sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
-            managers: course.managers,
+            managers_id: course.managers,
             users: course.users,
             reviews: course.reviews,
             periodic: course.periodic,
@@ -143,7 +154,8 @@ router.get('/courses/:id', async (req, res) => {
             end_date: course.end_date,
             time_schedules: course.time_schedules,
             exceptions: course.exceptions,
-            creation_date: course.creation_date
+            creation_date: course.creation_date,
+            managers: links
         };
     res.status(200).json(response);
 });
