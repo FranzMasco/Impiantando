@@ -8,11 +8,15 @@ function loadSportCenters() {
         //console.log(data);
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
             var sport_center = data[i];
+            
+            console.log(sport_center);
 
             let name = sport_center["name"];
             let address_city = sport_center["address"]["city"];
             let address_location = sport_center["address"]["location"];
             let description = sport_center["description"];
+            let sport_center_id = sport_center["self"].substring(sport_center["self"].lastIndexOf('/') + 1);
+
 
             let div = document.createElement("div")
             let html_sport_center_title = document.createElement("h2");
@@ -27,7 +31,7 @@ function loadSportCenters() {
             html_sport_center_description.innerHTML = "<b>Description: </b>"+description;
             html_sport_center_address_city.innerHTML = "<b>City: </b>"+address_city;
             html_sport_center_address_location.innerHTML = "<b>Location: </b>"+address_location;
-            html_sport_center_moreInfo.innerHTML = `<a href="`+sport_center["self"]+`">Get more information</a>`;
+            html_sport_center_moreInfo.innerHTML = `<a href=impiantonotauthenticated.html?sport_center_id="`+sport_center_id+`">Get more information</a>`;
 
             div.appendChild(html_sport_center_title);
             div.appendChild(html_sport_center_name);
