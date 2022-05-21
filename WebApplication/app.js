@@ -12,6 +12,7 @@ const r_utenti_prova = require('./routes/r_utenti_prova.js');
 const sport_centers = require('./routes/sport_centers.js');
 const sport_facilities = require('./routes/sport_facilities.js');
 const courses = require('./routes/courses.js');
+const users = require('./routes/users.js');
 //...
 
 //Configure Express.js parsing middleware
@@ -43,6 +44,10 @@ app.use("/api/v1", sport_facilities)
 
 //Courses API
 app.use("/api/v1", courses)
+//...
+
+//User API
+app.use("/api/v1", users)
 //...
 
 //Default 404 handler
