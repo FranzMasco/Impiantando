@@ -25,7 +25,8 @@ router.get('/managers', async (req, res) => {
             birth_date: manager.birth_date,
             username: manager.username,
             password: manager.password,
-            society: manager.society
+            society: manager.society,
+            courses: manager.courses,
         };
     });
     res.status(200).json(response);
@@ -40,6 +41,7 @@ router.post('/managers', async (req, res) => {
     let manager_username = req.body.username;
     let manager_password = req.body.password;
     let manager_society = req.body.society;
+    let manager_courses = req.body.courses;
 
     //Check if a manager already exists
     const managersExists = await Managers.findOne({name: manager_name, surmane: manager_surname}).select("name").lean();
@@ -52,7 +54,8 @@ router.post('/managers', async (req, res) => {
         birth_date: manager_birth_date,
         username: manager_username,
         password: manager_password,
-        society: manager_society
+        society: manager_society,
+        courses: manager_courses
     })
 
     await manager.save();
@@ -71,13 +74,15 @@ router.get('/managers/:id', async (req, res) => {
         birth_date: manager.birth_date,
         username: manager.username,
         password: manager.password,
-        society: manager.society
+        society: manager.society,
+        courses: manager.courses,
     }
     res.status(200).json(response);
 })
 
 router.get('/managers/:id/courses', async (req, res) => {
-    let courses = await Courses.find({managers: {$in: req.params.id}});
+    let managers = await Managers.findOne({_id:req.params.id});
+    let courses = await Courses.find({_id: {$in: managers.courses}});
     //console.log(courses);
     let response = courses.map( (course) => {
         return {
