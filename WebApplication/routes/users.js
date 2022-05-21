@@ -14,7 +14,9 @@ router.get('/users/:id/courses', async (req, res) => {
     let response = users.map( (user) => {
         return {
             self: "/api/v1/users/" + req.params.id,
-            user_name: user.username,
+            name:user.name,
+            surname: user.surname,
+            username: user.username,
             course_name: user.courses.name,
             course_description: user.courses.description,
             courses: user.courses.course,
