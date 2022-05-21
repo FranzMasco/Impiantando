@@ -487,15 +487,57 @@ function displayPeriodicSchedule(){
             <input type="date" id="insertNewCourse_startDate" name="start_date"><br>
             <label for="insertNewCourse_endDate">End date:</label>
             <input type="date" id="insertNewCourse_endDate" name="end_date"><br>
-            <p>Fill week schedule</p>
+            <p>Fill week schedule (FROM - TO)</p>
             <ul>
             <li>Mon</li>
+            <div id="mon">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="monAddInterval" onclick="addInterval('mon')">Add interval</button>
             <li>Tue</li>
+            <div id="tue">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="tueAddInterval" onclick="addInterval('tue')">Add interval</button>
             <li>Wed</li>
+            <div id="wed">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="monAddInterval" onclick="addInterval('wed')">Add interval</button>
             <li>Thu</li>
+            <div id="thu">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="monAddInterval" onclick="addInterval('thu')">Add interval</button>
             <li>Fri</li>
+            <div id="fri">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="monAddInterval" onclick="addInterval('fri')">Add interval</button>
             <li>Sat</li>
+            <div id="sat">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="monAddInterval" onclick="addInterval('sat')">Add interval</button>
             <li>Sun</li>
+            <div id="sun">
+            <span name="interval">
+            <input type="time"><input type="time">
+            </span>
+            </div>
+            <button id="monAddInterval" onclick="addInterval('sun')">Add interval</button>
             </ul>
         </div>
         <input type="button" name="confirm_insert" value="Confirm" onclick="insertCourse()">
@@ -543,6 +585,76 @@ function insertCourse(){
     console.log("pf: "+periodicity_false);
     if(periodicity_true){
         console.log("periodicity: true");
+
+        //Get start date
+        //Get end date
+        var start_date = document.getElementById("insertNewCourse_startDate").value;
+        var end_date = document.getElementById("insertNewCourse_endDate").value
+
+        console.log("start date: "+start_date);
+        console.log("end date: "+end_date);
+
+        var dayNames = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+        var dayIntervalArrays = [];
+
+        for(d in dayNames){
+            //Get day schedule
+            var day_div = document.getElementById(dayNames[d]);
+            var num_intervals = day_div.getElementsByTagName("span").length;
+            var intervals = day_div.getElementsByTagName("span");
+            var intervalsArray = [];
+
+            for(var interval=0; interval<num_intervals; interval++){
+                var from = intervals[interval].children[0].value;
+                var to = intervals[interval].children[1].value;
+                console.log("from: "+from);
+                console.log("to: "+to);
+
+                if(from!="" && to!=""){
+                    var interval_JSON = {};
+                    interval_JSON.from = from;
+                    interval_JSON.to = to;
+                    console.log("interval: "+interval_JSON);
+                    intervalsArray.push(interval_JSON);
+                }
+            }
+            dayIntervalArrays.push(intervalsArray);
+        }
+        
+        //Control that all required data has been inserted
+        if(c_name==""){
+            console.log("Missing required information")
+            return;
+        }
+        console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
+        //Insert new course with using POST API
+        fetch('../api/v1/courses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', "x-access-token": token},
+            body: JSON.stringify(
+            { name: c_name,
+              sport: c_sport,
+              description: c_description,
+              sport_facility_id: c_sport_facility,
+              periodic: 1,
+              start_date: start_date,
+              end_date: end_date,
+              time_schedules_monday: {"event":dayIntervalArrays[0]},
+              time_schedules_tuesday: {"event":dayIntervalArrays[1]},
+              time_schedules_wednesday: {"event":dayIntervalArrays[2]},
+              time_schedules_thursday: {"event":dayIntervalArrays[3]},
+              time_schedules_friday: {"event":dayIntervalArrays[4]},
+              time_schedules_saturday: {"event":dayIntervalArrays[5]},
+              time_schedules_sunday: {"event":dayIntervalArrays[6]},
+              sport_center_id: sport_center_id          
+            } ),
+        })
+        .then((resp) => {
+            close_insert_course_form();
+            loadCourses_administrator(sport_center_id);
+        })
+        .catch( error => console.error(error) ); // If there is any error you will catch them here
+        
     }else if(periodicity_false){
         console.log("periodicity: false");
 

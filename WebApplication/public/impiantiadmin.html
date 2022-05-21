@@ -93,6 +93,29 @@
                 html_form_new_course.innerHTML="";
             }
 
+
+            //Context: insert new course
+            //Purpose: insert a new from to interval in the input date
+            function addInterval(day){
+                const br = document.createElement("br"); 
+                const span = document.createElement("span");
+                const from = document.createElement("input"); 
+                const to = document.createElement("input");
+
+                from.type="time";
+                to.type="time"; 
+
+                span.name="interval";
+                span.appendChild(from);
+                span.appendChild(to);
+                
+                //Add <br>
+                document.getElementById(day).appendChild(br);
+
+                //Add interval
+                document.getElementById(day).appendChild(span);
+            }
+
         </script>
     </head>
     <body>
