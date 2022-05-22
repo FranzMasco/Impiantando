@@ -1082,7 +1082,7 @@ function loadCourses_manager(user_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_courses.innerHTML = "<p>Here is the list of the courses that has been inserted: </p><br>";
+            html_courses.innerHTML = "<p>Here is the list of your courses: </p><br>";
         }
         html_courses.innerHTML += `<hr>`;
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -1174,7 +1174,7 @@ function loadCourses_user(user_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_courses.innerHTML = "<p>Here is the list of the courses that has been inserted: </p><br>";
+            html_courses.innerHTML = "<p>Here is the list of the courses you are registered to: </p><br>";
         }
         html_courses.innerHTML += `<hr>`;
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
