@@ -1,37 +1,43 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> Corsi </title>
+        <title> Corsi utente responsabile </title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="script.js"></script>
+        <script>
+            function manager_homepage(){
+                var username = getCookie("username");
+                var user_id = getCookie("user_id");
+                var token = getCookie("token");
+                var user_level = getCookie("user_level");
+
+                var outputJS = document.getElementById("outputJS");
+
+                if(username=="" || user_id=="" || token=="" || user_level=="" || user_level!="responsabile"){
+                    outputJS.innerHTML =
+                    `
+                        <p>Authentication required</p>
+                        <a href="index.html">Homepage</a>
+                    `;
+                }else{
+                    outputJS.innerHTML =
+                    `
+                    <h1>Manager user:`+username+`</h1>
+                    <div id="output_courses">
+                        There are no courses yet
+                    </div>
+                    <br>
+                    `;
+                    loadCourses_manager(user_id);
+                }
+
+            }
+        </script>
     </head>
     <body>
         <h1>Impiantando</h1>
-        <br>
-        <br>
-        <p>Bentornato Mauro,</p>
-        <p>Responsabile presso:</p>
-        <h3>I miei corsi:</h3>
-            <div>
-                <hr>
-                <h4>Danza</h4>
-                <p>Data</p>
-                <p>Ora</p>
-                <p>Luogo</p>
-                <button>Visualizza recensioni</button>
-                <button>Pubblica new</button>
-                <button>Visualizza partecipanti</button>
-            </div>
-            <div>
-                <hr>
-                <h4>Pallavolo</h4>
-                <p>Data</p>
-                <p>Ora</p>
-                <p>Luogo</p>
-                <button>Visualizza recensioni</button>
-                <button>Pubblica new</button>
-                <button>Visualizza partecipanti</button>
-            </div>
-            <hr>
+        <div id="outputJS"></div>
+        <script>manager_homepage()</script>
     </body>
 </html>

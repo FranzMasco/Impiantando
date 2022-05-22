@@ -8,7 +8,7 @@ const express = require('express');
 const router = express.Router();
 const AdminUser = require('../models/admin_user');
 const Utente = require('../models/utente');
-const Responsabile = require('../models/utente_responsabile');
+const Responsabile = require('../models/manager_user');
 const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 /**
