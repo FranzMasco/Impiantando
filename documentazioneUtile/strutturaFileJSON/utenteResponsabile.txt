@@ -7,3 +7,4 @@ Utente responsabile:
 - username
 - password
 - società
+- corsi (array di identificavi dei corsi che gestisco)
