@@ -1094,6 +1094,7 @@ function loadCourses_manager(user_id){
             let sport = course["sport"];
             let periodic = course["periodic"];
             let self = course["self"];
+            let self_id = self.substring(self.lastIndexOf('/') + 1);
 
             let start_date = "";
             let end_date = "";
@@ -1153,11 +1154,37 @@ function loadCourses_manager(user_id){
                 `;
                 
             }
-            html_courses.innerHTML += `<hr>`;
+            html_courses.innerHTML += `<br><button onclick="show_partecipants('`+self_id+`')">Visualizza elenco di partecipanti</button><div id="partecipants`+self_id+`"></div><hr>`;
         }
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
+
+//Context: Course manager user wants to know the partecipants of his/her course
+//Output: Print list of partecipants under the selected course
+//Input: @param[course_id] id of the selected course
+function show_partecipants(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+
+    output_html.innerHTML += `
+        <p><b>TOT: </b>100</p>
+    `
+
+    output_html.innerHTML += `
+        <li>- Marco Gentilini</li>
+        <li>- Gabriele Gentilini</li>
+    `;
+
+    output_html.innerHTML += `
+        <button onclick="hide_partecipants('`+course_id+`');">Close list</button>
+    `;
+}
+
+function hide_partecipants(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+    output_html.innerHTML="";
+}
+//...
 
 //User: load all his courses
 //@param[user_id]: user identifier
