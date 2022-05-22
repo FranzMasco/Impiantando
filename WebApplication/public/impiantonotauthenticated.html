@@ -38,6 +38,103 @@
                 .catch( error => console.error(error) ); //catch dell'errore
 
             }
+
+            //The user clicks the submit button of course [course_id]
+            //If the user is authenticated --> submission
+            //Else --> display login form
+            function submit_request(course_id){
+                if(submit_course(course_id)==1){    //not authenticated
+                    
+                    //Display message and login form
+                    const user_message = document.getElementById("user_message");
+                    const login_form = document.getElementById("login_form");
+
+                    user_message.innerHTML=`
+                        <p style="color: red;">Authentication required</p>
+                    `;
+
+                    login_form.innerHTML = `
+                        <h2>Login: </h2>
+                        <label for="username">Username: </label>
+                        <input type="text" name="username" id="loginUsername" required> <br>
+                        <label for="password">Password: </label>
+                        <input type="password" name="password" id="loginPassword" required> <br>
+                        <input type="button" value="Sign in" onclick="user_login()">
+                        <span id="wrongInput" style="color: red;"></span>
+                    `;
+
+                }else{  //authenticated --> register user to the course
+
+                    //Get user id from cookies
+                    user_id = getCookie("user_id");
+
+                    //Get token
+                    token = getCookie("token");
+
+                    fetch('../api/v1/registrations', {
+                        method: 'PATCH',
+                        headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+                        body: JSON.stringify( { course_id: course_id, user_id: user_id } ),
+                    })
+                    .then((resp) => {
+                        console.log(resp);
+                        alert("Registration success!");
+                    }).catch( error => console.error(error) ); //catch dell'errore
+                }
+            }
+
+            //User authentication
+            function user_login(){
+                //User message and login form
+                const user_message = document.getElementById("user_message");
+                const login_form = document.getElementById("login_form");
+
+                //get the form object
+                var username = document.getElementById("loginUsername").value;
+                var password = document.getElementById("loginPassword").value;
+
+                var wrongInput = document.getElementById("wrongInput");
+
+                if(username!="" && password!=""){
+                    fetch('/api/v1/authentications/user', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json' },
+                        body: JSON.stringify( { username: username, password: password } ),
+                    })
+                    .then((resp) => resp.json()) // Transform the data into json
+                    .then(function(data) { // Here you get the data to modify as you please
+
+                        if(data.success==true){ //authentication success!
+                            let user_token = data.token;
+                            let user_username = data.username;
+                            let user_identifier = data.id;
+                            let user_level = data.user;
+                            
+                            //Add user info into browser cookie document
+                            setCookie("token", user_token, 1);
+                            setCookie("username", user_username, 1);
+                            setCookie("user_id", user_identifier, 1);
+                            setCookie("user_level", user_level, 1);
+
+                            user_message.innerHTML=`
+                                <p style="color: green;">Authentication OK (-: ==> now you can submit the course</p>
+                            `;
+
+                            login_form.innerHTML = "";
+
+                        }else if(data.username==false){ //wrong username
+                            wrongInput.innerHTML = "Bad username )-:";
+                        }else if(data.password==false){ //wrong password
+                            wrongInput.innerHTML = "Bad password )-:";
+                        }            
+                    })
+                    .catch( error => console.error(error) );
+                }else{
+                    wrongInput.innerHTML("Username and password are required");
+                }
+
+            }
+
         </script>
     </head>
     <body>

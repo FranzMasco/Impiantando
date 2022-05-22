@@ -349,7 +349,8 @@ function loadCourses(sport_center_id){
 
             html_courses.innerHTML += `
                 <br>
-                <button onclick="">Submit</button>
+                <button onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message"></div>
+                <div id="login_form"></div>
                 <hr>
             `;
 
@@ -826,7 +827,7 @@ function display_loginForm(login_type){
             <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
-    //onsubmit="login('`+login_type+`')"
+    
     }else if(login_type=='R'){
         output.innerHTML=
     `
@@ -922,7 +923,7 @@ function login(login_type){
                 let user_username = data.username;
                 let user_identifier = data.id;
                 let user_level = data.user;
-                
+
                 //Add user info into browser cookie document
                 setCookie("token", user_token, 1);
                 setCookie("username", user_username, 1);
@@ -971,6 +972,27 @@ function login(login_type){
     }
 }
 //...
+
+//Course submission
+//@param[course_id] id of the course
+//OUTPUT: 1 --> not authenticated
+//        0 --> OK
+function submit_course(course_id){
+    //i. Check authentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+
+    if(token=="" || auth_level!="user"){
+        console.log("Authentication required");
+        return 1;
+    }
+
+}
+
+
+/**===UTILS FUNCTIONS===*/
 
 //Create new Cookie
 function setCookie(cname, cvalue, exdays) {
@@ -1044,6 +1066,7 @@ function findGetParameter(parameterName) {
         });
     return result;
 }
+<<<<<<< HEAD
 
 
 //Manager: load all his courses
@@ -1229,3 +1252,8 @@ function loadCourses_user(user_id){
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
+=======
+//...
+
+/**==========================*/
+>>>>>>> registrazione_corso

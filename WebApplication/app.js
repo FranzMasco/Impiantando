@@ -14,6 +14,7 @@ const sport_facilities = require('./routes/sport_facilities.js');
 const courses = require('./routes/courses.js');
 const users = require('./routes/users.js');
 const managers = require('./routes/managers.js');
+const registrations = require('./routes/subscriptions.js');
 //...
 
 //Configure Express.js parsing middleware
@@ -52,6 +53,10 @@ app.use("/api/v1", managers)
 
 //User API
 app.use("/api/v1", users)
+//...
+
+//User registration
+app.use("/api/v1", registrations);
 //...
 
 //Default 404 handler
