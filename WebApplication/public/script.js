@@ -1066,8 +1066,6 @@ function findGetParameter(parameterName) {
         });
     return result;
 }
-<<<<<<< HEAD
-
 
 //Manager: load all his courses
 //@param[user_id]: manager identifier
@@ -1252,8 +1250,6 @@ function loadCourses_user(user_id){
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
-=======
 //...
 
 /**==========================*/
->>>>>>> registrazione_corso
