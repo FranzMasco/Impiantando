@@ -1166,18 +1166,44 @@ function loadCourses_manager(user_id){
 function show_partecipants(course_id){
     const output_html = document.getElementById("partecipants"+course_id);
 
-    output_html.innerHTML += `
-        <p><b>TOT: </b>100</p>
-    `
+    //Check authentication
+    var token = "";
+    var auth_level = "";
 
-    output_html.innerHTML += `
-        <li>- Marco Gentilini</li>
-        <li>- Gabriele Gentilini</li>
-    `;
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
 
-    output_html.innerHTML += `
-        <button onclick="hide_partecipants('`+course_id+`');">Close list</button>
-    `;
+    if(token=="" || auth_level!="responsabile"){
+        console.log("Authentication required");
+        return ;
+    }
+
+    fetch('../api/v1/courses/'+course_id+'/users', {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json', "x-access-token": token},
+    })
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        //console.log(data);
+
+        output_html.innerHTML += `
+            <p><b>TOT: </b>`+data.length+`</p>
+        `;
+
+        for(u in data){
+            let name = data[u]["name"];
+            let surname = data[u]["surname"];
+
+            output_html.innerHTML += `
+                <li>- `+name+` `+surname+`</li>
+            `;
+        }
+
+        output_html.innerHTML += `
+            <button onclick="hide_partecipants('`+course_id+`');">Close list</button>
+        `;
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
 }
 
 function hide_partecipants(course_id){

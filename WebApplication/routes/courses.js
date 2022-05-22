@@ -160,6 +160,7 @@ router.get('/courses/:id', async (req, res) => {
     res.status(200).json(response);
 });
 
+router.get('/courses/:id/users', tokenChecker);
 router.get('/courses/:id/users', async (req, res) => {
     let courses = await Course.findOne({_id:req.params.id});
     let users = await Users.find({_id: {$in: courses.users}});
