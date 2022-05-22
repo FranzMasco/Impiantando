@@ -349,7 +349,8 @@ function loadCourses(sport_center_id){
 
             html_courses.innerHTML += `
                 <br>
-                <button onclick="submit_request('`+self_id+`')">Submit</button>
+                <button onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message"></div>
+                <div id="login_form"></div>
                 <hr>
             `;
 
@@ -826,7 +827,7 @@ function display_loginForm(login_type){
             <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
-    //onsubmit="login('`+login_type+`')"
+    
     }else if(login_type=='R'){
         output.innerHTML=
     `
