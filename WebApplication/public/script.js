@@ -349,7 +349,7 @@ function loadCourses(sport_center_id){
 
             html_courses.innerHTML += `
                 <br>
-                <button onclick="">Submit</button>
+                <button onclick="submit_request('`+self_id+`')">Submit</button>
                 <hr>
             `;
 
@@ -921,11 +921,13 @@ function login(login_type){
                 let user_token = data.token;
                 let user_username = data.username;
                 let user_identifier = data.id;
-                
+                let user_level = data.user;
+
                 //Add user info into browser cookie document
                 setCookie("token", user_token, 1);
                 setCookie("username", user_username, 1);
                 setCookie("user_id", user_identifier, 1);
+                setCookie("user_level", user_level, 1);
                 window.location.href="responsabilehome.html";
             }else if(data.username==false){ //wrong username
                 wrongInput.innerHTML = "Bad username )-:";
@@ -949,11 +951,13 @@ function login(login_type){
                 let user_token = data.token;
                 let user_username = data.username;
                 let user_identifier = data.id;
+                let user_level = data.user;
                 
                 //Add user info into browser cookie document
                 setCookie("token", user_token, 1);
                 setCookie("username", user_username, 1);
                 setCookie("user_id", user_identifier, 1);
+                setCookie("user_level", user_level, 1);
                 window.location.href="autenticateduserhome.html";
             }else if(data.username==false){ //wrong username
                 wrongInput.innerHTML = "Bad username )-:";
@@ -967,6 +971,27 @@ function login(login_type){
     }
 }
 //...
+
+//Course submission
+//@param[course_id] id of the course
+//OUTPUT: 1 --> not authenticated
+//        0 --> OK
+function submit_course(course_id){
+    //i. Check authentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+
+    if(token=="" || auth_level!="user"){
+        console.log("Authentication required");
+        return 1;
+    }
+
+}
+
+
+/**===UTILS FUNCTIONS===*/
 
 //Create new Cookie
 function setCookie(cname, cvalue, exdays) {
@@ -1041,3 +1066,5 @@ function findGetParameter(parameterName) {
     return result;
 }
 //...
+
+/**==========================*/

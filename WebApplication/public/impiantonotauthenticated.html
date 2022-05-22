@@ -38,6 +38,18 @@
                 .catch( error => console.error(error) ); //catch dell'errore
 
             }
+
+            //The user clicks the submit button of course [course_id]
+            //If the user is authenticated --> submission
+            //Else --> display login form
+            function submit_request(course_id){
+                if(submit_course(course_id)==1){    //not authenticated
+                    console.log("La funzione ha detto che non sono autenticato");
+                }else{
+                    console.log("La funzione ha detto che sono autenticato");
+                }
+            }
+
         </script>
     </head>
     <body>
