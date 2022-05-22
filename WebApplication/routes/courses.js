@@ -7,7 +7,7 @@ const express = require('express');
 const { response } = require('../app');
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
-const Course = require('../models/course'); // sport center is a user_admin's subdocutment
+const Course = require('../models/course');
 const Users = require('../models/utente');
 
 /**

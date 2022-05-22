@@ -9,6 +9,9 @@ birth_date
 username
 password
 society
+courses: many-to-many relationship
+        each manager has one or more courses
+        each course has one or more managers
 */
 const mongoose = require("mongoose");
 
