@@ -729,7 +729,7 @@ function insertCourse(){
         }
         
         //Control that all required data has been inserted
-        if(c_name==""){
+        if(c_name=="" || start_date=="" || end_date==""){
             console.log("Missing required information")
             return;
         }
@@ -777,7 +777,7 @@ function insertCourse(){
         console.log("specific_end_time: "+specific_end_time);
 
         //Control that all required data has been inserted
-        if(c_name==""){
+        if(c_name=="" || specific_date=="" || specific_start_time=="" || specific_end_time==""){
             console.log("Missing required information")
             return;
         }
