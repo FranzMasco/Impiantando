@@ -847,7 +847,7 @@ function display_loginForm(login_type){
     `
         <hr>
         <h2>Login user: </h2>
-        <form action="autenticateduserhome.html" method="post" >
+        <form>
             <label for="username">Username: </label>
             <input type="text" name="username" id="loginUsername" required> <br>
             <label for="password">Password: </label>
@@ -951,11 +951,13 @@ function login(login_type){
                 let user_token = data.token;
                 let user_username = data.username;
                 let user_identifier = data.id;
+                let user_level = data.user;
                 
                 //Add user info into browser cookie document
                 setCookie("token", user_token, 1);
                 setCookie("username", user_username, 1);
                 setCookie("user_id", user_identifier, 1);
+                setCookie("user_level", user_level, 1);
                 window.location.href="autenticateduserhome.html";
             }else if(data.username==false){ //wrong username
                 wrongInput.innerHTML = "Bad username )-:";
@@ -1055,6 +1057,98 @@ function loadCourses_manager(user_id){
     }
 
     fetch('../api/v1/managers/'+user_id+'/courses')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        //console.log(data);
+        if(data.length>0){
+            html_courses.innerHTML = "<p>Here is the list of the courses that has been inserted: </p><br>";
+        }
+        html_courses.innerHTML += `<hr>`;
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var course = data[i];
+            //console.log(course);
+
+            let name = course["name"];
+            let description = course["description"];
+            let sport = course["sport"];
+            let periodic = course["periodic"];
+            let self = course["self"];
+
+            let start_date = "";
+            let end_date = "";
+            
+            let specific_date = "";
+            let specific_start_time = "";
+            let specific_end_time = "";
+
+            html_courses.innerHTML += `
+                <p><b>Name: </b>`+name+`</p>
+                <p><b>Sport: </b>`+sport+`</p>
+                <p><b>Description: </b>`+description+`</p>
+            `;
+
+            if(periodic){   //the course is offered for example every monday
+                start_date = new Date(course["start_date"]);
+                end_date = new Date(course["end_date"]);
+                
+                //Each day is an array of start-end timestamps
+                monday = course["time_schedules"]["monday"]["event"];
+                tuesday = course["time_schedules"]["tuesday"]["event"];
+                wednesday = course["time_schedules"]["wednesday"]["event"];
+                thursday = course["time_schedules"]["thursday"]["event"];
+                friday = course["time_schedules"]["friday"]["event"];
+                saturday = course["time_schedules"]["saturday"]["event"];
+                sunday = course["time_schedules"]["sunday"]["event"];
+
+                week = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
+                week_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
+                html_courses.innerHTML += `
+                    <p><b>Start date: </b>`+date_format_1(start_date)+`</p>
+                    <p><b>End date: </b>`+date_format_1(end_date)+`</p>
+                `;
+
+                for(var j=0; j<7; j++){
+                    if(week[j].length>0){
+                        html_courses.innerHTML += `
+                            <p><b>`+week_days[j]+`: </b></p>
+                        `;
+                    }
+                    for(time in week[j]){
+                        time_interval = week[j][time];
+                        html_courses.innerHTML += `
+                            <li>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
+                        `;
+                    }
+                }
+                
+            }else{  //the course is a only once event
+                specific_date = new Date(course["specific_date"]);
+                specific_start_time = course["specific_start_time"];
+                specific_end_time = course["specific_end_time"];
+                html_courses.innerHTML += `
+                    <p><b>Date: </b>`+date_format_1(specific_date)+`</p>
+                    <p><b>From: </b>`+specific_start_time+`<b> To: </b>`+specific_end_time+`</p>
+                `;
+                
+            }
+            html_courses.innerHTML += `<hr>`;
+        }
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+
+//User: load all his courses
+//@param[user_id]: user identifier
+function loadCourses_user(user_id){
+    const html_courses = document.getElementById('output_courses');
+
+    if(!user_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    fetch('../api/v1/users/'+user_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
