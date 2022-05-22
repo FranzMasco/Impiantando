@@ -13,6 +13,7 @@ const Users = require('../models/utente');
 //API user submission
 //Submit of a user in a course
 //user id and course id have to be passed through the body
+router.patch('/registrations', tokenChecker);
 router.patch('/registrations', async (req, res, next) => {
 
     //Add user to course subscribers
