@@ -64,22 +64,23 @@
                     `;
 
                 }else{  //authenticated --> register user to the course
+                    if(confirm("Are you sure to register to the course?")){
+                        //Get user id from cookies
+                        user_id = getCookie("user_id");
 
-                    //Get user id from cookies
-                    user_id = getCookie("user_id");
+                        //Get token
+                        token = getCookie("token");
 
-                    //Get token
-                    token = getCookie("token");
-
-                    fetch('../api/v1/registrations', {
-                        method: 'PATCH',
-                        headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
-                        body: JSON.stringify( { course_id: course_id, user_id: user_id } ),
-                    })
-                    .then((resp) => {
-                        console.log(resp);
-                        alert("Registration success!");
-                    }).catch( error => console.error(error) ); //catch dell'errore
+                        fetch('../api/v1/registrations', {
+                            method: 'PATCH',
+                            headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+                            body: JSON.stringify( { course_id: course_id, user_id: user_id } ),
+                        })
+                        .then((resp) => {
+                            console.log(resp);
+                            alert("Registration success!");
+                        }).catch( error => console.error(error) ); //catch dell'errore
+                    }
                 }
             }
 
