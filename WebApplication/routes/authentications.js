@@ -23,13 +23,13 @@ router.post('/authentications/admin', async function(req, res) {
 
 	// user not found
 	if (!user) {
-		res.json({ success: false, username: false, message: 'Authentication failed. User not found.' });
+		res.status(404).json({ success: false, username: false, message: 'Authentication failed. User not found.' });
 		return;
 	}
 	
 	// check if password matches
 	if (user.password != req.body.password) {
-		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
+		res.status(404).json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
 		return;
 	}
 	
@@ -44,7 +44,7 @@ router.post('/authentications/admin', async function(req, res) {
 	}
 	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
-	res.json({
+	res.status(200).json({
 		success: true,
 		message: 'Authentication OK',
 		user: "administrator",
@@ -58,6 +58,9 @@ router.post('/authentications/admin', async function(req, res) {
 
 });
 
+/**
+ * Route to authenticate user and get a new token
+*/
 router.post('/authentications/user', async function(req, res) {
 
 	// find the user
@@ -67,13 +70,13 @@ router.post('/authentications/user', async function(req, res) {
 
 	// user not found
 	if (!user) {
-		res.json({ success: false, username: false, message: 'Authentication failed. User not found.' });
+		res.status(404).json({ success: false, username: false, message: 'Authentication failed. User not found.' });
 		return;
 	}
 	
 	// check if password matches
 	if (user.password != req.body.password) {
-		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
+		res.status(404).json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
 		return;
 	}
 	
@@ -88,7 +91,7 @@ router.post('/authentications/user', async function(req, res) {
 	}
 	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
-	res.json({
+	res.status(200).json({
 		success: true,
 		message: 'Authentication OK',
 		user: "user",
@@ -100,6 +103,9 @@ router.post('/authentications/user', async function(req, res) {
 
 });
 
+/**
+ * Route to course manager and get a new token
+*/
 router.post('/authentications/responsabile', async function(req, res) {
 
 	// find the user
@@ -109,13 +115,13 @@ router.post('/authentications/responsabile', async function(req, res) {
 
 	// user not found
 	if (!user) {
-		res.json({ success: false, username: false, message: 'Authentication failed. User not found.' });
+		res.status(404).json({ success: false, username: false, message: 'Authentication failed. User not found.' });
 		return;
 	}
 	
 	// check if password matches
 	if (user.password != req.body.password) {
-		res.json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
+		res.status(404).json({ success: false, username: true, password: false, message: 'Authentication failed. Wrong password.' });
 		return;
 	}
 	
@@ -130,7 +136,7 @@ router.post('/authentications/responsabile', async function(req, res) {
 	}
 	var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
-	res.json({
+	res.status(200).json({
 		success: true,
 		message: 'Authentication OK',
 		user: "responsabile",
@@ -141,7 +147,5 @@ router.post('/authentications/responsabile', async function(req, res) {
 	});
 
 });
-
-
 
 module.exports = router;
