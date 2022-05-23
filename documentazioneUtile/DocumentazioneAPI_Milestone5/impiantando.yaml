@@ -1,0 +1,1413 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: "Impiantando API"
+  description: API for managing sport centers
+servers:
+  - url: http://localhost:5000/api/v1
+paths:
+  /sport_centers:
+    get:
+      description: >-
+        Gets all the sport_centers in the system.
+      summary: View all the sport centers
+      responses:
+        '200':
+          description: "Collection of sport centers"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_center'
+    post:
+      description: >-
+        Creates a new sport center in the system.
+      summary: Register a new sport center
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - address
+                - description
+                - administrator
+              properties:
+                name:
+                  type: string
+                  description: "Name of the sport center"
+                address:
+                  type: object
+                  required:
+                    - city
+                    - location
+                  properties:
+                    city:
+                      type: string
+                      description: "City of the sport center"
+                    location:
+                      type: string
+                      description: "Location of the sport center"
+                descriptio:
+                  type: string
+                  description: "Description of the sport center"
+                administrator:
+                  type: string
+                  description: "ID of the admin"
+      responses:
+        '201':
+          description: "Sport center created successfully"
+  /sport_centers/{id}:
+    get:
+      description: >-
+        Gets a specific sport_center in the system from its ID.
+      summary: View a specific sport center
+      responses:
+        '200':
+          description: "View of a single sport center"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_center'
+                  
+  /sport_centers/{id}/sport_facilities:
+    get:
+      description: >-
+        Gets all the sport facilities from a specific sport center.
+      summary: View all the sport facilities from a specific sport center
+      responses:
+        '200':
+          description: "View of all the facilities from a sport center"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_facility'
+  /sport_centers/{id}/courses:
+    get:
+      description: >-
+        Gets all the courses of a specific administrator.
+      summary: View all the courses of a specific administrator
+      responses:
+        '200':
+          description: "View all the courses of a specific administrator"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+  /sport_facilities:
+    get:
+      description: >-
+        Gets all the sport facilities in the system.
+      summary: View all the sport facilities in the system
+      responses:
+        '200':
+          description: "View of all the facilities in the system"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_facility'
+    post:
+      description: >-
+        Creates a new sport facility in the system.
+      summary: Register a new sport facility
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - id_sport_center
+              properties:
+                name:
+                  type: string
+                  description: "Name of the sport facility"
+                description:
+                  type: string
+                  description: "Description of the sport facility"
+                id_sport_center:
+                  type: string
+                  description: "ID of the sport center"
+      responses:
+        '201':
+          description: "Sport facility created successfully"
+        '409':
+          description: "Sport facility already exists"
+  /sport_facilities/{id}:
+    get:
+      description: >-
+        Gets a specific sport_facility in the system from its ID.
+      summary: View a specific sport facility
+      responses:
+        '200':
+          description: "View of a single sport facility"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_facility'
+    patch:
+      description: >-
+        Modify a specific sport_facility in the system from its ID.
+      summary: Update a specific sport facility
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - self
+                - name
+                - description
+                - id_sport_center
+                - sport_center
+              properties:
+                self:
+                  type: string
+                  description: "Link to the resource of the specific sport facility"
+                name:
+                  type: string
+                  description: "Name of the sport facility"
+                description:
+                  type: string
+                  description: "Description of the sport facility"
+                id_sport_center:
+                  type: string
+                  description: "Id of the sport center where the sport facility is placed"
+                sport_center:
+                  type: string
+                  description: "Link to the resource of the sport center where a sport facility is situated"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_facility'
+        '404':
+          description: "File not found"
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: "An error has occured"
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      description: >-
+        Removing a specific sport_facility in the system from its ID.
+      summary: Removing a specific sport facility
+      responses:
+        '204':
+          description: "Successfully deleted"
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: "Resource not found"
+          content:
+            application/json:
+              schema:
+                type: string
+                
+  /users/{id}/courses:
+    get:
+      description: >-
+        Gets the courses of a specific user.
+      summary: View the courses of a specific user
+      responses:
+        '200':
+          description: "View the courses of a specific user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/utente'
+  /authentications/user:
+    post:
+      description: >-
+        Let the standard-user log in to the standard-user area
+      summary: Let the standard-user log in to the standard-user area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                name:
+                  type: string
+                  description: "Username of the user that wants to login"
+                description:
+                  type: string
+                  description: "Password of the user that wants to login"
+      responses:
+        '200':
+          description: "Authentication completed"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                  message:
+                    type: string
+                    description: "Message about the result of the authentication"
+                  user:
+                    type: string
+                    description: "Type of user who logged in"
+                  token:
+                    type: string
+                    description: "Authentication token"
+                  username:
+                    type: string
+                    description: "User's username"
+                  id:
+                    type: string
+                    description: "ID of the user who has logged in"
+                  self:
+                    type: string
+                    description: "Link to the resource for a specific user"
+        '404':
+          description: "Authentication failed"
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                      descriptio: "Success of the authentication"
+                    username:
+                      type: boolean
+                      description: "Tells us if the username is matched or not"
+                    password:
+                      type: boolean
+                      description: "Tells us if the password matches"
+                    message:
+                      type: string
+                      description: "Message that tells us if the authentication is failed"
+  /authentications/responsabile:
+    post:
+      description: >-
+        Let the manager log in to the manager area
+      summary: Let the manager log in to the manager area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                name:
+                  type: string
+                  description: "Username of the manager that wants to login"
+                description:
+                  type: string
+                  description: "Password of the manager that wants to login"
+      responses:
+        '200':
+          description: "Authentication completed"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                  message:
+                    type: string
+                    description: "Message about the result of the authentication"
+                  user:
+                    type: string
+                    description: "Type of user who logged in"
+                  token:
+                    type: string
+                    description: "Authentication token"
+                  username:
+                    type: string
+                    description: "User's username"
+                  id:
+                    type: string
+                    description: "ID of the user who has logged in"
+                  self:
+                    type: string
+                    description: "Link to the resource for a specific user"
+        '404':
+          description: "Authentication failed"
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                      descriptio: "Success of the authentication"
+                    username:
+                      type: boolean
+                      description: "Tells us if the username is matched or not"
+                    password:
+                      type: boolean
+                      description: "Tells us if the password matches"
+                    message:
+                      type: string
+                      description: "Message that tells us if the authentication is failed"
+  /authentications/admin:
+    post:
+      description: >-
+        Let the admin log in to the admin area
+      summary: Let the admin log in to the admin area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                name:
+                  type: string
+                  description: "Username of the admin that wants to login"
+                description:
+                  type: string
+                  description: "Password of the admin that wants to login"
+      responses:
+        '200':
+          description: "Authentication completed"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                  message:
+                    type: string
+                    description: "Message about the result of the authentication"
+                  user:
+                    type: string
+                    description: "Type of user who logged in"
+                  token:
+                    type: string
+                    description: "Authentication token"
+                  username:
+                    type: string
+                    description: "User's username"
+                  id:
+                    type: string
+                    description: "ID of the user who has logged in"
+                  sport_center:
+                    type: string
+                    description: "ID of the sport center where the manager works"
+                  sport_center_ref:
+                    type: string
+                    description: "Link to the resource of the sport center"
+                  self:
+                    type: string
+                    description: "Link to the resource for a specific user"
+        '404':
+          description: "Authentication failed"
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                      descriptio: "Success of the authentication"
+                    username:
+                      type: boolean
+                      description: "Tells us if the username is matched or not"
+                    password:
+                      type: boolean
+                      description: "Tells us if the password matches"
+                    message:
+                      type: string
+                      description: "Message that tells us if the authentication is failed"
+  /courses:
+    get:
+      description: >-
+        Gets all the courses in the system.
+      summary: View all the courses
+      responses:
+        '200':
+          description: "Collection of courses"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+    post:
+      description: >-
+        Creates a new course in the system.
+      summary: Register a new course
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+                - description
+                - sport
+                - sport_facility_id
+                - sport_center_id
+                - periodic
+                - specific_date
+                - specific_start_time
+                - specific_end_time
+                - start_date
+                - end_date
+                - time_schedules
+                - exceptions
+                - creation_date
+              properties:
+                id:
+                  type: integer
+                  description: "ID of the course"
+                name:
+                  type: string
+                  description: "Name of the course"
+                description:
+                  type: string
+                  description: "Description of the course"
+                sport:
+                  type: string
+                  description: "Sport of the course"
+                sport_facility_id:
+                  type: integer
+                  description: "ID of the sport facility where the course takes place"
+                sport_center_id:
+                  type: integer
+                  description: "Id of the sport center where the courses takes place"
+                periodic:
+                  type: boolean
+                  description: "Tells us if the course will be periodic or not"
+                specific_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Date of a specific one time course"
+                specific_start_time:
+                  type: string
+                  description: "Start time of a specific one time course"
+                specific_end_time:
+                  type: string
+                  description: "End time of a specific one time course"
+                start_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Start date of a periodic course"
+                end_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "End date of a periodic course"
+                time_schedules:
+                  type: object
+                  properties:
+                    monday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    tuesday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    wednesday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    thursday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    friday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    saturday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    sunday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                exceptions:
+                  type: array
+                  items: 
+                    type: string
+                    pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Dates when the course will not take place"
+      responses:
+        '201':
+          description: "Course created successfully"
+        '409':
+          description: "Course already exists"
+  /courses/{id}:
+    get:
+      description: >-
+        Gets a specific course in the system from its ID.
+      summary: View a specific course
+      responses:
+        '200':
+          description: "View of a single course"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+    patch:
+      description: >-
+        Modify a specific course in the system from its ID.
+      summary: Update a specific course
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - self
+                - name
+                - description
+                - sport
+                - sport_facility_id
+                - sport_center_id
+                - sport_facility
+                - sport_center
+                - managers_id
+                - users
+                - reviews
+                - periodic
+                - specific_date
+                - specific_start_time
+                - specific_end_time
+                - start_date
+                - end_date
+                - time_schedules
+                - exceptions
+                - creation_date
+                - managers
+              properties:
+                self:
+                  type: string
+                  description: "Link to the resource of the specific course"
+                name:
+                  type: string
+                  description: "Name of the course"
+                description:
+                  type: string
+                  description: "Description of the course"
+                sport:
+                  type: string
+                  description: "Sport of the course"
+                sport_facility_id:
+                  type: integer
+                  description: "ID of the sport facility where the course takes place"
+                sport_center_id:
+                  type: integer
+                  description: "ID of the sport center where the course takes place"
+                sport_facility:
+                  type: string
+                  description: "Link to the resource of the specific sport facility where the course takes place"
+                sport_center:
+                  type: string
+                  description: "Link to the resource of the specific sport center where the course takes place"
+                managers_id:
+                  type: array
+                  items:
+                    type: integer
+                    description: "ID of the manager of the course"
+                users:
+                  type: array
+                  items:
+                    type: integer
+                    description: "ID of the users that attends the course"
+                reviews:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        pattern: '^d{4}-\d{2}-\d{2}$'
+                        description: "Date of the creation of a review"
+                      vote:
+                        type: integer
+                        description: "Vote of a review"
+                periodic:
+                  type: boolean
+                  description: "Tells us if the course will be periodic or not"
+                specific_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Date of a specific one time course"
+                specific_start_time:
+                  type: string
+                  description: "Start time of a specific one time course"
+                specific_end_time:
+                  type: string
+                  description: "End time of a specific one time course"
+                start_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Start date of a periodic course"
+                end_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "End date of a periodic course"
+                time_schedules:
+                  type: object
+                  properties:
+                    monday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    tuesday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    wednesday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    thursday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    friday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    saturday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                    sunday:
+                      type: object
+                      properties:
+                        event: array
+                        items:
+                          type: object
+                          properties:
+                            from:
+                              type: string
+                              description: "Start time of periodic courses"
+                            to:
+                              type: string
+                              description: "End time of periodic courses"
+                exceptions:
+                  type: array
+                  items: 
+                    type: string
+                    pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Dates when the course will not take place"
+                creation_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Creation date of the course"
+                managers:
+                  type: array
+                  items:
+                    type: string
+                    description: "Link to the resource of the specific manager of the course"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+        '404':
+          description: "File not found"
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: "An error has occured"
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      description: >-
+        Removing a specific course in the system from its ID.
+      summary: Removing a specific course
+      responses:
+        '204':
+          description: "Successfully deleted"
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: "Resource not found"
+          content:
+            application/json:
+              schema:
+                type: string
+  /courses/{id}/users:
+    get:
+      description: >-
+        Gets the list of users that attends the course.
+      summary: View the list of users that attends the course.
+      responses:
+        '200':
+          description: "View the list of users that attends the course."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+  /managers:
+    get:
+      description: >-
+        Gets all the managers in the system.
+      summary: View all the managers
+      responses:
+        '200':
+          description: "Collection of courses"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manager_Users'
+    post:
+      description: >-
+        Creates a new manager in the system.
+      summary: Register a new manager
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - surname
+                - email
+                - birth_date
+                - username
+                - password
+                - society
+              properties:
+                name:
+                  type: string
+                  description: "Name of the manager"
+                surname:
+                  type: string
+                  description: "Surname of the manager"
+                email:
+                  type: string
+                  description: "Email of the manager"
+                birth_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Birthday date of the manager"
+                username:
+                  type: string
+                  description: "Username of the manager"
+                password:
+                  type: string
+                  description: "Password of the manager"
+                society:
+                  type: string
+                  description: "Society the manager works for"
+      responses:
+        '201':
+          description: "Manager created successfully"
+        '400':
+          description: "user already exists"
+  /managers/{id}:
+    get:
+      description: >-
+        Gets a manager with a specific ID in the system.
+      summary: View a single manager
+      responses:
+        '200':
+          description: "View of a single manager"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manager_Users'
+    patch:
+      description: >-
+        Modify a specific manager in the system from its ID.
+      summary: Update a specific manager
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - self
+                - name
+                - surname
+                - email
+                - birth_date
+                - username
+                - password
+                - society
+                - courses
+              properties:
+                self:
+                  type: string
+                  description: "Link to the resource of the specific manager user"
+                name:
+                  type: string
+                  description: "Name of the manager"
+                surname:
+                  type: string
+                  description: "Surname of the manager"
+                email:
+                  type: string
+                  description: "Email of the manager"
+                birth_date:
+                  type: string
+                  pattern: '^d{4}-\d{2}-\d{2}$'
+                  description: "Birthday date of the manager"
+                username:
+                  type: string
+                  description: "Username of the manager"
+                password:
+                  type: string
+                  description: "Password of the manager"
+                society:
+                  type: string
+                  description: "Society the manager works for"
+                courses:
+                  type: array
+                  items:
+                    type: string
+                    description: "ID of the courses the manager coordinates"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manager_Users'
+        '404':
+          description: "File not found"
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: "An error has occured"
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      description: >-
+        Removing a specific manager in the system from its ID.
+      summary: Removing a specific manager
+      responses:
+        '204':
+          description: "Successfully deleted"
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: "Resource not found"
+          content:
+            application/json:
+              schema:
+                type: string
+  /managers/{id}/courses:
+    get:
+      description: >-
+        Gets the list of courses that a manager runs.
+      summary: View the list of courses that a manager runs.
+      responses:
+        '200':
+          description: "View the list of courses that a manager runs."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+components:
+  schemas:
+    Sport_center:
+      type: object
+      required:
+        - self
+        - name
+        - address
+        - description
+        - administrator
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific sport center"
+        name:
+          type: string
+          description: "Name of the sport center"
+        address:
+          type: object
+          required:
+            - city
+            - location
+          properties:
+            city:
+              type: string
+              description: "City of the sport center"
+            location:
+              type: string
+              description: "Location of the sport center"
+        description:
+          type: string
+          description: "Description of the sport center"
+        administrator:
+          type: string
+          description: "Link to the resource of the administrator of the sport center"
+    Sport_facility:
+      type: object
+      required:
+        - self
+        - name
+        - description
+        - id_sport_center
+        - sport_center
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific sport facility"
+        name:
+          type: string
+          description: "Name of the sport facility"
+        description:
+          type: string
+          description: "Description of the sport facility"
+        id_sport_center:
+          type: string
+          description: "Id of the sport center where the sport facility is placed"
+        sport_center:
+          type: string
+          description: "Link to the resource of the sport center where a sport facility is situated"
+    Courses:
+      type: object
+      required:
+        - self
+        - name
+        - description
+        - sport
+        - sport_facility_id
+        - sport_center_id
+        - sport_facility
+        - sport_center
+        - managers_id
+        - users
+        - reviews
+        - periodic
+        - specific_date
+        - specific_start_time
+        - specific_end_time
+        - start_date
+        - end_date
+        - time_schedules
+        - exceptions
+        - creation_date
+        - managers
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific course"
+        name:
+          type: string
+          description: "Name of the course"
+        description:
+          type: string
+          description: "Description of the course"
+        sport:
+          type: string
+          description: "Sport of the course"
+        sport_facility_id:
+          type: integer
+          description: "ID of the sport facility where the course takes place"
+        sport_center_id:
+          type: integer
+          description: "ID of the sport center where the course takes place"
+        sport_facility:
+          type: string
+          description: "Link to the resource of the specific sport facility where the course takes place"
+        sport_center:
+          type: string
+          description: "Link to the resource of the specific sport center where the course takes place"
+        managers_id:
+          type: array
+          items:
+            type: integer
+            description: "ID of the manager of the course"
+        users:
+          type: array
+          items:
+            type: integer
+            description: "ID of the users that attends the course"
+        reviews:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                pattern: '^d{4}-\d{2}-\d{2}$'
+                description: "Date of the creation of a review"
+              vote:
+                type: integer
+                description: "Vote of a review"
+        periodic:
+          type: boolean
+          description: "Tells us if the course will be periodic or not"
+        specific_date:
+          type: string
+          pattern: '^d{4}-\d{2}-\d{2}$'
+          description: "Date of a specific one time course"
+        specific_start_time:
+          type: string
+          description: "Start time of a specific one time course"
+        specific_end_time:
+          type: string
+          description: "End time of a specific one time course"
+        start_date:
+          type: string
+          pattern: '^d{4}-\d{2}-\d{2}$'
+          description: "Start date of a periodic course"
+        end_date:
+          type: string
+          pattern: '^d{4}-\d{2}-\d{2}$'
+          description: "End date of a periodic course"
+        time_schedules:
+          type: object
+          properties:
+            monday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+            tuesday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+            wednesday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+            thursday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+            friday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+            saturday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+            sunday:
+              type: object
+              properties:
+                event: array
+                items:
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: "Start time of periodic courses"
+                    to:
+                      type: string
+                      description: "End time of periodic courses"
+        exceptions:
+          type: array
+          items: 
+            type: string
+            pattern: '^d{4}-\d{2}-\d{2}$'
+          description: "Dates when the course will not take place"
+        creation_date:
+          type: string
+          pattern: '^d{4}-\d{2}-\d{2}$'
+          description: "Creation date of the course"
+        managers:
+          type: array
+          items:
+            type: string
+            description: "Link to the resource of the specific manager of the course"
+    Manager_Users:
+      type: object
+      required:
+        - self
+        - name
+        - surname
+        - email
+        - birth_date
+        - username
+        - password
+        - society
+        - courses
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific manager user"
+        name:
+          type: string
+          description: "Name of the manager"
+        surname:
+          type: string
+          description: "Surname of the manager"
+        email:
+          type: string
+          description: "Email of the manager"
+        birth_date:
+          type: string
+          pattern: '^d{4}-\d{2}-\d{2}$'
+          description: "Birthday date of the manager"
+        username:
+          type: string
+          description: "Username of the manager"
+        password:
+          type: string
+          description: "Password of the manager"
+        society:
+          type: string
+          description: "Society the manager works for"
+        courses:
+          type: array
+          items:
+            type: string
+            description: "ID of the courses the manager coordinates"
+    utente:
+        type: object
+        required:
+          - self
+          - username
+          - password
+          - courses
+        properties:
+          id:
+            type: string
+            description: "Link to the resource of the specific user"
+          username:
+            type: string
+            description: "Userame of the user"
+          password:
+            type: string
+            description: "Password of the user"
+          courses:
+            type: array
+            items:
+              type: integer
+              description: "ID of the courses that a user attends"
+                  
