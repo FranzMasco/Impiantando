@@ -349,8 +349,8 @@ function loadCourses(sport_center_id){
 
             html_courses.innerHTML += `
                 <br>
-                <button onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message"></div>
-                <div id="login_form"></div>
+                <button onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message`+self_id+`"></div>
+                <div id="login_form`+self_id+`"></div>
                 <hr>
             `;
 

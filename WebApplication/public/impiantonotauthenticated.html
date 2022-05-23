@@ -46,8 +46,8 @@
                 if(submit_course(course_id)==1){    //not authenticated
                     
                     //Display message and login form
-                    const user_message = document.getElementById("user_message");
-                    const login_form = document.getElementById("login_form");
+                    const user_message = document.getElementById("user_message"+course_id);
+                    const login_form = document.getElementById("login_form"+course_id);
 
                     user_message.innerHTML=`
                         <p style="color: red;">Authentication required</p>
@@ -59,7 +59,7 @@
                         <input type="text" name="username" id="loginUsername" required> <br>
                         <label for="password">Password: </label>
                         <input type="password" name="password" id="loginPassword" required> <br>
-                        <input type="button" value="Sign in" onclick="user_login()">
+                        <input type="button" value="Sign in" onclick="user_login('`+course_id+`')">
                         <span id="wrongInput" style="color: red;"></span>
                     `;
 
@@ -85,10 +85,10 @@
             }
 
             //User authentication
-            function user_login(){
+            function user_login(course_id){
                 //User message and login form
-                const user_message = document.getElementById("user_message");
-                const login_form = document.getElementById("login_form");
+                const user_message = document.getElementById("user_message"+course_id);
+                const login_form = document.getElementById("login_form"+course_id);
 
                 //get the form object
                 var username = document.getElementById("loginUsername").value;
