@@ -818,6 +818,164 @@ function insertCourse(){
 }
 //...
 
+//Modify an existing course
+//@param[periodicity] : TRUE iff the course is periodic, FALSE otherwise
+function PATCH_editCourse(course_id, periodicity){
+    //Check athentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+    sport_center_id = getCookie("sport_center_id");
+
+    if(!token || auth_level!="administrator" || !sport_center_id){
+        console.log("Authentication error");
+        return;
+    }
+
+    //Course name
+    //Course sport
+    //Course description
+    //Course sport facility
+    var c_name = document.getElementById("courseName").value;
+    var c_sport = document.getElementById("courseSport").value;
+    var c_description = document.getElementById("courseDescription").value;
+    var c_sport_facility = document.getElementById("courseSportfacility").value;
+
+    console.log("name: "+c_name);
+    console.log("sport: "+c_sport);
+    console.log("description: "+c_description);
+    console.log("c_sport_facility: "+c_sport_facility);
+    console.log("periodicity: "+periodicity);
+
+    
+    if(periodicity=="true"){
+        console.log("periodicity: true");
+
+        //Get start date
+        //Get end date
+        var start_date = document.getElementById("courseStartDate").value;
+        var end_date = document.getElementById("courseEndDate").value
+
+        console.log("start date: "+start_date);
+        console.log("end date: "+end_date);
+
+        var dayNames = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+        var dayIntervalArrays = [];
+
+        for(d in dayNames){
+            //Get day schedule
+            var day_div = document.getElementById(dayNames[d]);
+            var num_intervals = day_div.getElementsByTagName("span").length;
+            var intervals = day_div.getElementsByTagName("span");
+            var intervalsArray = [];
+
+            console.log("Giorno: "+dayNames[d]);
+            console.log("Intervalli: "+num_intervals);
+
+            for(var interval=0; interval<num_intervals; interval++){
+                var riga = intervals[interval].children[0];
+                var colonna1 = riga.children[0];
+                
+                var colonna2 = riga.children[1];
+                var from = colonna1.children[0].value;
+                var to = colonna2.children[0].value;
+                console.log("from: "+from);
+                console.log("to: "+to);
+
+                if(from!="" && to!=""){
+                    var interval_JSON = {};
+                    interval_JSON.from = from;
+                    interval_JSON.to = to;
+                    console.log("interval: "+interval_JSON);
+                    intervalsArray.push(interval_JSON);
+                }
+            }
+            dayIntervalArrays.push(intervalsArray);
+        }
+        
+        //Control that all required data has been inserted
+        if(c_name=="" || start_date=="" || end_date==""){
+            console.log("Missing required information")
+            return;
+        }
+        console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
+
+        //Edit course using PATCH API
+        fetch('../api/v1/courses/'+course_id, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', "x-access-token": token},
+            body: JSON.stringify(
+            { name: c_name,
+              sport: c_sport,
+              description: c_description,
+              sport_facility_id: c_sport_facility,
+              periodic: 1,
+              start_date: start_date,
+              end_date: end_date,
+              time_schedules:{
+                  monday: {"event":dayIntervalArrays[0]},
+                  tuesday: {"event":dayIntervalArrays[1]},
+                  wednesday: {"event":dayIntervalArrays[2]},
+                  thursday: {"event":dayIntervalArrays[3]},
+                  friday: {"event":dayIntervalArrays[4]},
+                  saturday: {"event":dayIntervalArrays[5]},
+                  sunday: {"event":dayIntervalArrays[6]}
+              },
+              sport_center_id: sport_center_id          
+            } ),
+        })
+        .then((resp) => {
+            alert("Success!");
+        })
+        .catch( error => console.error(error) ); // If there is any error you will catch them here
+        
+    }else{
+        console.log("periodicity: false");
+
+        //Get date
+        //Get start time
+        //Get finish time
+        var specific_date = document.getElementById("courseSpecificDate").value;
+        var specific_start_time = document.getElementById("courseStartTime").value;
+        var specific_end_time = document.getElementById("courseEndTime").value;
+
+        console.log("specific_date: "+specific_date);
+        console.log("specific_start_time: "+specific_start_time);
+        console.log("specific_end_time: "+specific_end_time);
+
+        //Control that all required data has been inserted
+        if(!c_name || !specific_date || !specific_start_time || !specific_end_time){
+            console.log("Missing required information")
+            return;
+        }
+
+        //Insert new course with using POST API
+        fetch('../api/v1/courses/'+course_id, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', "x-access-token": token},
+            body: JSON.stringify(
+            { name: c_name,
+              sport: c_sport,
+              description: c_description,
+              sport_facility_id: c_sport_facility,
+              periodic: 0,
+              specific_date: specific_date,
+              specific_start_time: specific_start_time,
+              specific_end_time: specific_end_time,
+              sport_center_id: sport_center_id          
+            } ),
+        })
+        .then((resp) => {
+            if(resp.status==200){
+                alert("Success!");
+            }
+        })
+        .catch( error => console.error(error) ); // If there is any error you will catch them here
+    }
+}
+//...
+
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
 function display_loginForm(login_type){

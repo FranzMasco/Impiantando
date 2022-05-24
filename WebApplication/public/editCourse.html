@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <br><br>
-                                    <button type="button" class="btn btn-success">Confirm</button>  
+                                    <button type="button" class="btn btn-success" onclick="PATCH_editCourse('`+course_id+`', '`+periodicity+`')">Confirm</button>  
                                     <button type="button" class="btn btn-danger" onclick="window.location.href='impiantiadmin.html'">Cancel</button>
                                 </div>
                             </div>
@@ -326,7 +326,7 @@
                     </div>
                     <div class="mb-3">
                     <label for="courseEndTime" class="form-label"><b>Finishes at:</b></label>
-                    <input type="time" class="form-control" id="courseEndDate" name="courseEndDate" value="`+specific_end_time+`">
+                    <input type="time" class="form-control" id="courseEndTime" name="courseEndDate" value="`+specific_end_time+`">
                     </div>                
                 `;
             }//...display not periodic course editing form
