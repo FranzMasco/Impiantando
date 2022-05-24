@@ -157,6 +157,44 @@ function loadFacilities_administrator(sport_center_id){
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
+
+//Load managers of a sport center
+function loadManagers_administrator(sport_center_id){
+    const html_facilities = document.getElementById('output_facilities');
+
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/managers')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        //console.log(data);
+        if(data.length>0){
+            html_facilities.innerHTML = "<p>Here is the list of the managers that works in your sport center: </p><br>";
+        }
+        
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var manager = data[i];
+            //console.log(sport_facility);
+
+            let name = manager["name"];
+            let surname = manager["surname"];
+            let email = manager["email"];  
+
+            html_facilities.innerHTML += `
+                <p><b>Name:</b>`+name+`</p>
+                <p><b>Surname:</b>`+surname+`</p>
+                <p><b>Email:</b>`+email+`</p>
+                <br>
+                <hr>
+            `;
+        }
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+
 //...
 
 //Delete sport facility
