@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Gestione Centro Sportivo Admin </title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- Latest compiled and minified CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+
+        <script src="script.js"></script>
+        <script>
+            
+            function edit_course(){
+                //Retrive authentication data
+                var username = getCookie("username");
+                var user_id = getCookie("user_id");
+                var token = getCookie("token");
+                var user_level = getCookie("user_level");
+                var sport_center_name = getCookie("sport_center_name");
+                var sport_center_id = getCookie("sport_center_id");
+
+                if(!username || !user_id || !token || !user_level || !sport_center_name || !sport_center_id){
+                    console.log("Authentication required");
+                    return;
+                }
+                
+                const html_username = document.getElementById("username");
+                const html_sport_center_name = document.getElementById("sport_center_name");
+
+                html_username.innerHTML = username;
+                html_sport_center_name.innerHTML = sport_center_name;
+
+                //Retrive course id from request
+                var course_id = findGetParameter("id_course");
+
+                if(!course_id){
+                    window.location.href="errorPage.html";
+                    return;
+                }
+                
+                //Retrive course information through API
+                fetch('../api/v1/courses/'+course_id)
+                .then((resp) => resp.json()) //trasfor data into JSON
+                .then(function(data) {
+                    
+                    console.log(data);
+
+                    //Get data from JSON response
+                    var name = data["name"];
+                    var description = data["description"];
+                    var sport = data["sport"];
+                    var timestamp = new Date(data["creation_date"]);
+                    var sport_facility = data["sport_facility_id"];
+                    var periodicity = data["periodic"];
+
+                    //Display editing form
+                    html_output = document.getElementById("outputJS");
+
+                    output = `
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3 mt-3">
+                                    <label for="courseName" class="form-label"><b>Course name:</b></label>
+                                    <input type="text" class="form-control" id="courseName" name="courseName" value="`+name+`">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseSport" class="form-label"><b>Sport:</b></label>
+                                    <input type="text" class="form-control" id="courseSport" name="courseSport" value="`+sport+`">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseDescription"><b>Description:</b></label>
+                                    <textarea class="form-control" rows="5" id="courseDescription" name="courseDescription">`+description+`</textarea> 
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseSportfacility" class="form-label"><b>Sport facility:</b></label>
+                                    <select class="form-control" id="courseSportfacility" name="courseSportfacility">
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <p><b>Creation time: </b>`+date_format(timestamp)+`</p>
+                                </div>
+                                <div class="mb-3">
+                                    <br><br>
+                                    <button type="button" class="btn btn-success" onclick="PATCH_editCourse('`+course_id+`', '`+periodicity+`')">Confirm</button>  
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href='impiantiadmin.html'">Cancel</button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="mb-3 mt-3">
+                                    <p><b>Schedule: </b></p>
+                                </div>
+                                <div id="schedule">
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+
+                    `;
+
+                    html_output.innerHTML=output;
+                    sportFacilityOptions(sport_center_id, sport_facility);
+
+                    //Display different schedule according to periodicity
+                    if(periodicity==true){
+                        console.log("corso periodico");
+
+                        //Periodic course data
+                        var start_date = new Date(data["start_date"]);
+                        var end_date = new Date(data["end_date"]);
+                
+                        //Each day is an array of start-end timestamps
+                        var monday = data["time_schedules"]["monday"]["event"];
+                        var tuesday = data["time_schedules"]["tuesday"]["event"];
+                        var wednesday = data["time_schedules"]["wednesday"]["event"];
+                        var thursday = data["time_schedules"]["thursday"]["event"];
+                        var friday = data["time_schedules"]["friday"]["event"];
+                        var saturday = data["time_schedules"]["saturday"]["event"];
+                        var sunday = data["time_schedules"]["sunday"]["event"];
+
+                        editPeriodicCourseSchedule(start_date, end_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+
+                    }else{
+                        console.log("corso non periodico");
+                        //Not periodic course data
+                        var specific_date = new Date(data["specific_date"]);
+                        var start_time = data["specific_start_time"];
+                        var end_time = data["specific_end_time"];
+                        editNotPeriodicCourseSchedule(specific_date, start_time, end_time);
+                    }
+                })
+                .catch( error => console.error(error) ); //catch dell'errore
+            }//...edit course
+
+
+            //Purpose: insert a new from-to interval in the input date
+            function addInterval(day){
+                const span = document.createElement("span");
+                span.setAttribute("name", "interval");
+                span.innerHTML = `
+                    <div class="row">
+                        <div class="col">
+                        <input type="time" class="form-control" value="">
+                        </div>
+
+                        <div class="col">
+                        <input type="time" class="form-control" value="">
+                        </div>
+                    </div>
+                `;
+                
+                //Add interval
+                document.getElementById(day).appendChild(span);                
+            }
+
+            //Fill the select menu where to display all the sport
+            //facilities which are present in the administrator sport center
+            function sportFacilityOptions(sport_center_id, sport_facility_id){
+                const html_sportFacility_select = document.getElementById('courseSportfacility');
+                var output = "";
+
+                var sportFacilities = [];
+
+                //Load sport facilies in order to select where to add the course
+                fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+                .then((resp) => resp.json()) //trasfor data into JSON
+                .then(function(data) {    
+                    for (var i = 0; i < data.length; i++){ //iterate overe recived data
+                        var sport_facility = data[i];
+                        sportFacilities.push(sport_facility);
+                    }
+                    
+                    //Prepare sport facilities options
+                    var sportFacilityOptions = "";
+
+                    for(sf in sportFacilities){
+                        let sf_name = sportFacilities[sf]["name"];
+                        let sf_ref = sportFacilities[sf]["self"];
+                        let sf_id = sf_ref.substring(sf_ref.lastIndexOf('/') + 1);
+                        if(sf_id==sport_facility_id){
+                            sportFacilityOptions += `<option value="`+sf_id+`" selected>`+sf_name+`</option>`;
+                        }else{
+                            sportFacilityOptions += `<option value="`+sf_id+`">`+sf_name+`</option>`;
+                        }
+                    }
+
+                    output += sportFacilityOptions;
+
+                    html_sportFacility_select.innerHTML=output;
+
+                })
+                .catch( error => console.error(error) ); //catch dell'errore
+            }
+
+
+            //Display periodic course schedule
+            function editPeriodicCourseSchedule(start_date, end_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday){
+
+                console.log("start_date");
+                console.log(date_format_1(start_date));
+                console.log("end_date");
+                console.log(date_format_3(end_date));
+                console.log("monday");
+                console.log(monday);
+                console.log("tuesday");
+                console.log(tuesday);
+
+                const scheduleHtml = document.getElementById("schedule");
+
+                scheduleHtml.innerHTML = `
+
+                    <div class="mb-3">
+                    <label for="courseStartDate" class="form-label"><b>Start date:</b></label>
+                    <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" value="`+date_format_3(start_date)+`">
+                    </div>
+                    <div class="mb-3">
+                        <label for="courseEndDate" class="form-label"><b>End date:</b></label>
+                        <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" value="`+date_format_3(end_date)+`">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Mon:</b></label>
+                        <div id="mon">
+                        </div>
+                        <button class="btn btn-secondary" id="monAddInterval" onclick="addInterval('mon')">Add interval</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Tue:</b></label>
+                        <div id="tue">
+                        </div>
+                        <button class="btn btn-secondary" id="tueAddInterval" onclick="addInterval('tue')">Add interval</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Wed:</b></label>
+                        <div id="wed">
+                        </div>
+                        <button class="btn btn-secondary" id="wedAddInterval" onclick="addInterval('wed')">Add interval</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Thu:</b></label>
+                        <div id="thu">
+                        </div>
+                        <button class="btn btn-secondary" id="thuAddInterval" onclick="addInterval('thu')">Add interval</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Fri:</b></label>
+                        <div id="fri">
+                        </div>
+                        <button class="btn btn-secondary" id="friAddInterval" onclick="addInterval('fri')">Add interval</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Sat:</b></label>
+                        <div id="sat">
+                        </div>
+                        <button class="btn btn-secondary" id="satAddInterval" onclick="addInterval('sat')">Add interval</button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Sun:</b></label>
+                        <div id="sun">
+                        </div>
+                        <button class="btn btn-secondary" id="monAddInterval" onclick="addInterval('sun')">Add interval</button>
+                    </div> 
+                `;
+                
+                week = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
+                week_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+                for(var j=0; j<7; j++){
+                    var dayId = week_days[j];
+                    var dayOuput = `
+                            <span name="interval">
+                                <div class="row">
+                                    
+                                    <div class="col">
+                                    <input type="time" class="form-control" value="">
+                                    </div>
+
+                                    <div class="col">
+                                    <input type="time" class="form-control" value="">
+                                    </div>
+                                </div>
+                            </span>
+                    `;
+
+                    if(week[j].length>0){
+                        dayOuput = "";
+                    }
+                    for(time in week[j]){
+                        time_interval = week[j][time];
+                        dayOuput += `
+                        <span name="interval">
+                            <div class="row">
+                                
+                                <div class="col">
+                                <input type="time" class="form-control" value="`+time_interval["from"]+`">
+                                </div>
+
+                                <div class="col">
+                                <input type="time" class="form-control" value="`+time_interval["to"]+`">
+                                </div>
+                            </div>
+                        </span>
+                        `;
+                    }
+                    document.getElementById(dayId).innerHTML = dayOuput;
+                }
+
+            }//...display periodic course editing form
+
+            //Display not periodic course schedule
+            function editNotPeriodicCourseSchedule(specific_date, specific_start_time, specific_end_time){
+                const scheduleHtml = document.getElementById("schedule");
+                scheduleHtml.innerHTML = `
+                    <div class="mb-3">
+                    <label for="courseSpecificDate" class="form-label"><b>Date:</b></label>
+                    <input type="date" class="form-control" id="courseSpecificDate" name="courseSpecificDate" value="`+date_format_3(specific_date)+`">
+                    </div>
+                    <div class="mb-3">
+                    <label for="courseStartTime" class="form-label"><b>Start at:</b></label>
+                    <input type="time" class="form-control" id="courseStartTime" name="courseStartTime" value="`+specific_start_time+`">
+                    </div>
+                    <div class="mb-3">
+                    <label for="courseEndTime" class="form-label"><b>Finishes at:</b></label>
+                    <input type="time" class="form-control" id="courseEndTime" name="courseEndDate" value="`+specific_end_time+`">
+                    </div>                
+                `;
+            }//...display not periodic course editing form
+
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Homepage</a>
+                </li>
+                </ul>
+            </div>
+            </nav>
+        <div class="p-5 bg-success text-dark rounded">
+            <h1>Impiantando</h1>
+            <p>Web application version 2.0</p>        
+        </div>
+        <div class="container mt-5">
+            <div class="card" style="width:400px">
+                <div class="card-header">User details</div>
+                <div class="card-body"><b>Username: </b><span id="username"></span></div>
+                <div class="card-body"><b>Sport center: </b><span id="sport_center_name"></span></div>
+            </div>
+            <br>
+            <h3>Edit course</h3>  
+            <div id="outputJS"></div>
+        </div>
+        <script>edit_course()</script>
+    </body>
+</html>
