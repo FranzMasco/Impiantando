@@ -33,6 +33,29 @@
                 }
 
             }
+
+            //The user clicks the unsubmit button of course [course_id]
+            //If the user is authenticated --> unsubscribe
+            function submit_request(course_id){
+                if(confirm("Are you sure to unsubscribe to the course?")){
+                    //Get user id from cookies
+                    user_id = getCookie("user_id");
+
+                    //Get token
+                    token = getCookie("token");
+
+                    fetch('../api/v2/unsubscribe', {
+                        method: 'PATCH',
+                        headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+                        body: JSON.stringify( { course_id: course_id, user_id: user_id } ),
+                    })
+                    .then((resp) => {
+                        console.log(resp);
+                        alert("Unsubscription success!");
+                        user_homepage();
+                    }).catch( error => console.error(error) ); //catch dell'errore
+                }
+            }
         </script>
     </head>
     <body>
