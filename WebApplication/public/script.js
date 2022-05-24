@@ -451,8 +451,8 @@ function loadCourses_administrator(sport_center_id){
 
             html_courses.innerHTML += `
                 <p><b>Creation timestamp: </b>`+date_format(creation_date)+`</p>
-                <button onclick="">Edit</button>
-                <button onclick="deleteCourse('`+self_id+`', '`+sport_center_id+`');">Delete</button>
+                <button onclick="loadEditCourse('`+self_id+`', '`+sport_center_id+`')">Edit</button>
+                <button onclick="deleteCourse('`+self_id+`');">Delete</button>
                 <hr>
             `;
 
@@ -487,6 +487,16 @@ function deleteCourse(id_course, sport_center_id){
         }else{
             console.log("Authentication error");
         }
+    }
+}
+//...
+
+//Load page to edit a course, administrator
+//Purpose: redirect the user to a web page 
+//@param[id_course]: id of the course that has to be deleted
+function loadEditCourse(id_course){
+    if(id_course!=""){
+        window.location.href="editCourse.html?id_course="+id_course;
     }
 }
 //...
