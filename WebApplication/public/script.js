@@ -1043,7 +1043,7 @@ function date_format(d){
     return day+"-"+month+"-"+year+"-"+hour+":"+minute+":"+second;
 }
 
-//DD-MM-YY
+//DD-MM-YYYY
 function date_format_1(d){
     var day = d.getDate();
     var month = d.getMonth();
@@ -1059,6 +1059,17 @@ function date_format_2(d){
 
     return hour+":"+minute;
 }
+
+//YYYY-MM-DD
+function date_format_3(d){
+    var day = d.getDate();
+    var month = d.getMonth();
+    var year = d.getFullYear();
+    test = d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    console.log("date: "+test)
+    return test;
+}
+
 //...
 
 //Find get parameter
