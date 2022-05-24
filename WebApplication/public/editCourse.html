@@ -15,6 +15,25 @@
         <script>
             
             function edit_course(){
+                //Retrive authentication data
+                var username = getCookie("username");
+                var user_id = getCookie("user_id");
+                var token = getCookie("token");
+                var user_level = getCookie("user_level");
+                var sport_center_name = getCookie("sport_center_name");
+                var sport_center_id = getCookie("sport_center_id");
+
+                if(!username || !user_id || !token || !user_level || !sport_center_name || !sport_center_id){
+                    console.log("Authentication required");
+                    return;
+                }
+                
+                const html_username = document.getElementById("username");
+                const html_sport_center_name = document.getElementById("sport_center_name");
+
+                html_username.innerHTML = username;
+                html_sport_center_name.innerHTML = sport_center_name;
+
                 //Retrive course id from request
                 var course_id = findGetParameter("id_course");
 
@@ -22,21 +41,229 @@
                     window.location.href="errorPage.html";
                     return;
                 }
+                
+                //Display editing form
+                html_output = document.getElementById("outputJS");
 
-                console.log("Course id: "+course_id);
+                output = `
 
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3 mt-3">
+                                <label for="courseName" class="form-label"><b>Course name:</b></label>
+                                <input type="text" class="form-control" id="courseName" name="courseName" value="Nome corso">
+                            </div>
+                            <div class="mb-3">
+                                <label for="courseSport" class="form-label"><b>Sport:</b></label>
+                                <input type="text" class="form-control" id="courseSport" name="courseSport" value="Nome corso">
+                            </div>
+                            <div class="mb-3">
+                                <label for="courseDescription"><b>Description:</b></label>
+                                <textarea class="form-control" rows="5" id="courseDescription" name="courseDescription">Course description</textarea> 
+                            </div>
+                            <div class="mb-3">
+                                <label for="courseStartDate" class="form-label"><b>Start date:</b></label>
+                                <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" value="2022-08-20">
+                            </div>
+                            <div class="mb-3">
+                                <label for="courseEndDate" class="form-label"><b>End date:</b></label>
+                                <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" value="2022-08-20">
+                            </div>
+                            <div class="mb-3">
+                                <p><b>Creation time: </b>2000-08-20</p>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="mb-3 mt-3">
+                                <p><b>Schedule: </b></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Mon:</b></label>
+                                <div id="mon">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="monAddInterval" onclick="addInterval('mon')">Add interval</button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Tue:</b></label>
+                                <div id="tue">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="tueAddInterval" onclick="addInterval('tue')">Add interval</button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Wed:</b></label>
+                                <div id="wed">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="wedAddInterval" onclick="addInterval('wed')">Add interval</button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Thu:</b></label>
+                                <div id="thu">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="thuAddInterval" onclick="addInterval('thu')">Add interval</button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Fri:</b></label>
+                                <div id="fri">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="friAddInterval" onclick="addInterval('fri')">Add interval</button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Sat:</b></label>
+                                <div id="sat">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="satAddInterval" onclick="addInterval('sat')">Add interval</button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Sun:</b></label>
+                                <div id="sun">
+                                    <span name="interval">
+                                        <div class="row">
+                                            
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="12:00">
+                                            </div>
+
+                                            <div class="col">
+                                            <input type="time" class="form-control" value="13:00">
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <button class="btn btn-secondary" id="monAddInterval" onclick="addInterval('sun')">Add interval</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                
+                `;
+
+                html_output.innerHTML=output;
+            }
+
+
+            //Purpose: insert a new from-to interval in the input date
+            function addInterval(day){
+                const span = document.createElement("span");
+                span.setAttribute("name", "interval");
+                span.innerHTML = `
+                    <div class="row">
+                        <div class="col">
+                        <input type="time" class="form-control" value="12:00">
+                        </div>
+
+                        <div class="col">
+                        <input type="time" class="form-control" value="13:00">
+                        </div>
+                    </div>
+                `;
+                
+                //Add interval
+                document.getElementById(day).appendChild(span);                
             }
 
         </script>
     </head>
     <body>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Homepage</a>
+                </li>
+                </ul>
+            </div>
+            </nav>
         <div class="p-5 bg-success text-dark rounded">
             <h1>Impiantando</h1>
-            <p>Web application version 2.0</p>
-            <a class="btn btn-primary" href="index.html">Homepage</a>            
+            <p>Web application version 2.0</p>        
         </div>
-        <p>Pagina di modifica corso</p>  
-        <div id="outputJS"></div>
+        <div class="container mt-5">
+            <div class="card" style="width:400px">
+                <div class="card-header">User details</div>
+                <div class="card-body"><b>Username: </b><span id="username"></span></div>
+                <div class="card-body"><b>Sport center: </b><span id="sport_center_name"></span></div>
+            </div>
+            <br>
+            <h3>Edit course</h3>
+            <button type="button" class="btn btn-success">Confirm</button>  
+            <button type="button" class="btn btn-danger" onclick="window.location.href='impiantiadmin.html'">Cancel</button>  
+            </div>
+            <div id="outputJS"></div>
+        </div>
         <script>edit_course()</script>
     </body>
 </html>
