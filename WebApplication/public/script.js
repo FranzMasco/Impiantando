@@ -31,7 +31,7 @@ function loadSportCenters() {
             html_sport_center_description.innerHTML = "<b>Description: </b>"+description;
             html_sport_center_address_city.innerHTML = "<b>City: </b>"+address_city;
             html_sport_center_address_location.innerHTML = "<b>Location: </b>"+address_location;
-            html_sport_center_moreInfo.innerHTML = `<a href="impiantonotauthenticated.html?sport_center_id=`+sport_center_id+`";'>Get more information</a>`;
+            html_sport_center_moreInfo.innerHTML = `<a href="impiantonotauthenticated.html?sport_center_id=`+sport_center_id+`";' class="btn btn-info">Get more information</a>`;
 
             div.appendChild(html_sport_center_title);
             div.appendChild(html_sport_center_name);
@@ -1029,7 +1029,7 @@ function display_loginForm(login_type){
             <input type="text" name="username" id="loginUsername" required> <br>
             <label for="password">Password: </label>
             <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="button" value="Sign in" onclick="login('`+login_type+`')">
+            <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
             <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
@@ -1044,7 +1044,7 @@ function display_loginForm(login_type){
             <input type="text" name="username" id="loginUsername" required> <br>
             <label for="password">Password: </label>
             <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="button" value="Sign in" onclick="login('`+login_type+`')">
+            <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
             <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
@@ -1059,7 +1059,7 @@ function display_loginForm(login_type){
             <input type="text" name="username" id="loginUsername" required> <br>
             <label for="password">Password: </label>
             <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="button" value="Sign in" onclick="login('`+login_type+`')">
+            <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
             <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
