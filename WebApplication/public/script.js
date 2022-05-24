@@ -1277,6 +1277,7 @@ function loadCourses_user(user_id){
             let sport = course["sport"];
             let periodic = course["periodic"];
             let self = course["self"];
+            let self_id = self.substring(self.lastIndexOf('/') + 1); 
 
             let start_date = "";
             let end_date = "";
@@ -1336,6 +1337,11 @@ function loadCourses_user(user_id){
                 `;
                 
             }
+
+            //Add button to unsubscribe from the course
+            html_courses.innerHTML += `<br>
+               <button onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div><br>`;
+
             html_courses.innerHTML += `<hr>`;
         }
     })
