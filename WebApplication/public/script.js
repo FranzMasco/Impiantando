@@ -1019,7 +1019,20 @@ function PATCH_editCourse(course_id, periodicity){
 function display_loginForm(login_type){
     const output = document.getElementById("output_js");
 
+    //Check if the user has already done the authentication procedure
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+
     if(login_type=='A'){    //login administrator
+
+        //If already authenticated --> no login
+        if(token && auth_level=="administrator"){
+            window.location.href="impiantiadmin.html";
+            return;
+        }
+
         output.innerHTML=
     `
         <hr>
@@ -1035,6 +1048,13 @@ function display_loginForm(login_type){
     `;
     
     }else if(login_type=='R'){
+
+        //If already authenticated --> no login
+        if(token && auth_level=="responsabile"){
+            window.location.href="responsabilehome.html";
+            return;
+        }
+
         output.innerHTML=
     `
         <hr>
@@ -1050,6 +1070,13 @@ function display_loginForm(login_type){
     `;
 
     }else if(login_type=='U'){
+
+        //If already authenticated --> no login
+        if(token && auth_level=="user"){
+            window.location.href="autenticateduserhome.html";
+            return;
+        }
+
         output.innerHTML=
     `
         <hr>
@@ -1190,7 +1217,7 @@ function submit_course(course_id){
     token = getCookie("token");
     auth_level = getCookie("user_level");
 
-    if(token=="" || auth_level!="user"){
+    if(!token || auth_level!="user"){
         console.log("Authentication required");
         return 1;
     }
