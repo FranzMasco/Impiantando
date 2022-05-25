@@ -489,6 +489,7 @@ function loadCourses_administrator(sport_center_id){
 
             html_courses.innerHTML += `
                 <p><b>Creation timestamp: </b>`+date_format(creation_date)+`</p>
+                <button onclick="loadCourseManagerHandling('`+self_id+`')">Course managers</button><br>
                 <button onclick="loadEditCourse('`+self_id+`', '`+sport_center_id+`')">Edit</button>
                 <button onclick="deleteCourse('`+self_id+`');">Delete</button>
                 <hr>
@@ -531,10 +532,20 @@ function deleteCourse(id_course, sport_center_id){
 
 //Load page to edit a course, administrator
 //Purpose: redirect the user to a web page 
-//@param[id_course]: id of the course that has to be deleted
+//@param[id_course]: id of the course that has to be edited
 function loadEditCourse(id_course){
     if(id_course!=""){
         window.location.href="editCourse.html?id_course="+id_course;
+    }
+}
+//...
+
+//Load page to read and add course managers
+//Purpose: redirect the user to a web page 
+//@param[id_course]: id of the course
+function loadCourseManagerHandling(id_course){
+    if(id_course!=""){
+        window.location.href="admin_courseManagers.html?id_course="+id_course;
     }
 }
 //...
