@@ -1403,7 +1403,7 @@ function show_partecipants(course_id){
     .then(function(data) {
         //console.log(data);
 
-        output_html.innerHTML += `
+        output_html.innerHTML = `
             <p><b>TOT: </b>`+data.length+`</p>
         `;
 
