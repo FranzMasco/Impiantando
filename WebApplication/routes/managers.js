@@ -114,17 +114,34 @@ router.get('/managers/:id/courses', async (req, res) => {
         };
     });
     res.status(200).json(response);
-})
-
+});
+//Delets a manager and its references in the courses
 router.delete('/managers/:id', tokenChecker);
 router.delete('/managers/:id', async (req, res) => {
     let manager = await Managers.findById(req.params.id).exec();
+    
     if (!manager) {
         res.status(404).json({status: "error"})
         console.log('resource not found')
         return;
     }
-    await manager.deleteOne()
+    let managers = await Managers.findOne({_id:req.params.id});
+    let courses = await Courses.find({_id: {$in: managers.courses}});
+
+    
+
+    courses.forEach(course => {
+        console.log(course.name+" "+course._id+" "+req.params.id );
+        Courses.findByIdAndUpdate({_id:course._id},{$pull:{managers:req.params.id}},function (error, success) {
+            if (error) {
+                console.log(error);
+                res.status(500).send(error);
+            } else {
+                console.log(success);
+            }
+        });
+    });
+    await manager.deleteOne();
     res.status(204).json({status: "success"});
 });
 

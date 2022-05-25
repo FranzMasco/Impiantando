@@ -130,14 +130,14 @@
                     //Get token
                     token = getCookie("token");
 
-                    fetch('../api/v1/manager/'+manager_id, {
+                    fetch('../api/v1/managers/'+manager_id, {
                         method: 'DELETE',
                         headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
                         body: JSON.stringify( { manager_id: manager_id} ),
                     })
                     .then((resp) => {
                         console.log(resp);
-                        alert("Unsubscription success!");
+                        alert("Manager delete completed successfully!");
                         admin_homepage();
                     }).catch( error => console.error(error) ); //catch dell'errore
                 }
