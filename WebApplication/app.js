@@ -59,7 +59,7 @@ app.use("/api/v1", registrations);
 app.use("/api/v2", sport_centersv2)
 
 //User registration and unsubscribe
-app.use("/api/v2/", subscriptionsv2);
+app.use("/api/v2", subscriptionsv2);
 
 //Default 404 handler
 app.use((req, res) => {
