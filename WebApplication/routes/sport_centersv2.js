@@ -34,10 +34,12 @@ router.get('/sport_centers/:id/managers', async (req, res) => {
 
     let response = managers.map( (manager) => {
         return {
-            self: "/api/v2/sport_centers/"+req.params.id+"/managers/",
+            self: "/api/v1/managers/"+manager.id,
+            sport_center: "/api/v1/sport_centers/"+req.params.id,
             name: manager.name,
             surname: manager.surname,
             email:manager.email,
+            society:manager.society
         };
     });
     res.status(200).json(response);
