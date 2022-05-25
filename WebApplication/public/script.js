@@ -26,13 +26,15 @@ function loadSportCenters() {
             let html_sport_center_address_location = document.createElement("p");
             let html_sport_center_moreInfo = document.createElement("a");
             
-            html_sport_center_title.innerHTML = name;
-            html_sport_center_name.innerHTML = "<b>Name: </b>"+name;
-            html_sport_center_description.innerHTML = "<b>Description: </b>"+description;
-            html_sport_center_address_city.innerHTML = "<b>City: </b>"+address_city;
-            html_sport_center_address_location.innerHTML = "<b>Location: </b>"+address_location;
-            html_sport_center_moreInfo.innerHTML = `<a href="impiantonotauthenticated.html?sport_center_id=`+sport_center_id+`";' class="btn btn-info">Get more information</a>`;
-
+            html_sport_center_title.innerHTML = "<div class='card-header'>"+name+"</div>";
+            html_sport_center_name.innerHTML = "<div class='card-text p-2'><b>Name: </b>"+name+"</div>";
+            html_sport_center_description.innerHTML = "<div class='card-text p-2'><b>Description: </b>"+description+"</div>";
+            html_sport_center_address_city.innerHTML = "<div class='card-text p-2'><b>City: </b>"+address_city+"</div>";
+            html_sport_center_address_location.innerHTML = "<div class='card-text p-2'><b>Location: </b>"+address_location+"</div>";
+            html_sport_center_moreInfo.innerHTML = `<div class='card-text p-2'><a href="impiantonotauthenticated.html?sport_center_id=`+sport_center_id+`";' class="btn btn-info">Get more information</a></div>`;
+            
+            div.classList.add("card");
+            //div.style.add("width:400px");
             div.appendChild(html_sport_center_title);
             div.appendChild(html_sport_center_name);
             div.appendChild(html_sport_center_description);
@@ -73,10 +75,11 @@ function loadFacilities(sport_center_id) {
             let self_id = self.substring(self.lastIndexOf('/') + 1);
 
             html_facilities.innerHTML += `
-                <p><b>Name:</b>`+name+`</p>
-                <p><b>Description:</b>`+description+`</p>
-                <br>
+                <div class="card">
+                <div class="card-text p-2"><p><b>Name: </b>`+name+`</p>
+                <p><b>Description: </b>`+description+`</p></div>
                 </div>
+                <br>
                 <hr>
             `;
             
@@ -335,7 +338,8 @@ function loadCourses(sport_center_id){
             let specific_end_time = "";
 
             html_courses.innerHTML += `
-                <p><b>Name: </b>`+name+`</p>
+                <div class="card">
+                <div class="card-text p-2"><p><b>Name: </b>`+name+`</p>
                 <p><b>Sport: </b>`+sport+`</p>
                 <p><b>Description: </b>`+description+`</p>
             `;
@@ -386,9 +390,10 @@ function loadCourses(sport_center_id){
             }
 
             html_courses.innerHTML += `
-                <br>
-                <button onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message`+self_id+`"></div>
+            <br>
+                <button class="btn btn-primary" onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message`+self_id+`"></div>
                 <div id="login_form`+self_id+`"></div>
+                </div></div>
                 <hr>
             `;
 
@@ -1023,45 +1028,57 @@ function display_loginForm(login_type){
         output.innerHTML=
     `
         <hr>
-        <h2>Login administrator: </h2>
-        <form>
-            <label for="username">Username: </label>
-            <input type="text" name="username" id="loginUsername" required> <br>
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
-            <span id="wrongInput" style="color: red;"></span>
-        </form>
+        <div class="col-sm-4"></div>    
+        <div class="col-sm-4">
+            <h2>Login administrator: </h2>
+            <form>
+                <label for="username">Username: </label>
+                <input type="text" name="username" id="loginUsername" required> <br>
+                <label for="password">Password: </label>
+                <input type="password" name="password" id="loginPassword" required> <br>
+                <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
+                <span id="wrongInput" style="color: red;"></span>
+            </form>
+        <div>
+        <div class="col-sm-4"></div>
     `;
     
     }else if(login_type=='R'){
         output.innerHTML=
     `
         <hr>
-        <h2>Login course manager: </h2>
-        <form>
-            <label for="username">Username: </label>
-            <input type="text" name="username" id="loginUsername" required> <br>
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
-            <span id="wrongInput" style="color: red;"></span>
-        </form>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <h2>Login course manager: </h2>
+            <form>
+                <label for="username">Username: </label>
+                <input type="text" name="username" id="loginUsername" required> <br>
+                <label for="password">Password: </label>
+                <input type="password" name="password" id="loginPassword" required> <br>
+                <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
+                <span id="wrongInput" style="color: red;"></span>
+            </form>
+        <div>
+        <div class="col-sm-4"></div>
     `;
 
     }else if(login_type=='U'){
         output.innerHTML=
     `
-        <hr>
-        <h2>Login user: </h2>
-        <form>
-            <label for="username">Username: </label>
-            <input type="text" name="username" id="loginUsername" required> <br>
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="loginPassword" required> <br>
-            <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
-            <span id="wrongInput" style="color: red;"></span>
-        </form>
+        <hr><hr>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <h2>Login user: </h2>
+            <form>
+                <label for="username">Username: </label>
+                <input type="text" name="username" id="loginUsername" required> <br>
+                <label for="password">Password: </label>
+                <input type="password" name="password" id="loginPassword" required> <br>
+                <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
+                <span id="wrongInput" style="color: red;"></span>
+            </form>
+        <div>
+        <div class="col-sm-4"></div>
     `;
     }
 }
@@ -1519,7 +1536,7 @@ function loadCourses_user(user_id){
 
             //Add button to unsubscribe from the course
             html_courses.innerHTML += `<br>
-               <button onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div><br>`;
+               <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div><br>`;
 
             html_courses.innerHTML += `<hr>`;
         }
