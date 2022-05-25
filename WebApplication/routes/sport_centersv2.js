@@ -34,7 +34,7 @@ router.get('/sport_centers/:id/managers', async (req, res) => {
 
     let response = managers.map( (manager) => {
         return {
-            self: "/api/v2/sport_centers/"+req.params.id+"/managers/",
+            self: "/managers/"+manager.id,
             name: manager.name,
             surname: manager.surname,
             email:manager.email,

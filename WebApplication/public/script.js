@@ -182,12 +182,16 @@ function loadManagers_administrator(sport_center_id){
             let name = manager["name"];
             let surname = manager["surname"];
             let email = manager["email"];  
+            let self = manager["self"];
+            let self_id = self.substring(self.lastIndexOf('/') + 1);
+            console.log(self_id);
 
             html_facilities.innerHTML += `
                 <p><b>Name:</b>`+name+`</p>
                 <p><b>Surname:</b>`+surname+`</p>
                 <p><b>Email:</b>`+email+`</p>
                 <br>
+                <button onclick="delete_manager_request('`+self_id+`');">Delete</button>
                 <hr>
             `;
         }
