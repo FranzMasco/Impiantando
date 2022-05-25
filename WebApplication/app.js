@@ -10,6 +10,7 @@ const authentication = require('./routes/authentications.js');
 const sport_centers = require('./routes/sport_centers.js');
 const sport_facilities = require('./routes/sport_facilities.js');
 const courses = require('./routes/courses.js');
+const coursesv2 = require('./routes/coursesv2');
 const users = require('./routes/users.js');
 const managers = require('./routes/managers.js');
 const registrations = require('./routes/subscriptions.js');
@@ -43,6 +44,7 @@ app.use("/api/v1", sport_facilities)
 
 //Courses API
 app.use("/api/v1", courses)
+app.use("/api/v2", coursesv2)
 
 //Managers API
 app.use("/api/v1", managers)

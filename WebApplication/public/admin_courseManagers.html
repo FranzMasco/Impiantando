@@ -55,10 +55,20 @@
                     //Display generic course information
                     const html_course_name = document.getElementById("courseName");
                     html_course_name.innerHTML = name;
+                    
+                    //Display current managers
+                    current_managers(course_id);
 
                 })
                 .catch( error => console.error(error) ); //catch dell'errore
             }//...edit course
+
+            //Display current managers
+            function current_managers(course_id){
+                
+            }
+            //...
+
         </script>
     </head>
     <body>
@@ -87,7 +97,8 @@
                 <div class="card-header"><b>Course: </b><span id="courseName"></span></div>
             </div>
             <br>  
-            <div id="outputJS"></div>
+            <div id="output_current_managers"></div>
+            <div id="output_new_managers"></div>
         </div>
         <script>course_managers()</script>
     </body>

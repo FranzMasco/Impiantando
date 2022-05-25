@@ -32,7 +32,7 @@ router.get('/managers', async (req, res) => {
     res.status(200).json(response);
 });
 
-router.post('/sport_facilities', tokenChecker);
+router.post('/managers', tokenChecker);
 router.post('/managers', async (req, res) => {
     let manager_name = req.body.name;
     let manager_surname = req.body.surname;
