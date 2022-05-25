@@ -43,7 +43,7 @@
                 }
                 
                 //Retrive course information through API
-                fetch('../api/v1/courses/'+course_id)
+                fetch('../api/v2/courses/'+course_id)
                 .then((resp) => resp.json()) //trasfor data into JSON
                 .then(function(data) {
                     
@@ -140,12 +140,11 @@
                 .then((resp) => resp.json()) //trasfor data into JSON
                 .then(function(data) {
                     var output;
-                    console.log("Possible managers");
-                    console.log(data);
+                    //console.log("Possible managers");
+                    //console.log(data);
 
-                    /*
                     if(data.length>0){
-                        output = `<p>Here is the list of the current managers: </p>`;
+                        output = `<p>Here is the list of the managers available: </p>`;
 
                         //Table header
                         output += `
@@ -188,13 +187,12 @@
                         output += `</tbody></table>`;
 
                     }else{
-                        output = '<p>This course has no manager</p>';
+                        output = '<p>No more managers available</p>';
                     }
 
                     output+=`<hr>`;
 
-                    html_current_manager.innerHTML=output;
-                    */
+                    html_possible_manager.innerHTML=output;
                 })
                 .catch( error => console.error(error) ); //catch dell'errore
             }
