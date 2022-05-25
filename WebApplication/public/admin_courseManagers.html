@@ -59,6 +59,8 @@
                     //Display current managers
                     current_managers(course_id);
 
+                    //Display possible managers that could be added
+                    possible_managers(course_id, sport_center_id);
                 })
                 .catch( error => console.error(error) ); //catch dell'errore
             }//...edit course
@@ -116,7 +118,7 @@
 
                         //Table closing tags
                         output += `</tbody></table>`;
-                        
+
                     }else{
                         output = '<p>This course has no manager</p>';
                     }
@@ -124,6 +126,75 @@
                     output+=`<hr>`;
 
                     html_current_manager.innerHTML=output;
+                })
+                .catch( error => console.error(error) ); //catch dell'errore
+            }
+            //...
+
+            //Display possible managers that could be added to the course
+            function possible_managers(course_id, sport_center_id){
+                const html_possible_manager = document.getElementById("output_new_managers");
+
+                //Retrive current managers through API
+                fetch('../api/v2/sport_centers/'+sport_center_id+'/managers')
+                .then((resp) => resp.json()) //trasfor data into JSON
+                .then(function(data) {
+                    var output;
+                    console.log("Possible managers");
+                    console.log(data);
+
+                    /*
+                    if(data.length>0){
+                        output = `<p>Here is the list of the current managers: </p>`;
+
+                        //Table header
+                        output += `
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Society</th>
+                                    </tr>
+                                </thead>
+                        `;
+
+                        //Table body
+                        output += `<tbody>`;
+                        
+                        var counter=1;
+                        for(var manager in data){
+                            var managerInfo = data[manager];
+                            var m_name = managerInfo["name"];
+                            var m_surname = managerInfo["surname"];
+                            var m_email = managerInfo["email"];
+                            var m_society = managerInfo["society"];
+
+                            output += `
+                            <tr>
+                                <th scope="row">`+counter+`</th>
+                                <td>`+m_name+`</td>
+                                <td>`+m_surname+`</td>
+                                <td>`+m_email+`</td>
+                                <td>`+m_society+`</td>
+                            </tr>
+                            `;
+                            counter++;
+                        }
+
+                        //Table closing tags
+                        output += `</tbody></table>`;
+
+                    }else{
+                        output = '<p>This course has no manager</p>';
+                    }
+
+                    output+=`<hr>`;
+
+                    html_current_manager.innerHTML=output;
+                    */
                 })
                 .catch( error => console.error(error) ); //catch dell'errore
             }
