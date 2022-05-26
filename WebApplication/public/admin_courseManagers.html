@@ -202,13 +202,23 @@
 
             //Add manager to a course
             function addCourseManager(course_id, manager_id){
+                var token = getCookie("token");
 
                 //Check required information
                 if(!course_id || !manager_id){
                     concole.log("Missing required data");
                     return;
                 }
-                alert("ciao");
+
+                fetch('../api/v2/courses/'+course_id+'/managers', {
+                    method: 'PATCH',
+                    headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+                    body: JSON.stringify( { manager_id: manager_id } ),
+                })
+                .then((resp) => {
+                    console.log("Manager added to the course");
+                    course_managers();
+                }).catch( error => console.error(error) ); //catch dell'errore
             }
             //...
 
