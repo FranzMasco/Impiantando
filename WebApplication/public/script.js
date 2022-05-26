@@ -1170,12 +1170,12 @@ function display_loginForm(login_type){
                         <div id="insertNewUser" hidden="true">
                             <br>
                             <p>Fill the following gaps in order to registrer</p>
-                            <input type="text" id="insertNewUser_name" name="name" class="form-control" placeholder="Name"><br>
-                            <input type="text" id="insertNewUser_surname" name="surname" class="form-control" placeholder="Surname"><br>
-                            <input type="text" id="insertNewUser_email" name="email" class="form-control" placeholder="Email@email.com"><br>
-                            <input type="date" id="insertNewUser_dob" class="form-control" name="dob"><br>
-                            <input type="text" id="insertNewUser_username" name="username" class="form-control" placeholder="Username "><br>
-                            <input type="password" id="insertNewUser_password" name="password" class="form-control" placeholder="Password"><br>
+                            <input type="text" id="insertNewUser_name" name="name" class="form-control" placeholder="Name" required><br>
+                            <input type="text" id="insertNewUser_surname" name="surname" class="form-control" placeholder="Surname" required><br>
+                            <input type="text" id="insertNewUser_email" name="email" class="form-control" placeholder="Email@email.com" required><br>
+                            <input type="date" id="insertNewUser_dob" class="form-control" name="dob" required><br>
+                            <input type="text" id="insertNewUser_username" name="username" class="form-control" placeholder="Username " required><br>
+                            <input type="password" id="insertNewUser_password" name="password" class="form-control" placeholder="Password" required><br>
 
                             <input type="button" name="confirm_insert" class="btn btn-success" value="Confirm" onclick="insertUser()">
                             <input type="button" name="cancel_insert" class="btn btn-danger" value="Cancel" onclick="close_user_registration_form()">
