@@ -28,7 +28,7 @@
                 if(username=="" || user_id=="" || token=="" || user_level=="" || user_level!="administrator"){
                     outputJS.innerHTML =
                     `
-                        <p class="alert alert-success">Authentication required</p>
+                        <p class="alert alert-danger">Authentication required</p>
                         <a href="index.html">Homepage</a>
                     `;
                 }else{

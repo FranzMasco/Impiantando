@@ -1368,7 +1368,7 @@ function findGetParameter(parameterName) {
 //@param[user_id]: manager identifier
 function loadCourses_manager(user_id){
     const html_courses = document.getElementById('output_courses');
-
+    var courses_text = "";
     if(!user_id){
         window.location.href = "errorPage.html";
         return;
@@ -1379,9 +1379,9 @@ function loadCourses_manager(user_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_courses.innerHTML = "<p>Here is the list of your courses: </p><br>";
+            courses_text = "<p>Here is the list of your courses: </p><br>";
         }
-        html_courses.innerHTML += `<hr>`;
+        courses_text += `<hr>`;
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
             var course = data[i];
             //console.log(course);
@@ -1400,10 +1400,12 @@ function loadCourses_manager(user_id){
             let specific_start_time = "";
             let specific_end_time = "";
 
-            html_courses.innerHTML += `
-                <p><b>Name: </b>`+name+`</p>
-                <p><b>Sport: </b>`+sport+`</p>
-                <p><b>Description: </b>`+description+`</p>
+            courses_text += `
+                <div class='card'>
+                    <div class='card-text p-2'>
+                        <p><b>Name: </b>`+name+`</p>
+                        <p><b>Sport: </b>`+sport+`</p>
+                        <p><b>Description: </b>`+description+`</p>
             `;
 
             if(periodic){   //the course is offered for example every monday
@@ -1422,21 +1424,21 @@ function loadCourses_manager(user_id){
                 week = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
                 week_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Start date: </b>`+date_format_1(start_date)+`</p>
                     <p><b>End date: </b>`+date_format_1(end_date)+`</p>
                 `;
 
                 for(var j=0; j<7; j++){
                     if(week[j].length>0){
-                        html_courses.innerHTML += `
+                        courses_text += `
                             <p><b>`+week_days[j]+`: </b></p>
                         `;
                     }
                     for(time in week[j]){
                         time_interval = week[j][time];
-                        html_courses.innerHTML += `
-                            <li>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
+                        courses_text += `
+                            <li class='list-group-item'>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
                         `;
                     }
                 }
@@ -1445,14 +1447,15 @@ function loadCourses_manager(user_id){
                 specific_date = new Date(course["specific_date"]);
                 specific_start_time = course["specific_start_time"];
                 specific_end_time = course["specific_end_time"];
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Date: </b>`+date_format_1(specific_date)+`</p>
                     <p><b>From: </b>`+specific_start_time+`<b> To: </b>`+specific_end_time+`</p>
                 `;
                 
             }
-            html_courses.innerHTML += `<br><button onclick="show_partecipants('`+self_id+`')">Visualizza elenco di partecipanti</button><div id="partecipants`+self_id+`"></div><hr>`;
+            courses_text += `<br><button class="btn btn-info" onclick="show_partecipants('`+self_id+`')">Visualizza elenco di partecipanti</button><div id="partecipants`+self_id+`"></div></div></div><hr>`;
         }
+        html_courses.innerHTML = courses_text;
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
@@ -1484,7 +1487,7 @@ function show_partecipants(course_id){
         //console.log(data);
 
         output_html.innerHTML += `
-            <p><b>TOT: </b>`+data.length+`</p>
+            <p class="font-monospace"><b>TOT: </b>`+data.length+`</p>
         `;
 
         for(u in data){
@@ -1492,12 +1495,12 @@ function show_partecipants(course_id){
             let surname = data[u]["surname"];
 
             output_html.innerHTML += `
-                <li>- `+name+` `+surname+`</li>
+                <li class='list-group-item'>`+name+` `+surname+`</li>
             `;
         }
 
         output_html.innerHTML += `
-            <button onclick="hide_partecipants('`+course_id+`');">Close list</button>
+            <button class="btn btn-secondary" onclick="hide_partecipants('`+course_id+`');">Close list</button>
         `;
     })
     .catch( error => console.error(error) ); //catch dell'errore

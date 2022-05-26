@@ -22,14 +22,18 @@
                 if(username=="" || user_id=="" || token=="" || user_level=="" || user_level!="responsabile"){
                     outputJS.innerHTML =
                     `
-                        <p>Authentication required</p>
+                        <p class="alert alert-danger">Authentication required</p>
                         <a href="index.html">Homepage</a>
                     `;
                 }else{
                     outputJS.innerHTML =
                     `
-                    <h2>Manager user:`+username+`</h2>
-                    <div id="output_courses">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Manager user: `+username+`</h2>
+                        </div>
+                    </div>
+                    <div id="output_courses" class="container mt-3">
                         There are no courses yet
                     </div>
                     <br>
