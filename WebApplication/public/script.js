@@ -197,10 +197,10 @@ function loadManagers_administrator(sport_center_id){
                 <p><b>Name: </b>`+name+`</p>
                 <p><b>Surname: </b>`+surname+`</p>
                 <p><b>Email: </b>`+email+`</p>
-                </div>
-                </div>
                 <br>
-                <button onclick="delete_manager_request('`+self_id+`');">Delete</button>
+                <button class="btn btn-danger" onclick="delete_manager_request('`+self_id+`');">Delete</button>
+                </div>
+                </div>
                 <hr>
             `;
         }
@@ -1166,7 +1166,7 @@ function display_loginForm(login_type){
                 <label for="password">Password: </label>
                 <input type="password" name="password" id="loginPassword" required> <br>
                 <input type="button" value="Sign in" class="btn btn-primary" onclick="login('`+login_type+`')">
-                <button onclick="show_user_registration_form()">Registrati</button>
+                <button onclick="show_user_registration_form()" class="btn btn-secondary">Registrati</button>
                         <div id="insertNewUser" hidden="true">
                             <br>
                             <p>Fill the following gaps in order to registrer</p>
