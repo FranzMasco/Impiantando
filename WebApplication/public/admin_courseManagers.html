@@ -174,17 +174,21 @@
                             var m_society = managerInfo["society"];
                             var m_link = managerInfo["self"];
                             var m_id = m_link.substring(m_link.lastIndexOf('/') + 1);
+                            var array_course_id = managerInfo["courses_id"];
 
-                            output += `
-                            <tr style="cursor: pointer;" onclick="addCourseManager('`+course_id+`', '`+m_id+`')">
-                                <th scope="row">`+counter+`</th>
-                                <td>`+m_name+`</td>
-                                <td>`+m_surname+`</td>
-                                <td>`+m_email+`</td>
-                                <td>`+m_society+`</td>
-                            </tr>
-                            `;
-                            counter++;
+                            //Do not display managers who have already been assigned to this course
+                            if(!array_course_id.includes(course_id)){
+                                output += `
+                                <tr style="cursor: pointer;" onclick="addCourseManager('`+course_id+`', '`+m_id+`')">
+                                    <th scope="row">`+counter+`</th>
+                                    <td>`+m_name+`</td>
+                                    <td>`+m_surname+`</td>
+                                    <td>`+m_email+`</td>
+                                    <td>`+m_society+`</td>
+                                </tr>
+                                `;
+                                counter++;
+                            }
                         }
 
                         //Table closing tags
