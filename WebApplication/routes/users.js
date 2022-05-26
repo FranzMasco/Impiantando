@@ -39,4 +39,34 @@ router.get('/users/:id/courses', async (req, res) => {
     res.status(200).json(response);
 });
 
+
+router.post('/users', async (req, res) => {
+    let user_name = req.body.name;
+    let user_surname = req.body.surname;
+    let user_email = req.body.email;
+    let user_birth_date = req.body.birth_date;
+    let user_username = req.body.username;
+    let user_password = req.body.password;
+    let user_courses = req.body.courses;
+
+    //Check if a manager already exists
+    const userExists = await Users.findOne({username: user_username}).select("name").lean();
+    if(userExists) {res.status(400).send('user already exists');return;}
+
+    let user = new Users({
+        name: user_name,
+        surname: user_surname,
+        email: user_email,
+        birth_date: user_birth_date,
+        username: user_username,
+        password: user_password,
+        courses: user_courses
+    })
+
+    await user.save();
+    
+    let user_id = user.id;
+    res.location("/api/v1/users/"+user_id).status(201).send();
+});
+
 module.exports = router

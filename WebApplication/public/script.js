@@ -1090,6 +1090,21 @@ function display_loginForm(login_type){
             <label for="password">Password: </label>
             <input type="password" name="password" id="loginPassword" required> <br>
             <input type="button" value="Sign in" onclick="login('`+login_type+`')">
+            <button onclick="show_user_registration_form()">Registrati</button>
+                    <div id="insertNewUser" hidden="true">
+                        <br>
+                        <p>Fill the following gaps in order to registrer</p>
+                        <input type="text" id="insertNewUser_name" name="name" placeholder="Name"><br>
+                        <input type="text" id="insertNewUser_surname" name="surname" placeholder="Surname"><br>
+                        <input type="text" id="insertNewUser_email" name="email" placeholder="Email@email.com"><br>
+                        <input type="date" id="insertNewUser_dob" name="dob"><br>
+                        <input type="text" id="insertNewUser_username" name="username" placeholder="Username "><br>
+                        <input type="password" id="insertNewUser_password" name="password" placeholder="Password"><br>
+
+                        <input type="button" name="confirm_insert" value="Confirm" onclick="insertUser()">
+                        <input type="button" name="cancel_insert" value="Cancel" onclick="close_user_registration_form()">
+                        <br>
+                    </div>
             <span id="wrongInput" style="color: red;"></span>
         </form>
     `;
@@ -1557,5 +1572,52 @@ function loadCourses_user(user_id){
     .catch( error => console.error(error) ); //catch dell'errore
 }
 //...
+
+//Show the user registration form
+function show_user_registration_form(){
+    document.getElementById("insertNewUser").hidden=false
+}
+
+//Close the user registration form
+function close_user_registration_form(){
+    //reset fields
+    document.getElementById("insertNewUser_name").value="";
+    document.getElementById("insertNewUser_surname").value="";
+    document.getElementById("insertNewUser_email").value="";
+    document.getElementById("insertNewUser_dob").value="";
+    document.getElementById("insertNewUser_username").value="";
+    document.getElementById("insertNewUser_password").value="";
+
+    document.getElementById("insertNewUser").hidden=true;
+}
+
+function insertUser(){
+
+    //New User data
+    var u_name = document.getElementById("insertNewUser_name").value;
+    var u_surname = document.getElementById("insertNewUser_surname").value;
+    var u_email = document.getElementById("insertNewUser_email").value;
+    var u_birth_date = document.getElementById("insertNewUser_dob").value;
+    var u_username = document.getElementById("insertNewUser_username").value;
+    var u_password = document.getElementById("insertNewUser_password").value;
+
+
+
+    //Check that all required fileds are not empty
+    if(!u_name || !u_surname ||!u_email ||!u_birth_date ||!u_username ||!u_password ){
+        return ;
+    }
+
+    fetch('../api/v1/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify( { name: u_name, surname: u_surname,email: u_email,birth_date: u_birth_date,username: u_username,password: u_password,} ),
+    })
+    .then((resp) => {
+        alert("Utente creato con successo!");
+        close_user_registration_form();
+    })
+    .catch( error => console.error(error) ); // If there is any error you will catch them here
+}
 
 /**==========================*/
