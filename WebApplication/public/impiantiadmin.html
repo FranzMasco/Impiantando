@@ -28,29 +28,31 @@
                 if(username=="" || user_id=="" || token=="" || user_level=="" || user_level!="administrator"){
                     outputJS.innerHTML =
                     `
-                        <p>Authentication required</p>
+                        <p class="alert alert-danger">Authentication required</p>
                         <a href="index.html">Homepage</a>
                     `;
                 }else{
                     outputJS.innerHTML =
-                    `
-                    <p><b>Administrator user: </b>`+username+`</p>
-                    <p><b>Sport center: </b>`+sport_center_name+`</p>
-                    <button onclick="loadCourses_administrator('`+sport_center_id+`')">Display courses</button>
-                    <button onclick="loadFacilities_administrator('`+sport_center_id+`')">Display facilities</button>
-                    <button onclick="loadManagers_administrator('`+sport_center_id+`')">Display managers</button><br>
-                    <br>
-                    <button onclick="show_insert_course_form('`+sport_center_id+`')">Add new course</button><button onclick="show_insert_form()">Add new sport facility</button>
-                    <div id="insertNewFacility" hidden="true">
+                    `<div class="card">
+                    <div class="card-text p-2">
+                        <p><b>Administrator user: </b>`+username+`</p>
+                        <p><b>Sport center: </b>`+sport_center_name+`</p>
+                        <button class="btn btn-primary" onclick="loadCourses_administrator('`+sport_center_id+`')">Display courses</button>
+                        <button class="btn btn-primary" onclick="loadFacilities_administrator('`+sport_center_id+`')">Display facilities</button>
+                        <button class="btn btn-primary" onclick="loadManagers_administrator('`+sport_center_id+`')">Display managers</button><br>
+                        <br>
+                        <button class="btn btn-secondary" onclick="show_insert_course_form('`+sport_center_id+`')">Add new course</button>&nbsp;<button class="btn btn-secondary" onclick="show_insert_form()">Add new sport facility</button>
+                    </div></div>
+                    <div id="insertNewFacility" hidden="true" class="container mt-3">
                         <br>
                         <p>Fill the following gaps in order to registrer a new sport facility in your sport center</p>
-                        <input type="text" id="insertNewFacility_name" name="name" placeholder="Insert name new facility..."><br>
-                        <textarea name="description" id="insertNewFacility_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
-                        <input type="button" name="confirm_insert" value="Confirm" onclick="insertSportFacility()">
-                        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_form()">
+                        <input type="text" id="insertNewFacility_name" class="form-control" name="name" placeholder="Insert name new facility..."><br>
+                        <textarea name="description" class="form-control" id="insertNewFacility_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
+                        <input type="button" name="confirm_insert" value="Confirm" class="btn btn-success" onclick="insertSportFacility()"/>&nbsp;
+                        <input type="button" name="cancel_insert" value="Cancel" class="btn btn-danger" onclick="close_insert_form()"/>
                         <br>
                     </div>
-                    <div id="output_insertNewCourse">
+                    <div id="output_insertNewCourse" class="container mt-3">
                     </div>
                     <br>
                     <hr>
@@ -109,13 +111,25 @@
                 const span = document.createElement("span");
                 const from = document.createElement("input"); 
                 const to = document.createElement("input");
+                const row = document.createElement("div");
+                const col1 = document.createElement("div");
+                const col2 = document.createElement("div");
+
+                row.classList.add("row");
+                col1.classList.add("col");
+                col2.classList.add("col");
 
                 from.type="time";
                 to.type="time"; 
 
+                from.classList.add("form-control");
+                to.classList.add("form-control");
                 span.name="interval";
-                span.appendChild(from);
-                span.appendChild(to);
+                col1.appendChild(from);
+                col2.appendChild(to);
+                row.appendChild(col1);
+                row.appendChild(col2);
+                span.appendChild(row);
                 
                 //Add <br>
                 document.getElementById(day).appendChild(br);
@@ -146,9 +160,22 @@
         </script>
     </head>
     <body>
-        <h1>Impiantando</h1>
-        <a href="index.html">Homepage</a>          
-        <div id="outputJS"></div>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Homepage</a>
+                </li>
+                </ul>
+            </div>
+            </nav>
+        <div class="p-5 bg-success text-dark rounded">
+            <h1>Impiantando</h1>
+            <p>Web application version 2.0</p>        
+        </div>   
+        <div class="container mt-4">      
+            <div id="outputJS"></div>
+        </div>
         <script>admin_homepage()</script>
     </body>
 </html>
