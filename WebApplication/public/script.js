@@ -118,7 +118,6 @@ function getFacilities_array(sport_center_id){
 //@param[sport_center_id]: sport center identifier
 function loadFacilities_administrator(sport_center_id){
     const html_facilities = document.getElementById('output_facilities');
-
     if(!sport_center_id){
         window.location.href = "errorPage.html";
         return;
@@ -142,17 +141,21 @@ function loadFacilities_administrator(sport_center_id){
             let self_id = self.substring(self.lastIndexOf('/') + 1);
 
             html_facilities.innerHTML += `
-                <p><b>Name:</b>`+name+`</p>
-                <p><b>Description:</b>`+description+`</p>
-                <button onclick="show_form('`+self_id+`')">Edit</button>
-                <button onclick="deleteSportFacility('`+self_id+`', '`+sport_center_id+`');">Delete</button>
-                <div hidden="true" id="editForm`+self_id+`">
-                <br>
-                <input type="text" id="newName`+self_id+`" name="name" value="`+name+`"><br>
-                <textarea name="description" id="newDescription`+self_id+`" rows="4" cols="50">`+description+`</textarea><br>
-                <input type="button" name="confirm_edit" value="Confirm" onclick="updateSportFacility('`+self_id+`', '`+sport_center_id+`')">
-                <input type="button" name="close_form" value="Cancel" onclick="close_form('`+self_id+`')">
-                <br>
+                <div class='card'>
+                    <div class='card-text p-2'>
+                        <p><b>Name:</b> `+name+`</p>
+                        <p><b>Description:</b> `+description+`</p>
+                        <button class="btn btn-warning" onclick="show_form('`+self_id+`')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteSportFacility('`+self_id+`', '`+sport_center_id+`');">Delete</button>
+                    </div>
+                </div>
+                <div hidden="true" class="container mt-3" id="editForm`+self_id+`">
+                    <br>
+                    <input type="text" class="form-control" id="newName`+self_id+`" name="name" value="`+name+`"><br>
+                    <textarea name="description" class="form-control" id="newDescription`+self_id+`" rows="4" cols="50">`+description+`</textarea><br>
+                    <input type="button" class="btn btn-success" name="confirm_edit" value="Confirm" onclick="updateSportFacility('`+self_id+`', '`+sport_center_id+`')">
+                    <input type="button" class="btn btn-danger" name="close_form" value="Cancel" onclick="close_form('`+self_id+`')">
+                    <br>
                 </div>
                 <hr>
             `;
@@ -187,9 +190,13 @@ function loadManagers_administrator(sport_center_id){
             let email = manager["email"];  
 
             html_facilities.innerHTML += `
-                <p><b>Name:</b>`+name+`</p>
-                <p><b>Surname:</b>`+surname+`</p>
-                <p><b>Email:</b>`+email+`</p>
+                <div class="card">
+                <div class="card-text p-2">
+                <p><b>Name: </b>`+name+`</p>
+                <p><b>Surname: </b>`+surname+`</p>
+                <p><b>Email: </b>`+email+`</p>
+                </div>
+                </div>
                 <br>
                 <hr>
             `;
@@ -302,7 +309,7 @@ function insertSportFacility(){
 //@param[sport_center_id]: sport center identifier
 function loadCourses(sport_center_id){
     const html_courses = document.getElementById('output_facilities');
-
+    var courses_text="";
     if(!sport_center_id){
         window.location.href = "errorPage.html";
         return;
@@ -313,9 +320,9 @@ function loadCourses(sport_center_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_courses.innerHTML = "<p>Here is the list of the courses: </p><br>";
+            courses_text.innerHTML += "<p>Here is the list of the courses: </p><br>";
         }else{
-            html_courses.innerHTML = "<p>There are no sport courses registered yet</p><br>";
+            courses_text.innerHTML += "<p>There are no sport courses registered yet</p><br>";
         }
         
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -337,7 +344,7 @@ function loadCourses(sport_center_id){
             let specific_start_time = "";
             let specific_end_time = "";
 
-            html_courses.innerHTML += `
+            courses_text += `
                 <div class="card">
                 <div class="card-text p-2"><p><b>Name: </b>`+name+`</p>
                 <p><b>Sport: </b>`+sport+`</p>
@@ -360,21 +367,21 @@ function loadCourses(sport_center_id){
                 week = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
                 week_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Start date: </b>`+date_format_1(start_date)+`</p>
                     <p><b>End date: </b>`+date_format_1(end_date)+`</p>
                 `;
 
                 for(var j=0; j<7; j++){
                     if(week[j].length>0){
-                        html_courses.innerHTML += `
+                        courses_text += `
                             <p><b>`+week_days[j]+`: </b></p>
                         `;
                     }
                     for(time in week[j]){
                         time_interval = week[j][time];
-                        html_courses.innerHTML += `
-                            <li>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
+                        courses_text += `
+                            <li class='list-group-item'>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
                         `;
                     }
                 }
@@ -383,13 +390,13 @@ function loadCourses(sport_center_id){
                 specific_date = new Date(course["specific_date"]);
                 specific_start_time = course["specific_start_time"];
                 specific_end_time = course["specific_end_time"];
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Date: </b>`+date_format_1(specific_date)+`</p>
                     <p><b>From: </b>`+specific_start_time+`<b> To: </b>`+specific_end_time+`</p>
                 `;
             }
 
-            html_courses.innerHTML += `
+            courses_text += `
             <br>
                 <button class="btn btn-primary" onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message`+self_id+`"></div>
                 <div id="login_form`+self_id+`"></div>
@@ -398,6 +405,7 @@ function loadCourses(sport_center_id){
             `;
 
         }
+        html_courses.innerHTML=courses_text;
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
@@ -408,7 +416,7 @@ function loadCourses(sport_center_id){
 //@param[sport_center_id]: sport center identifier
 function loadCourses_administrator(sport_center_id){
     const html_courses = document.getElementById('output_facilities');
-
+    var courses_text = "";
     if(!sport_center_id){
         window.location.href = "errorPage.html";
         return;
@@ -419,7 +427,7 @@ function loadCourses_administrator(sport_center_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_courses.innerHTML = "<p>Here is the list of the courses that has been inserted: </p><br>";
+            courses_text = "<p>Here is the list of the courses that has been inserted: </p><br>";
         }
         
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -441,10 +449,12 @@ function loadCourses_administrator(sport_center_id){
             let specific_start_time = "";
             let specific_end_time = "";
 
-            html_courses.innerHTML += `
-                <p><b>Name: </b>`+name+`</p>
-                <p><b>Sport: </b>`+sport+`</p>
-                <p><b>Description: </b>`+description+`</p>
+            courses_text += `
+                <div class='card'>
+                    <div class='card-text p-2'>
+                        <p><b>Name: </b>`+name+`</p>
+                        <p><b>Sport: </b>`+sport+`</p>
+                        <p><b>Description: </b>`+description+`</p>
             `;
 
             if(periodic){   //the course is offered for example every monday
@@ -463,21 +473,21 @@ function loadCourses_administrator(sport_center_id){
                 week = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
                 week_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Start date: </b>`+date_format_1(start_date)+`</p>
                     <p><b>End date: </b>`+date_format_1(end_date)+`</p>
                 `;
 
                 for(var j=0; j<7; j++){
                     if(week[j].length>0){
-                        html_courses.innerHTML += `
+                        courses_text += `
                             <p><b>`+week_days[j]+`: </b></p>
                         `;
                     }
                     for(time in week[j]){
                         time_interval = week[j][time];
-                        html_courses.innerHTML += `
-                            <li>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
+                        courses_text += `
+                            <li class='list-group-item'>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
                         `;
                     }
                 }
@@ -486,20 +496,22 @@ function loadCourses_administrator(sport_center_id){
                 specific_date = new Date(course["specific_date"]);
                 specific_start_time = course["specific_start_time"];
                 specific_end_time = course["specific_end_time"];
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Date: </b>`+date_format_1(specific_date)+`</p>
                     <p><b>From: </b>`+specific_start_time+`<b> To: </b>`+specific_end_time+`</p>
                 `;
             }
 
-            html_courses.innerHTML += `
+            courses_text += `
                 <p><b>Creation timestamp: </b>`+date_format(creation_date)+`</p>
-                <button onclick="loadEditCourse('`+self_id+`', '`+sport_center_id+`')">Edit</button>
-                <button onclick="deleteCourse('`+self_id+`');">Delete</button>
+                <button class="btn btn-warning" onclick="loadEditCourse('`+self_id+`', '`+sport_center_id+`')">Edit</button>
+                <button class="btn btn-danger" onclick="deleteCourse('`+self_id+`');">Delete</button>
+                </div></div>
                 <hr>
             `;
-
+            
         }
+        html_courses.innerHTML=courses_text;
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
@@ -570,9 +582,9 @@ function load_formNewCourse(sport_center_id){
         output += `
             <br>
             <p>Fill the following gaps in order to registrer a new course in your sport center</p>
-            <input type="text" id="insertNewCourse_name" name="name" placeholder="Insert name new course..."><br>
-            <input type="text" id="insertNewCourse_sport" name="sport" placeholder="Specify a meaningful sport category..."><br>
-            <textarea name="description" id="insertNewCourse_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
+            <input type="text" class="form-control" id="insertNewCourse_name" name="name" placeholder="Insert name new course..."><br>
+            <input type="text" class="form-control" id="insertNewCourse_sport" name="sport" placeholder="Specify a meaningful sport category..."><br>
+            <textarea name="description" class="form-control" id="insertNewCourse_description" rows="4" cols="50" placeholder="Insert description..."></textarea><br>
         `
 
         //Prepare sport facilities options
@@ -586,7 +598,7 @@ function load_formNewCourse(sport_center_id){
         }
         output +=`
             Select sport facility:
-            <select name="course_sport_facility" id="insertNewCourse_sportFacility">
+            <select class="form-select" name="course_sport_facility" id="insertNewCourse_sportFacility">
                 `+sportFacilityOptions+`
             </select>
             <br>
@@ -594,12 +606,12 @@ function load_formNewCourse(sport_center_id){
         
         //Select perodicity
         output+=`
-            <input name="periodic" id="insertNewCourse_periodic_true" type="radio" value="true" onclick="displayPeriodicSchedule()">
-            <label for="insertNewCourse_periodic_true">Periodic course</label><br>
-            <input name="periodic" id="insertNewCourse_periodic_false" type="radio" value="false" onclick="displayNotPeriodicSchedule()">
-            <label for="insertNewCourse_periodic_false">Not periodic course</label><br>
+            <input name="periodic" class="form-check-input" id="insertNewCourse_periodic_true" type="radio" value="true" onclick="displayPeriodicSchedule()">
+            <label for="insertNewCourse_periodic_true" class="form-check-label">Periodic course</label><br>
+            <input name="periodic" class="form-check-input" id="insertNewCourse_periodic_false" type="radio" value="false" onclick="displayNotPeriodicSchedule()">
+            <label for="insertNewCourse_periodic_false" class="form-check-label">Not periodic course</label><br>
             <br>
-            <div id="timeSchedule">
+            <div id="timeSchedule" class="container mt-3">
             </div>
         `
 
@@ -618,15 +630,15 @@ function displayNotPeriodicSchedule(){
     var output = `
         <div id="form_not_periodic_course">
             <p>--> not periodic course registration form</p>
-            <label for="insertNewCourse_specificDate">Date:</label>
-            <input type="date" id="insertNewCourse_specificDate" name="specific_date"><br>
-            <label for="insertNewCourse_specificStartTime">Start at:</label>
-            <input type="time" id="insertNewCourse_specificStartTime" name="specific_fromTime"><br>
-            <label for="insertNewCourse_specificEndTime">Finish at:</label>
-            <input type="time" id="insertNewCourse_specificEndTime" name="specific_toTime"><br>
+            <label class="form-label" for="insertNewCourse_specificDate">Date:</label>
+            <input type="date" class="form-control" id="insertNewCourse_specificDate" name="specific_date"><br>
+            <label class="form-label" for="insertNewCourse_specificStartTime">Start at:</label>
+            <input type="time" class="form-control" id="insertNewCourse_specificStartTime" name="specific_fromTime"><br>
+            <label class="form-label" for="insertNewCourse_specificEndTime">Finish at:</label>
+            <input type="time" class="form-control" id="insertNewCourse_specificEndTime" name="specific_toTime"><br>
         </div>
-        <input type="button" name="confirm_insert" value="Confirm" onclick="insertCourse()">
-        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
+        <input type="button" class="btn btn-success" name="confirm_insert" value="Confirm" onclick="insertCourse()">
+        <input type="button" class="btn btn-danger" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
         <br>
     `;
 
@@ -643,65 +655,114 @@ function displayPeriodicSchedule(){
     var output = `
         <div id="form_periodic_course">
             <p>--> periodic course registration form</p>
-            <label for="insertNewCourse_startDate">Start date:</label>
-            <input type="date" id="insertNewCourse_startDate" name="start_date"><br>
-            <label for="insertNewCourse_endDate">End date:</label>
-            <input type="date" id="insertNewCourse_endDate" name="end_date"><br>
+            <label class="form-label" for="insertNewCourse_startDate">Start date:</label>
+            <input type="date" class="form-control" id="insertNewCourse_startDate" name="start_date"><br>
+            <label class="form-label" for="insertNewCourse_endDate">End date:</label>
+            <input type="date" class="form-control" id="insertNewCourse_endDate" name="end_date"><br>
             <p>Fill week schedule (FROM - TO)</p>
             <ul>
             <li>Mon</li>
             <div id="mon">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="monAddInterval" onclick="addInterval('mon')">Add interval</button>
+            <button id="monAddInterval" class="btn btn-secondary" onclick="addInterval('mon')">Add interval</button>
             <li>Tue</li>
             <div id="tue">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="tueAddInterval" onclick="addInterval('tue')">Add interval</button>
+            <button id="tueAddInterval" class="btn btn-secondary" onclick="addInterval('tue')">Add interval</button>
             <li>Wed</li>
             <div id="wed">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="monAddInterval" onclick="addInterval('wed')">Add interval</button>
+            <button id="monAddInterval" class="btn btn-secondary" onclick="addInterval('wed')">Add interval</button>
             <li>Thu</li>
             <div id="thu">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="monAddInterval" onclick="addInterval('thu')">Add interval</button>
+            <button id="monAddInterval" class="btn btn-secondary" onclick="addInterval('thu')">Add interval</button>
             <li>Fri</li>
             <div id="fri">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="monAddInterval" onclick="addInterval('fri')">Add interval</button>
+            <button id="monAddInterval" class="btn btn-secondary" onclick="addInterval('fri')">Add interval</button>
             <li>Sat</li>
             <div id="sat">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="monAddInterval" onclick="addInterval('sat')">Add interval</button>
+            <button id="monAddInterval" class="btn btn-secondary" onclick="addInterval('sat')">Add interval</button>
             <li>Sun</li>
             <div id="sun">
             <span name="interval">
-            <input type="time"><input type="time">
+            <div class="row">
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+                <div class="col">
+                <input type="time" class="form-control">
+                </div>
+            </div>
             </span>
             </div>
-            <button id="monAddInterval" onclick="addInterval('sun')">Add interval</button>
+            <button id="monAddInterval" class="btn btn-secondary" onclick="addInterval('sun')">Add interval</button>
             </ul>
         </div>
-        <input type="button" name="confirm_insert" value="Confirm" onclick="insertCourse()">
-        <input type="button" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
+        <input type="button" class="btn btn-success" name="confirm_insert" value="Confirm" onclick="insertCourse()">
+        <input type="button" class="btn btn-danger" name="cancel_insert" value="Cancel" onclick="close_insert_course_form()">
         <br>
     `;
 
@@ -1184,8 +1245,10 @@ function login(login_type){
                 setCookie("user_level", user_level, 1);
                 window.location.href="autenticateduserhome.html";
             }else if(data.username==false){ //wrong username
+                wrongInput.classList.add("alert alert-danger");
                 wrongInput.innerHTML = "Bad username )-:";
             }else if(data.password==false){ //wrong password
+                wrongInput.classList.add("alert alert-danger");
                 wrongInput.innerHTML = "Bad password )-:";
             }            
         })
