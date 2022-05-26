@@ -281,6 +281,47 @@ router.patch('/courses/:id/managers', async (req, res, next) => {
 /**---*/
 
 /**Remove manager from the course*/
+router.delete('/courses/:id/managers', tokenChecker);
+router.delete('/courses/:id/managers', async (req, res, next) => {
+
+    //Remove manager from course list of managers
+    let course_id = req.params.id;
+    let manager_id = req.body.manager_id;
+
+    Course.findOneAndUpdate(
+    { _id: course_id }, 
+    { $pull: { managers: manager_id  } },
+    function (error, success) {
+        if (error) {
+            console.log(error);
+            res.status(500).send(error);
+        } else {
+            console.log(success);
+        }
+    });
+
+    next();
+
+}, async (req, res, next) => {
+
+    //Remove course from manager list of courses
+    let course_id = req.params.id;
+    let manager_id = req.body.manager_id;
+
+    ManagerUser.findOneAndUpdate(
+    { _id: manager_id }, 
+    { $pull: { courses: course_id  } },
+    function (error, success) {
+        if (error) {
+            console.log(error);
+            res.status(500).send(error);
+        } else {
+            console.log(success);
+        }
+    });
+
+    res.status(200).send("OK");
+});
 /**---*/
 
 module.exports = router
