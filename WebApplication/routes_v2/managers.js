@@ -18,7 +18,7 @@ router.get('/managers', async (req, res) => {
     let managers = await Managers.find({});
     let response = managers.map( (manager) => {
         return {
-            self: "/api/v1/managers/"+manager.id,
+            self: "/api/v2/managers/"+manager.id,
             name: manager.name,
             surname: manager.surname,
             email: manager.email,
@@ -27,6 +27,8 @@ router.get('/managers', async (req, res) => {
             password: manager.password,
             society: manager.society,
             courses: manager.courses,
+            sport_center_id: manager.sport_center,
+            sport_center: "/api/v2/sport_centers/"+sport_center_id
         };
     });
     res.status(200).json(response);
@@ -42,9 +44,10 @@ router.post('/managers', async (req, res) => {
     let manager_password = req.body.password;
     let manager_society = req.body.society;
     let manager_courses = req.body.courses;
+    let manager_sport_center_id = req.body.sport_center_id;
 
     //Check if a manager already exists
-    const managersExists = await Managers.findOne({name: manager_name, surmane: manager_surname}).select("name").lean();
+    const managersExists = await Managers.findOne({name: manager_name, surname: manager_surname, sport_center: manager_sport_center_id}).select("sport_center").lean();
     if(managersExists) {res.status(400).send('user already exists');return;}
 
     let manager = new Managers({
@@ -55,19 +58,20 @@ router.post('/managers', async (req, res) => {
         username: manager_username,
         password: manager_password,
         society: manager_society,
-        courses: manager_courses
+        courses: manager_courses,
+        sport_center: manager_sport_center_id
     })
 
     await manager.save();
     
     let manager_id = manager.id;
-    res.location("/api/v1/managers/"+manager_id).status(201).send();
+    res.location("/api/v2/managers/"+manager_id).status(201).send();
 });
 
 router.get('/managers/:id', async (req, res) => {
     let manager = await Managers.findOne({id:req.params.id});
     let response = {
-        self: "/api/v1/managers/"+ manager.id,
+        self: "/api/v2/managers/"+ manager.id,
         name: manager.name,
         surname: manager.surname,
         email: manager.email,
@@ -76,6 +80,8 @@ router.get('/managers/:id', async (req, res) => {
         password: manager.password,
         society: manager.society,
         courses: manager.courses,
+        sport_center_id: manager.sport_center,
+        sport_center: "/api/v2/sport_centers/"+manager.sport_center
     }
     res.status(200).json(response);
 })
@@ -88,7 +94,7 @@ router.get('/managers/:id/courses', async (req, res) => {
         let managers_array = course.managers;
         let links = [];
         managers_array.forEach(manager => {
-            links.push("/api/v1/managers/"+manager);
+            links.push("/api/v2/managers/"+manager);
         })
         return {
             self: "/api/v1/courses/"+course.id,
@@ -114,34 +120,17 @@ router.get('/managers/:id/courses', async (req, res) => {
         };
     });
     res.status(200).json(response);
-});
-//Delets a manager and its references in the courses
+})
+
 router.delete('/managers/:id', tokenChecker);
 router.delete('/managers/:id', async (req, res) => {
     let manager = await Managers.findById(req.params.id).exec();
-    
     if (!manager) {
         res.status(404).json({status: "error"})
         console.log('resource not found')
         return;
     }
-    let managers = await Managers.findOne({_id:req.params.id});
-    let courses = await Courses.find({_id: {$in: managers.courses}});
-
-    
-
-    courses.forEach(course => {
-        console.log(course.name+" "+course._id+" "+req.params.id );
-        Courses.findByIdAndUpdate({_id:course._id},{$pull:{managers:req.params.id}},function (error, success) {
-            if (error) {
-                console.log(error);
-                res.status(500).send(error);
-            } else {
-                console.log(success);
-            }
-        });
-    });
-    await manager.deleteOne();
+    await manager.deleteOne()
     res.status(204).json({status: "success"});
 });
 

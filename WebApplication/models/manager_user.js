@@ -23,7 +23,8 @@ const manager_schema = mongoose.Schema({
     username: String,
     password: String,
     society: String,
-    courses: [mongoose.Schema.Types.ObjectId]
+    courses: [mongoose.Schema.Types.ObjectId],
+    sport_center: mongoose.Schema.Types.ObjectId,
 },{collection: 'manager_user'});
 
 module.exports = mongoose.model("ManagerUser", manager_schema);

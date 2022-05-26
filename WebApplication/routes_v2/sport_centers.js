@@ -21,25 +21,27 @@ router.get('/sport_centers/:id/managers', async (req, res) => {
 */
 
 router.get('/sport_centers/:id/managers', async (req, res) => {
-    let courses = await Courses.find({sport_center_id:req.params.id});
-
-    let managersss= [];
-    courses.forEach(course => {
-        course.managers.forEach(course2 => {
-            managersss.push(course2);
-        })
-    })
-
-    let managers = await Managers.find({_id: {$in: managersss}})
+    let managers = await Managers.find({sport_center:req.params.id});
 
     let response = managers.map( (manager) => {
+
+        let courses_array = manager.courses;
+        let links = [];
+        courses_array.forEach(course => {
+            links.push("/api/v2/courses/"+course);
+        })
+
         return {
-            self: "/api/v1/managers/"+manager.id,
-            sport_center: "/api/v1/sport_centers/"+req.params.id,
+            self: "/api/v2/managers/"+manager.id,
+            sport_center: "/api/v2/sport_centers/"+req.params.id,
+            sport_center_id: manager.sport_center_id,
             name: manager.name,
             surname: manager.surname,
             email:manager.email,
-            society:manager.society
+            society:manager.society,
+            birth_date: manager.birth_date,
+            courses_id: manager.courses,
+            courses: links
         };
     });
     res.status(200).json(response);
