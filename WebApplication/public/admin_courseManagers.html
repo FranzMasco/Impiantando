@@ -144,7 +144,7 @@
                     //console.log(data);
 
                     if(data.length>0){
-                        output = `<p>Here is the list of the managers available: </p>`;
+                        output = `<p>Here is the list of the managers available</p><p>Click on a manager to assign him or her the course</p>`;
 
                         //Table header
                         output += `
@@ -170,9 +170,11 @@
                             var m_surname = managerInfo["surname"];
                             var m_email = managerInfo["email"];
                             var m_society = managerInfo["society"];
+                            var m_link = managerInfo["self"];
+                            var m_id = m_link.substring(m_link.lastIndexOf('/') + 1);
 
                             output += `
-                            <tr>
+                            <tr style="cursor: pointer;" onclick="addCourseManager('`+course_id+`', '`+m_id+`')">
                                 <th scope="row">`+counter+`</th>
                                 <td>`+m_name+`</td>
                                 <td>`+m_surname+`</td>
@@ -195,6 +197,18 @@
                     html_possible_manager.innerHTML=output;
                 })
                 .catch( error => console.error(error) ); //catch dell'errore
+            }
+            //...
+
+            //Add manager to a course
+            function addCourseManager(course_id, manager_id){
+
+                //Check required information
+                if(!course_id || !manager_id){
+                    concole.log("Missing required data");
+                    return;
+                }
+                alert("ciao");
             }
             //...
 

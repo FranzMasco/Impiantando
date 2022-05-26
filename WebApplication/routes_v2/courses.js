@@ -236,4 +236,51 @@ router.get('/courses/:id/managers', async (req, res) => {
     res.status(200).json(response);
 });
 
+/**Assign course manager*/
+router.patch('/courses/:id/managers', tokenChecker);
+router.patch('/courses/:id/managers', async (req, res, next) => {
+
+    //Add manager to course list of managers
+    let course_id = req.params.id;
+    let manager_id = req.body.manager_id;
+
+    Course.findOneAndUpdate(
+    { _id: course_id }, 
+    { $push: { managers: manager_id  } },
+    function (error, success) {
+        if (error) {
+            console.log(error);
+            res.status(500).send(error);
+        } else {
+            console.log(success);
+        }
+    });
+
+    next();
+
+}, async (req, res, next) => {
+
+    //Add course to manger list of courses
+    let course_id = req.params.id;
+    let manager_id = req.body.manager_id;
+
+    ManagerUser.findOneAndUpdate(
+    { _id: manager_id }, 
+    { $push: { courses: course_id  } },
+    function (error, success) {
+        if (error) {
+            console.log(error);
+            res.status(500).send(error);
+        } else {
+            console.log(success);
+        }
+    });
+
+    res.status(200).send("OK");
+});
+/**---*/
+
+/**Remove manager from the course*/
+/**---*/
+
 module.exports = router
