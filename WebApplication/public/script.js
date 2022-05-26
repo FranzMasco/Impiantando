@@ -505,7 +505,7 @@ function loadCourses_administrator(sport_center_id){
             courses_text += `
                 <p><b>Creation timestamp: </b>`+date_format(creation_date)+`</p>
                 <button class="btn btn-warning" onclick="loadEditCourse('`+self_id+`', '`+sport_center_id+`')">Edit</button>
-                <button class="btn btn-danger" onclick="deleteCourse('`+self_id+`');">Delete</button>
+                <button class="btn btn-danger" onclick="deleteCourse('`+self_id+`', '`+sport_center_id+`');">Delete</button>
                 </div></div>
                 <hr>
             `;
@@ -826,8 +826,8 @@ function insertCourse(){
             var intervalsArray = [];
 
             for(var interval=0; interval<num_intervals; interval++){
-                var from = intervals[interval].children[0].value;
-                var to = intervals[interval].children[1].value;
+                var from = intervals[interval].children[0].children[0].children[0].value;
+                var to = intervals[interval].children[0].children[1].children[0].value;
                 console.log("from: "+from);
                 console.log("to: "+to);
 
@@ -1528,6 +1528,8 @@ function loadCourses_user(user_id){
         //console.log(data);
         if(data.length>0){
             courses_text = "<p>Here is the list of the courses you are registered to: </p><br>";
+        } else {
+            courses_text = "<p>You have no courses yet</p><br>";
         }
         courses_text += `<hr>`;
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
