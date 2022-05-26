@@ -1516,7 +1516,7 @@ function hide_partecipants(course_id){
 //@param[user_id]: user identifier
 function loadCourses_user(user_id){
     const html_courses = document.getElementById('output_courses');
-
+    var courses_text="";
     if(!user_id){
         window.location.href = "errorPage.html";
         return;
@@ -1527,9 +1527,9 @@ function loadCourses_user(user_id){
     .then(function(data) {
         //console.log(data);
         if(data.length>0){
-            html_courses.innerHTML = "<p>Here is the list of the courses you are registered to: </p><br>";
+            courses_text = "<p>Here is the list of the courses you are registered to: </p><br>";
         }
-        html_courses.innerHTML += `<hr>`;
+        courses_text += `<hr>`;
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
             var course = data[i];
             //console.log(course);
@@ -1548,7 +1548,8 @@ function loadCourses_user(user_id){
             let specific_start_time = "";
             let specific_end_time = "";
 
-            html_courses.innerHTML += `
+            courses_text += `
+                <div class='card'><div class='card-text p-2'>
                 <p><b>Name: </b>`+name+`</p>
                 <p><b>Sport: </b>`+sport+`</p>
                 <p><b>Description: </b>`+description+`</p>
@@ -1570,21 +1571,21 @@ function loadCourses_user(user_id){
                 week = [monday, tuesday, wednesday, thursday, friday, saturday, sunday];
                 week_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Start date: </b>`+date_format_1(start_date)+`</p>
                     <p><b>End date: </b>`+date_format_1(end_date)+`</p>
                 `;
 
                 for(var j=0; j<7; j++){
                     if(week[j].length>0){
-                        html_courses.innerHTML += `
+                        courses_text += `
                             <p><b>`+week_days[j]+`: </b></p>
                         `;
                     }
                     for(time in week[j]){
                         time_interval = week[j][time];
-                        html_courses.innerHTML += `
-                            <li>from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
+                        courses_text += `
+                            <li class="list-group-item">from: `+time_interval["from"]+` to: `+time_interval["to"]+`</li>
                         `;
                     }
                 }
@@ -1593,7 +1594,7 @@ function loadCourses_user(user_id){
                 specific_date = new Date(course["specific_date"]);
                 specific_start_time = course["specific_start_time"];
                 specific_end_time = course["specific_end_time"];
-                html_courses.innerHTML += `
+                courses_text += `
                     <p><b>Date: </b>`+date_format_1(specific_date)+`</p>
                     <p><b>From: </b>`+specific_start_time+`<b> To: </b>`+specific_end_time+`</p>
                 `;
@@ -1601,11 +1602,12 @@ function loadCourses_user(user_id){
             }
 
             //Add button to unsubscribe from the course
-            html_courses.innerHTML += `<br>
-               <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div><br>`;
+            courses_text += `<br>
+               <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div></div></div><br>`;
 
-            html_courses.innerHTML += `<hr>`;
+            courses_text += `<hr>`;
         }
+        html_courses.innerHTML = courses_text;
     })
     .catch( error => console.error(error) ); //catch dell'errore
 }
