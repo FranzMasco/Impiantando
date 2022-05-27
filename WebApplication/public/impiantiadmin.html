@@ -41,7 +41,7 @@
                         <button class="btn btn-primary" onclick="loadFacilities_administrator('`+sport_center_id+`')">Display facilities</button>
                         <button class="btn btn-primary" onclick="loadManagers_administrator('`+sport_center_id+`')">Display managers</button><br>
                         <br>
-                        <button class="btn btn-secondary" onclick="show_insert_course_form('`+sport_center_id+`')">Add new course</button>&nbsp;<button class="btn btn-secondary" onclick="show_insert_form()">Add new sport facility</button>
+                        <button class="btn btn-secondary" onclick="show_insert_course_form('`+sport_center_id+`')">Add new course</button>&nbsp;<button class="btn btn-secondary" onclick="show_insert_form()">Add new sport facility</button>&nbsp;<button class="btn btn-secondary" onclick="show_insert_manager_form('`+sport_center_id+`')">Add new manager</button>
                     </div></div>
                     <div id="insertNewFacility" hidden="true" class="container mt-3">
                         <br>
@@ -54,6 +54,7 @@
                     </div>
                     <div id="output_insertNewCourse" class="container mt-3">
                     </div>
+                    <div id="output_insertNewManager" class="container mt-3"></div>
                     <br>
                     <hr>
                     <div id="output_facilities">
@@ -89,6 +90,7 @@
             //Show form to insert a new sport facility
             function show_insert_form(){
                 close_insert_course_form();  //close the form to add a new course which could be open
+                close_insert_manager_form();  //close the form to add a new manager which could be open
                 document.getElementById("insertNewFacility").hidden=false
             }
 
@@ -104,13 +106,27 @@
             //Show form to insert a new sport course
             function show_insert_course_form(sport_center_id){
                 close_insert_form();  //close the form to add a new sport facility which could be open
+                close_insert_manager_form();  //close the form to add a new manager which could be open
                 load_formNewCourse(sport_center_id);
+            }
+
+            //Show form to insert a new manager
+            function show_insert_manager_form(sport_center_id){
+                close_insert_form(); //close the form to add a new sport facility which could be open
+                close_insert_course_form(); //close the form to add a new course which could be open
+                load_formNewManager(sport_center_id);
             }
 
             //Show form to insert a new sport course
             function close_insert_course_form(){
                 const html_form_new_course = document.getElementById('output_insertNewCourse');
                 html_form_new_course.innerHTML="";
+            }
+            
+            //Hide form to insert a new manager
+            function close_insert_manager_form(){
+                const html_form_new_manager = document.getElementById('output_insertNewManager');
+                html_form_new_manager.innerHTML="";
             }
 
 

@@ -978,6 +978,48 @@ function insertCourse(){
 }
 //...
 
+//Display a form to insert a new manager
+//@param[sport_center_id]: id of the sport center where the manager works
+function load_formNewManager(sport_center_id){
+    const html_form_new_course = document.getElementById('output_insertNewManager');
+    var output = "";
+
+    var managers = [];
+
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    //Load sport facilies in order to select where to add the course
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/managers')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {    
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var manager = data[i];
+            managers.push(manager);
+        }
+        
+        //Name + Surname + Email + Birth date + Society
+        output += `
+            <br>
+            <p>Fill the following gaps in order to registrer a new manager in your sport center</p>
+            <input type="text" class="form-control" id="insertNewManager_name" name="name" placeholder="Insert name new manager..."><br>
+            <input type="text" class="form-control" id="insertNewManager_surname" name="surname" placeholder="Insert surname new manager..."><br>
+            <input type="text" class="form-control" id="insertNewManager_email" name="email" placeholder="Insert email new manager..."><br>
+            <input type="date" class="form-control" id="insertNewManager_birth_date" name="birth_date"><br>
+            <input type="text" class="form-control" id="insertNewManager_society" name="society" placeholder="Insert society new manager..."><br>
+            <input type="button" class="btn btn-success" name="confirm_insert" value="Confirm" onclick="insertManager()">
+            <input type="button" class="btn btn-danger" name="cancel_insert" value="Cancel" onclick="close_insert_manager_form()">
+            <br>
+        `
+        
+        html_form_new_course.innerHTML=output;
+
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+
 //Modify an existing course
 //@param[periodicity] : TRUE iff the course is periodic, FALSE otherwise
 function PATCH_editCourse(course_id, periodicity){
