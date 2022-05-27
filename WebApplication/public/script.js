@@ -1315,6 +1315,23 @@ function login(login_type){
 }
 //...
 
+//Logout
+//Delete user info from cookies
+function logout(){
+    const cookies = document.cookie.split(";");
+    for (const cookie of cookies) {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+    
+    //Redirect to homepage
+    window.location.href = "index.html";
+
+}
+//...
+
+
 //Course submission
 //@param[course_id] id of the course
 //OUTPUT: 1 --> not authenticated
