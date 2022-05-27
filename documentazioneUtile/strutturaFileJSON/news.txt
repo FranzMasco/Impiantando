@@ -1,0 +1,5 @@
+News:
+- id_news
+- testo
+- id_corso
+- data di pubblicazione
