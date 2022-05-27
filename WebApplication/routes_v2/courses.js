@@ -203,6 +203,24 @@ router.get('/courses/:id/news', async (req, res) => {
     res.status(200).json(response);
 });
 
+router.get('/courses/:id/participants_number', async (req, res) => {
+    let courses = await Course.findOne({_id:req.params.id});
+
+    if(!courses){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
+    let num_users = await Users.find({_id: {$in: courses.users}}).count();
+
+    let response = {
+        self: "/api/v2/course/"+req.params.id,
+        partecipants: num_users
+    };
+    res.status(200).json(response);
+});
+
 
 router.delete('/courses/:id', tokenChecker);
 router.delete('/courses/:id', async (req, res) => {
