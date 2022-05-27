@@ -1167,6 +1167,7 @@ function display_loginForm(login_type){
                 <label for="password">Password: </label>
                 <input type="password" name="password" id="loginPassword" required> <br>
                 <input type="button" class="btn btn-primary" value="Sign in" onclick="login('`+login_type+`')">
+                <button onclick="location.href = 'registration.html';" class="btn btn-success" id="register">Registrati</button>
                 <span id="wrongInput" style="color: red;"></span>
             </form>
         <div>
@@ -1854,5 +1855,24 @@ function insertUser(){
     })
     .catch( error => console.error(error) ); // If there is any error you will catch them here
 }
+
+//Show the admin registration form
+function show_admin_registration_form(){
+    document.getElementById("insertNewAdmin").hidden=false
+}
+
+//Close the admin registration form
+function close_admin_registration_form(){
+    //reset fields
+    document.getElementById("insertNewAdmin_name").value="";
+    document.getElementById("insertNewAdmin_surname").value="";
+    document.getElementById("insertNewAdmin_email").value="";
+    document.getElementById("insertNewAdmin_dob").value="";
+    
+
+    document.getElementById("insertNewAdmin").hidden=true;
+    window.location.href = "index.html";
+}
+
 
 /**==========================*/
