@@ -20,15 +20,56 @@
                 var description = form.description.value;
                 var city = form.city.value;
                 var address = form.address.value;
+                var warning = ""
  
                 
                 var str = "mailto:francescomascotti@gmail.com?subject=Add admin and sport center&body=";
-                    str += "Hi my name is " + name + " " +surname + ", ";
-                    str += "I am Intersted to register to impiantando, my email is " + email + ", ";
-                    str += "I was born in " + dob + ", ";
-                    str += "The sport center name is " + csname + ", where we "+ description+ " ";
-                    str += "And is located in " + city + " "+ address;
+
+                if (name.length > 0) {
+                    str += "Name: " + name + ", ";
+                } else {
+                    warning += "Name is required"
+                }
+                if (surname.length > 0) {
+                    str += "Surname: " + surname + ", ";
+                } else {
+                    warning += "Surname is required"
+                }
+                if (email.length > 0) {
+                    str += "Email: " + email + ", ";
+                } else {
+                    warning += "Email is required"
+                }
+                if (dob.length > 0) {
+                    str += "Birth date: " + dob + ", ";
+                } else {
+                    warning += "Date of birth is required"
+                }
+                if (csname.length > 0) {
+                    str += "Sport center name: " + csname + ", ";
+                } else {
+                    warning += "Sport center name is required"
+                }
+                if (description.length > 0) {
+                    str += "Sport center description: " + description + ", ";
+                } else {
+                    warning += "Sport center description is required"
+                }
+                if (city.length > 0) {
+                    str += "Sport center city: " + city + ", ";
+                } else {
+                    warning += "Sport center city is required"
+                }
+                if (address.length > 0) {
+                    str += "Sport center address: " + addrress + ". ";
+                } else {
+                    warning += "Sport center address is required"
+                }
+                if (warning.length > 0) {
+                    alert(warning)
+                } else {
                     document.getElementById('send').href = str;
+                }    
             }
         </script>
     </head>
