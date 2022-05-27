@@ -142,6 +142,26 @@
             }
 
         </script>
+
+        <script>
+        //Check if the user is authenticated
+        // IF(the user is authenticated) THEN display logout
+        function display_logout(){
+
+            const output_html = document.getElementById("logout");
+
+            //Retrive authentication data
+            var username = getCookie("username");
+            var token = getCookie("token");
+
+            if(username && token){
+                output_html.innerHTML = `
+                    <p><b>Logged as:</b> `+username+`</p>
+                    <button class="btn btn-danger" onclick="logout();">Logout</button>
+                `;
+            }
+        }
+        </script>
     </head>
     <body>
         <script>
@@ -162,7 +182,8 @@
             </nav>
         <div class="p-5 bg-success text-dark rounded">
             <h1>Impiantando</h1>
-            <p>Web application version 2.0</p>        
+            <p>Web application version 2.0</p>       
+            <span id="logout"></span> 
         </div>
         <div class="container mt-4">
             <div class="card">
@@ -176,5 +197,6 @@
             <div id="output_facilities"></div>
         </div>
         <script>load_homepage()</script>
+        <script>display_logout()</script>
     </body>
 </html>
