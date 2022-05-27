@@ -75,6 +75,16 @@
             function show_form(id_sport_facility){
                 document.getElementById("editForm"+id_sport_facility).hidden=false
             }
+
+            //Hide manager modification form
+            function close_form_managers(id_manager){
+                document.getElementById("editFormManagers"+id_manager).hidden=true
+            }
+            
+            //Show manager modification form
+            function show_form_managers(id_manager){
+                document.getElementById("editFormManagers"+id_manager).hidden=false
+            }
             
             //Show form to insert a new sport facility
             function show_insert_form(){
@@ -138,7 +148,10 @@
                 document.getElementById(day).appendChild(span);
             }
             
-            function delete_manager_request(manager_id){
+            //Delete manager
+            //@param[manager_id]: id of the manager that has to be deleted
+            //@param[sport_center_id]: id of the sport center where the manager works
+            function delete_manager_request(manager_id, sport_center_id){
                 if(confirm("Are you sure to delete this manager?")){
 
                     //Get token
@@ -152,7 +165,7 @@
                     .then((resp) => {
                         console.log(resp);
                         alert("Manager delete completed successfully!");
-                        admin_homepage();
+                        loadManagers_administrator(sport_center_id);
                     }).catch( error => console.error(error) ); //catch dell'errore
                 }
             }
