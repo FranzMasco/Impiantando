@@ -193,13 +193,23 @@ function loadManagers_administrator(sport_center_id){
 
             html_facilities.innerHTML += `
                 <div class="card">
-                <div class="card-text p-2">
-                <p><b>Name: </b>`+name+`</p>
-                <p><b>Surname: </b>`+surname+`</p>
-                <p><b>Email: </b>`+email+`</p>
-                <br>
-                <button class="btn btn-danger" onclick="delete_manager_request('`+self_id+`');">Delete</button>
+                    <div class="card-text p-2">
+                        <p><b>Name: </b>`+name+`</p>
+                        <p><b>Surname: </b>`+surname+`</p>
+                        <p><b>Email: </b>`+email+`</p>
+                        <br>
+                        <button class="btn btn-warning" onclick="show_form_managers('`+self_id+`');">Edit</button>
+                        <button class="btn btn-danger" onclick="delete_manager_request('`+self_id+`', '`+sport_center_id+`');">Delete</button>
+                    </div>
                 </div>
+                <div hidden="true" class="container mt-3" id="editFormManagers`+self_id+`">
+                    <br>
+                    <input type="text" class="form-control" id="newName`+self_id+`" name="name" value="`+name+`"><br>
+                    <input type="text" class="form-control" id="newSurname`+self_id+`" name="surname" value="`+surname+`"><br>
+                    <input type="text" class="form-control" id="newEmail`+self_id+`" name="email" value="`+email+`"><br>
+                    <input type="button" class="btn btn-success" name="confirm_edit" value="Confirm" onclick="updateManager('`+self_id+`', '`+sport_center_id+`');">
+                    <input type="button" class="btn btn-danger" name="close_form" value="Cancel" onclick="close_form_managers('`+self_id+`');">
+                    <br>
                 </div>
                 <hr>
             `;
@@ -306,6 +316,36 @@ function insertSportFacility(){
     .catch( error => console.error(error) ); // If there is any error you will catch them here
 }
 
+//Update manager
+//@param[id_manager]: id of the manager that has to be updated
+//@param[sport_center_id]: id of the sport center where the manager works
+function updateManager(id_manager, sport_center_id){
+    var new_name = document.getElementById("newName"+id_manager).value;
+    var new_surname = document.getElementById("newSurname"+id_manager).value;
+    var new_email = document.getElementById("newEmail"+id_manager).value;
+
+    if(new_name=="" || new_surname=="" || new_email==""){
+        return;
+    }
+
+    var token = "empty";
+    var auth_level = "empty";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+    if(auth_level=="administrator"){
+        fetch('../api/v2/managers/'+id_manager, {
+            method: 'PATCH',
+            headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+            body: JSON.stringify( { name: new_name, surname: new_surname, email: new_email } ),
+        })
+        .then((resp) => {
+            console.log(resp);
+            loadManagers_administrator(sport_center_id);
+        }).catch( error => console.error(error) ); //catch dell'errore
+    }else{
+        console.log("Authentication error");
+    }
+}
 
 //Not authenticated user: load all courses of the sport center
 //Display submit button
@@ -507,7 +547,7 @@ function loadCourses_administrator(sport_center_id){
 
             courses_text += `
                 <p><b>Creation timestamp: </b>`+date_format(creation_date)+`</p>
-                <button class="btn btn-secondary" onclick="loadCourseManagerHandling('`+self_id+`')">Course managers</button><br>
+                <button class="btn btn-info" onclick="loadCourseManagerHandling('`+self_id+`')">Course managers</button><br>
                 <button class="btn btn-warning" onclick="loadEditCourse('`+self_id+`', '`+sport_center_id+`')">Edit</button>
                 <button class="btn btn-danger" onclick="deleteCourse('`+self_id+`', '`+sport_center_id+`');">Delete</button>
                 </div></div>
@@ -1566,7 +1606,8 @@ function show_partecipants(course_id){
         //console.log(data);
 
         output_html.innerHTML = `
-            <p class="font-monospace"><b>TOT: </b>`+data.length+`</p>
+
+        <p class="font-monospace"><b>TOT: </b>`+data.length+`</p>
         `;
 
         for(u in data){
