@@ -26,49 +26,51 @@
                 var str = "mailto:francescomascotti@gmail.com?subject=Add admin and sport center&body=";
 
                 if (name.length > 0) {
-                    str += "Name: " + name + ", ";
+                    str += "Name: " + name + ", \n";
                 } else {
-                    warning += "Name is required"
+                    warning += "Name is required\n"
                 }
                 if (surname.length > 0) {
-                    str += "Surname: " + surname + ", ";
+                    str += "Surname: " + surname + ", \n";
                 } else {
-                    warning += "Surname is required"
+                    warning += "Surname is required\n"
                 }
                 if (email.length > 0) {
-                    str += "Email: " + email + ", ";
+                    str += "Email: " + email + ", \n";
                 } else {
-                    warning += "Email is required"
+                    warning += "Email is required\n"
                 }
                 if (dob.length > 0) {
-                    str += "Birth date: " + dob + ", ";
+                    str += "Birth date: " + dob + ", \n";
                 } else {
-                    warning += "Date of birth is required"
+                    warning += "Date of birth is required\n"
                 }
                 if (csname.length > 0) {
-                    str += "Sport center name: " + csname + ", ";
+                    str += "Sport center name: " + csname + ", \n";
                 } else {
-                    warning += "Sport center name is required"
+                    warning += "Sport center name is required\n"
                 }
                 if (description.length > 0) {
-                    str += "Sport center description: " + description + ", ";
+                    str += "Sport center description: " + description + ", \n";
                 } else {
-                    warning += "Sport center description is required"
+                    warning += "Sport center description is required\n"
                 }
                 if (city.length > 0) {
-                    str += "Sport center city: " + city + ", ";
+                    str += "Sport center city: " + city + ", \n";
                 } else {
-                    warning += "Sport center city is required"
+                    warning += "Sport center city is required\n"
                 }
                 if (address.length > 0) {
-                    str += "Sport center address: " + addrress + ". ";
+                    str += "Sport center address: " + address + ". \n";
                 } else {
-                    warning += "Sport center address is required"
+                    warning += "Sport center address is required\n"
                 }
                 if (warning.length > 0) {
                     alert(warning)
                 } else {
-                    document.getElementById('send').href = str;
+                    //document.getElementById('send').hidden = false;
+                    //document.getElementById('send').href = str;
+                    window.location.href = str;
                 }    
             }
         </script>
@@ -90,7 +92,7 @@
         </div>
         <div class="container">
                     <div id="insertNewAdmin">
-                        <form onchange="mail(this)">
+                        <form>
                             <br>
                             <p>Fill the following gaps in order to answer for a registration</p>
                             <input type="text" id="insertNewAdmin_name" name="name" class="form-control" placeholder="Name" required><br>
@@ -101,7 +103,7 @@
                             <input type="text" id="insertNewAdmin_description" name="description" class="form-control" placeholder="descrizione" required><br>
                             <input type="text" id="insertNewAdmin_city" name="city" class="form-control" placeholder="Città" required><br>
                             <input type="text" id="insertNewAdmin_address" name="address" class="form-control" placeholder="indirizzo" required><br>
-                            <a id="send" class="btn btn-primary">Invia</a>
+                            <input type="button" name="submit_request" class="btn btn-primary" value="Invia" onclick="mail(this.form)">
                             <input type="button" name="cancel_request" class="btn btn-danger" value="Cancel" onclick="close_admin_registration_form()">
                             <br>
                         </form>
