@@ -443,16 +443,41 @@ function loadCourses(sport_center_id){
 
             courses_text += `
             <br>
-                <button class="btn btn-primary" onclick="submit_request('`+self_id+`')">Submit</button><div id="user_message`+self_id+`"></div>
+                <button class="btn btn-secondary" onclick="getPartecipantsNumber('`+self_id+`');">Partecipants number</button>
+                <button class="btn btn-primary mx-1" onclick="submit_request('`+self_id+`')">Submit</button>
+                <span id="partecipants`+self_id+`"></span>
+                <div id="user_message`+self_id+`"></div>
                 <div id="login_form`+self_id+`"></div>
                 </div></div>
                 <hr>
             `;
-
         }
         html_courses.innerHTML=courses_text;
     })
     .catch( error => console.error(error) ); //catch dell'errore
+}
+
+//Context: the user is exploring the courses offered by the selected sport center
+//Purpose: display the current number of partecipants
+function getPartecipantsNumber(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+
+    fetch('../api/v2/courses/'+course_id+'/participants_number', {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        console.log(data);
+        
+        output_html.innerHTML = `
+            <div class="mb-2 mt-3">
+                <p><b>Number of partecipants: </b>`+data["partecipants"]+`</p>
+            </div>
+        `;
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+
 }
 //...
 

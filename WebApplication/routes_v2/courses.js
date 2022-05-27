@@ -213,10 +213,10 @@ router.get('/courses/:id/participants_number', async (req, res) => {
     }
 
     let num_users = await Users.find({_id: {$in: courses.users}}).count();
-    
+
     let response = {
         self: "/api/v2/course/"+req.params.id,
-        participants: num_users
+        partecipants: num_users
     };
     res.status(200).json(response);
 });
