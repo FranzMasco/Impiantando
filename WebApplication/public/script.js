@@ -1419,6 +1419,18 @@ function date_format_3(d){
     return test;
 }
 
+//YYYY-MM-DD time: HH:MM
+function date_format_4(d){
+    var day = d.getDate();
+    var month = d.getMonth();
+    var year = d.getFullYear();
+    var minute = d.getMinutes();
+    var hour = d.getHours();
+    test = d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    test+=" time: "+hour+":"+minute;
+    return test;
+}
+
 //...
 
 //Find get parameter

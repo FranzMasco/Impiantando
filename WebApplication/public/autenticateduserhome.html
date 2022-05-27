@@ -82,15 +82,43 @@
                     return;
                 }
 
-                output_html.innerHTML = `
-                    <div class="mb-2 mt-3">
-                    <label for="newsText" class="form-label"><b>Pubblication date: </b></label>
-                    <textarea class="form-control" id="newsText" name="newsText" readonly></textarea>
-                    </div>
-                    <div class="mb-2 mt-3">
-                    <button class="btn btn-secondary" onclick="close_news('`+course_id+`')">Close news</button>
-                    </div>
-                `;
+                //Get and display latest news
+                var html_latest_news = "";
+
+                fetch('../api/v2/courses/'+course_id+'/news')
+                .then((resp) => resp.json()) //trasfor data into JSON
+                .then(function(data) {
+                    //console.log(data);
+                    if(data.length>0){
+                        html_latest_news = "";
+                        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+                            var news = data[i];
+                            //console.log(course);
+
+                            let pubblication_date = news["pubblication_date"];
+                            let text = news["text"];
+
+                            html_latest_news += `
+                                <div class="mb-2 mt-3">
+                                <label for="newsText" class="form-label"><b>Pubblication date: </b>`+date_format_4(new Date(pubblication_date))+`</label>
+                                <textarea class="form-control" id="newsText" name="newsText" readonly>`+text+`</textarea>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        html_latest_news = `<p class="mb-2 mt-3">No news</p>`;
+                    }
+                    
+                    //Add close news button
+                    html_latest_news += `
+                        <div class="mb-2 mt-3">
+                        <button class="btn btn-secondary" onclick="close_news('`+course_id+`')">Close news</button>
+                        </div>
+                    `;
+
+                    output_html.innerHTML = html_latest_news;
+                })
+                .catch( error => console.error(error) ); //catch dell'errore
             }
 
             //Close latest news list

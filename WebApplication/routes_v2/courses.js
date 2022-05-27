@@ -4,6 +4,7 @@
 */
 
 const express = require('express');
+const mongoose = require("mongoose");
 const { response } = require('../app');
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
@@ -188,7 +189,7 @@ router.get('/courses/:id/news', async (req, res) => {
         return;
     }
 
-    let news = await News.find({course_id: courses.id});
+    let news = await News.find({course_id: courses.id}).exec();
 
     let response = news.map( (single_news) => {
         return {
