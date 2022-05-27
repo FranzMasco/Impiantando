@@ -1868,6 +1868,10 @@ function close_admin_registration_form(){
     document.getElementById("insertNewAdmin_surname").value="";
     document.getElementById("insertNewAdmin_email").value="";
     document.getElementById("insertNewAdmin_dob").value="";
+    document.getElementById("insertNewAdmin_csname").value="";
+    document.getElementById("insertNewAdmin_description").value="";
+    document.getElementById("insertNewAdmin_city").value="";
+    document.getElementById("insertNewAdmin_address").value="";
     
 
     document.getElementById("insertNewAdmin").hidden=true;

@@ -16,13 +16,18 @@
                 var surname = form.surname.value;
                 var email = form.email.value;
                 var dob = form.dob.value;
+                var csname = form.csname.value;
+                var description = form.description.value;
+                var city = form.city.value;
+                var address = form.address.value;
  
                 
-                var str = "mailto:francescomascotti@gmail.com?subject=Add course&body=";
+                var str = "mailto:francescomascotti@gmail.com?subject=Add admin and sport center&body=";
                     str += "Hi my name is " + name + " " +surname + ", ";
                     str += "I am Intersted to register to impiantando, my email is " + email + ", ";
                     str += "I was born in " + dob + ", ";
-                    
+                    str += "The sport center name is " + csname + ", where we "+ description+ " ";
+                    str += "And is located in " + city + " "+ address;
                     document.getElementById('send').href = str;
             }
         </script>
@@ -51,7 +56,10 @@
                             <input type="text" id="insertNewAdmin_surname" name="surname" class="form-control" placeholder="Surname" required><br>
                             <input type="text" id="insertNewAdmin_email" name="email" class="form-control" placeholder="Email@email.com" required><br>
                             <input type="date" id="insertNewAdmin_dob" class="form-control" name="dob" required><br>
-                            
+                            <input type="text" id="insertNewAdmin_csname" name="csname" class="form-control" placeholder="Name centro sportivo" required><br>
+                            <input type="text" id="insertNewAdmin_description" name="description" class="form-control" placeholder="descrizione" required><br>
+                            <input type="text" id="insertNewAdmin_city" name="city" class="form-control" placeholder="Città" required><br>
+                            <input type="text" id="insertNewAdmin_address" name="address" class="form-control" placeholder="indirizzo" required><br>
                             <a id="send" class="btn btn-primary">Invia</a>
                             <input type="button" name="cancel_request" class="btn btn-danger" value="Cancel" onclick="close_admin_registration_form()">
                             <br>
