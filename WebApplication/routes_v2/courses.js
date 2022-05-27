@@ -189,7 +189,8 @@ router.get('/courses/:id/news', async (req, res) => {
         return;
     }
 
-    let news = await News.find({course_id: courses.id}).exec();
+    //NOTE: display only top three latest news
+    let news = await News.find({course_id: courses.id}).sort({pubblication_date: "desc"}).limit(3).exec();
 
     let response = news.map( (single_news) => {
         return {
