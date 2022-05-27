@@ -179,6 +179,8 @@ function loadManagers_administrator(sport_center_id){
         //console.log(data);
         if(data.length>0){
             html_facilities.innerHTML = "<p>Here is the list of the managers that works in your sport center: </p><br>";
+        } else {
+            html_facilities.innerHTML = "<p>There are no managers in your sport center!</p><br>";
         }
         
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -1493,6 +1495,8 @@ function loadCourses_manager(user_id){
         //console.log(data);
         if(data.length>0){
             courses_text = "<p>Here is the list of your courses: </p><br>";
+        } else {
+            courses_text = "<p>There are no courses yet</p><br>";
         }
         courses_text += `<hr>`;
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
