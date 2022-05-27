@@ -1526,7 +1526,13 @@ function loadCourses_manager(user_id){
                 `;
                 
             }
-            courses_text += `<br><button class="btn btn-info" onclick="show_partecipants('`+self_id+`')">Visualizza elenco di partecipanti</button><div id="partecipants`+self_id+`"></div></div></div><hr>`;
+            courses_text += `<br>
+                            <button class="btn btn-info mx-2" onclick="show_partecipants('`+self_id+`')">Partecipants</button>
+                            <button class="btn btn-warning mx-2" onclick="show_news_pubblication_form('`+self_id+`')">Public news</button>
+                            <br>
+                            <div class="mx-3 my-3" id="partecipants`+self_id+`"></div>
+                            </div></div>
+                            <hr>`;
         }
         html_courses.innerHTML = courses_text;
     })
@@ -1573,7 +1579,7 @@ function show_partecipants(course_id){
         }
 
         output_html.innerHTML += `
-            <button class="btn btn-secondary" onclick="hide_partecipants('`+course_id+`');">Close list</button>
+            <button class="btn btn-secondary my-3" onclick="hide_partecipants('`+course_id+`');">Close list</button>
         `;
     })
     .catch( error => console.error(error) ); //catch dell'errore
@@ -1582,6 +1588,29 @@ function show_partecipants(course_id){
 function hide_partecipants(course_id){
     const output_html = document.getElementById("partecipants"+course_id);
     output_html.innerHTML="";
+}
+//...
+
+//Context: Course manager user wants to public news about his/her course
+//Output: Print news pubblication form
+//Input: @param[course_id] id of the selected course
+function show_news_pubblication_form(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+    output_html.innerHTML = `
+
+        <div class="container">
+        <div class="mb-2 mt-3">
+            <label for="newsText" class="form-label"><b>Insert here the news. After that click on Public in order to make the news visible to all course subscribers.</b></label>
+            <textarea class="form-control" id="newsText" name="newsText" place_holder="News..."></textarea>
+        </div>
+        <div class="mb-3">
+            <br><br>
+            <button type="button" class="btn btn-success" onclick="">Public</button>  
+            <button type="button" class="btn btn-danger" onclick="hide_partecipants('`+course_id+`')">Cancel</button>
+        </div>
+        </div>
+    
+    `;
 }
 //...
 
