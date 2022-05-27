@@ -369,4 +369,24 @@ router.delete('/courses/:id/managers', async (req, res, next) => {
 });
 /**---*/
 
+//Add a review
+router.patch('/courses/:id/reviews', tokenChecker);
+router.patch('/courses/:id/reviews', async (req, res) => {
+    //Add review to course list of reviews
+    let course_id = req.params.id;
+    let review = req.body.review;
+
+    Course.findOneAndUpdate(
+    { _id: course_id }, 
+    { $push: { reviews: {vote: review}} },
+    function (error, success) {
+        if (error) {
+            console.log(error);
+            res.status(500).send(error);
+        } else {
+            console.log(success);
+        }
+    });  
+});
+
 module.exports = router
