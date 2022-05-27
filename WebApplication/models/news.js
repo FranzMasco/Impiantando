@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 
 const news_schema = mongoose.Schema({
     text: String,
-    course_id: mongoose.Schema.Types.ObjectId,
+    course_id: String,
     pubblication_date: {type: Date, default: Date.now}
 },{collection: 'news'});
 

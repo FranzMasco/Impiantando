@@ -1461,6 +1461,18 @@ function date_format_3(d){
     return test;
 }
 
+//YYYY-MM-DD time: HH:MM
+function date_format_4(d){
+    var day = d.getDate();
+    var month = d.getMonth();
+    var year = d.getFullYear();
+    var minute = d.getMinutes();
+    var hour = d.getHours();
+    test = d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    test+=" time: "+hour+":"+minute;
+    return test;
+}
+
 //...
 
 //Find get parameter
@@ -1798,7 +1810,9 @@ function loadCourses_user(user_id){
 
             //Add button to unsubscribe from the course
             courses_text += `<br>
-               <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div></div></div><br>`;
+                             <button class="btn btn-warning mx-2" onclick="check_news('`+self_id+`');">Check latest news</button>
+                             <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button>
+                             <div id="user_message`+self_id+`"></div></div></div><br>`;
 
             courses_text += `<hr>`;
         }

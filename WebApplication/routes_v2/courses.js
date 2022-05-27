@@ -4,12 +4,14 @@
 */
 
 const express = require('express');
+const mongoose = require("mongoose");
 const { response } = require('../app');
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Course = require('../models/course');
 const Users = require('../models/utente');
 const ManagerUser = require('../models/manager_user');
+const News = require('../models/news');
 
 /**
  * Resource representation based on the following the pattern: 
@@ -176,6 +178,31 @@ router.get('/courses/:id/users', async (req, res) => {
     });
     res.status(200).json(response);
 });
+
+//Get course news
+router.get('/courses/:id/news', async (req, res) => {
+    let courses = await Course.findOne({_id:req.params.id});
+
+    if (!courses) {
+        res.status(404).send()
+        console.log('resource not found')
+        return;
+    }
+
+    //NOTE: display only top three latest news
+    let news = await News.find({course_id: courses.id}).sort({pubblication_date: "desc"}).limit(3).exec();
+
+    let response = news.map( (single_news) => {
+        return {
+            self: "/api/v2/news/"+single_news.id,
+            course: "/api/v2/courses/"+courses.id,
+            text: single_news.text,
+            pubblication_date: single_news.pubblication_date
+        };
+    });
+    res.status(200).json(response);
+});
+
 
 router.delete('/courses/:id', tokenChecker);
 router.delete('/courses/:id', async (req, res) => {

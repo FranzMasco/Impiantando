@@ -79,6 +79,72 @@
                 }
             }
 
+            //The user clicks the checknews button of course [course_id]
+            //If the user is authenticated --> display last news
+            function check_news(course_id){
+                const output_html = document.getElementById("user_message"+course_id);
+
+                //Get authentication data
+                user_id = getCookie("user_id");
+                token = getCookie("token");
+
+                if(!user_id || !token){
+                    console.log("Authentication required");
+                    return ;
+                }
+
+                //Check required data
+                if(!course_id){
+                    window.location.href = "errorPage.html";
+                    return;
+                }
+
+                //Get and display latest news
+                var html_latest_news = "";
+
+                fetch('../api/v2/courses/'+course_id+'/news')
+                .then((resp) => resp.json()) //trasfor data into JSON
+                .then(function(data) {
+                    //console.log(data);
+                    if(data.length>0){
+                        html_latest_news = "";
+                        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+                            var news = data[i];
+                            //console.log(course);
+
+                            let pubblication_date = news["pubblication_date"];
+                            let text = news["text"];
+
+                            html_latest_news += `
+                                <div class="mb-2 mt-3">
+                                <label for="newsText" class="form-label"><b>Pubblication date: </b>`+date_format_4(new Date(pubblication_date))+`</label>
+                                <textarea class="form-control" id="newsText" name="newsText" readonly>`+text+`</textarea>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        html_latest_news = `<p class="mb-2 mt-3">No news</p>`;
+                    }
+                    
+                    //Add close news button
+                    html_latest_news += `
+                        <div class="mb-2 mt-3">
+                        <button class="btn btn-secondary" onclick="close_news('`+course_id+`')">Close news</button>
+                        </div>
+                    `;
+
+                    output_html.innerHTML = html_latest_news;
+                })
+                .catch( error => console.error(error) ); //catch dell'errore
+            }
+
+            //Close latest news list
+            function close_news(course_id){
+                const output_html = document.getElementById("user_message"+course_id);
+                output_html.innerHTML = "";
+            }
+
+
         </script>
     </head>
     <body>
