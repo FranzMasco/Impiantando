@@ -978,48 +978,6 @@ function insertCourse(){
 }
 //...
 
-//Display a form to insert a new manager
-//@param[sport_center_id]: id of the sport center where the manager works
-function load_formNewManager(sport_center_id){
-    const html_form_new_course = document.getElementById('output_insertNewManager');
-    var output = "";
-
-    var managers = [];
-
-    if(!sport_center_id){
-        window.location.href = "errorPage.html";
-        return;
-    }
-
-    //Load sport facilies in order to select where to add the course
-    fetch('../api/v2/sport_centers/'+sport_center_id+'/managers')
-    .then((resp) => resp.json()) //trasfor data into JSON
-    .then(function(data) {    
-        for (var i = 0; i < data.length; i++){ //iterate overe recived data
-            var manager = data[i];
-            managers.push(manager);
-        }
-        
-        //Name + Surname + Email + Birth date + Society
-        output += `
-            <br>
-            <p>Fill the following gaps in order to registrer a new manager in your sport center</p>
-            <input type="text" class="form-control" id="insertNewManager_name" name="name" placeholder="Insert name new manager..."><br>
-            <input type="text" class="form-control" id="insertNewManager_surname" name="surname" placeholder="Insert surname new manager..."><br>
-            <input type="text" class="form-control" id="insertNewManager_email" name="email" placeholder="Insert email new manager..."><br>
-            <input type="date" class="form-control" id="insertNewManager_birth_date" name="birth_date"><br>
-            <input type="text" class="form-control" id="insertNewManager_society" name="society" placeholder="Insert society new manager..."><br>
-            <input type="button" class="btn btn-success" name="confirm_insert" value="Confirm" onclick="insertManager()">
-            <input type="button" class="btn btn-danger" name="cancel_insert" value="Cancel" onclick="close_insert_manager_form()">
-            <br>
-        `
-        
-        html_form_new_course.innerHTML=output;
-
-    })
-    .catch( error => console.error(error) ); //catch dell'errore
-}
-
 //Modify an existing course
 //@param[periodicity] : TRUE iff the course is periodic, FALSE otherwise
 function PATCH_editCourse(course_id, periodicity){
@@ -1177,6 +1135,109 @@ function PATCH_editCourse(course_id, periodicity){
     }
 }
 //...
+
+//Display a form to insert a new manager
+//@param[sport_center_id]: id of the sport center where the manager works
+function load_formNewManager(sport_center_id){
+    const html_form_new_course = document.getElementById('output_insertNewManager');
+    var output = "";
+
+    var managers = [];
+
+    if(!sport_center_id){
+        window.location.href = "errorPage.html";
+        return;
+    }
+
+    //Load sport facilies in order to select where to add the course
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/managers')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {    
+        for (var i = 0; i < data.length; i++){ //iterate overe recived data
+            var manager = data[i];
+            managers.push(manager);
+        }
+        
+        //Name + Surname + Email + Birth date + Society
+        output += `
+            <br>
+            <p>Fill the following gaps in order to registrer a new manager in your sport center</p>
+            <input type="text" class="form-control" id="insertNewManager_name" name="name" placeholder="Insert name new manager..."><br>
+            <input type="text" class="form-control" id="insertNewManager_surname" name="surname" placeholder="Insert surname new manager..."><br>
+            <input type="text" class="form-control" id="insertNewManager_email" name="email" placeholder="Insert email new manager..."><br>
+            <input type="date" class="form-control" id="insertNewManager_birth_date" name="birth_date"><br>
+            <input type="text" class="form-control" id="insertNewManager_society" name="society" placeholder="Insert society new manager..."><br>
+            <input type="text" class="form-control" id="insertNewManager_username" name="username" placeholder="Insert username new manager..."><br>
+            <input type="password" class="form-control" id="insertNewManager_password" name="password" placeholder="Insert password new manager..."><br>
+            <input type="button" class="btn btn-success" name="confirm_insert" value="Confirm" onclick="insertManager()">
+            <input type="button" class="btn btn-danger" name="cancel_insert" value="Cancel" onclick="close_insert_manager_form()">
+            <br>
+        `
+        
+        html_form_new_course.innerHTML=output;
+
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+
+
+//Inser new Manager
+function insertManager(){
+    //Check athentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+    sport_center_id = getCookie("sport_center_id");
+
+    if(token=="" || auth_level!="administrator" || sport_center_id==""){
+        console.log("Authentication error");
+        return;
+    }
+    
+    //Manager name
+    //Manager surname
+    //Manager email
+    //Manager birth date
+    //Manager society
+    var m_name = document.getElementById("insertNewManager_name").value;
+    var m_surname = document.getElementById("insertNewManager_surname").value;
+    var m_email = document.getElementById("insertNewManager_email").value;
+    var m_birth_date = document.getElementById("insertNewManager_birth_date").value;
+    var m_society = document.getElementById("insertNewManager_society").value;
+    var m_username = document.getElementById("insertNewManager_username").value;
+    var m_password = document.getElementById("insertNewManager_password").value;
+
+    console.log("name: "+m_name);
+    console.log("surname: "+m_surname);
+    console.log("email: "+m_email);
+    console.log("birth_date: "+m_birth_date);
+    console.log("society: "+m_society);
+    console.log("username: "+m_username);
+    console.log("password: "+m_password);
+
+    //Insert new course with using POST API
+    fetch('../api/v2/managers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', "x-access-token": token},
+        body: JSON.stringify({
+            name: m_name,
+            surname: m_surname,
+            email: m_email,
+            birth_date: m_birth_date,
+            username: m_username,
+            password: m_password,
+            society: m_society,
+            courses: [],
+            sport_center_id: sport_center_id
+        }),
+    })
+    .then((resp) => {
+        close_insert_manager_form();
+        loadCourses_administrator(sport_center_id);
+    })
+    .catch( error => console.error(error) ); // If there is any error you will catch them here
+}
 
 //Display login form
 //@param [login_type]: {A-->user admin login ; R-->course manager login ; U-->standard user login}
