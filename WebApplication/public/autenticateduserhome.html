@@ -57,7 +57,7 @@
                     .then((resp) => {
                         console.log(resp);
                         alert("Unsubscription success!");
-                        user_homepage();
+                        loadCourses_user(user_id);
                     }).catch( error => console.error(error) ); //catch dell'errore
                 }
             }
