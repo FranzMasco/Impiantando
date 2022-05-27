@@ -1605,13 +1605,59 @@ function show_news_pubblication_form(course_id){
         </div>
         <div class="mb-3">
             <br><br>
-            <button type="button" class="btn btn-success" onclick="">Public</button>  
+            <button type="button" class="btn btn-success" onclick="public_news('`+course_id+`')">Public</button>  
             <button type="button" class="btn btn-danger" onclick="hide_partecipants('`+course_id+`')">Cancel</button>
         </div>
         </div>
     
     `;
 }
+
+
+function public_news(course_id){
+    //Check athentication data
+    var token = "";
+    var auth_level = "";
+    token = getCookie("token");
+    auth_level = getCookie("user_level");
+
+    if(!token || auth_level!="responsabile"){
+        console.log("Authentication error");
+        return;
+    }
+
+    //News text
+    var n_text = document.getElementById("newsText").value;
+
+    //Check required parameters
+    if(!n_text || !course_id){
+        window.location.href = "errorPage.html";
+        return ;
+    }
+
+    //Insert news using POST API
+    fetch('../api/v2/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', "x-access-token": token},
+        body: JSON.stringify(
+        {   text: n_text,
+            course_id: course_id
+        } ),
+    })
+    .then((resp) => {
+        display_pubblication_success(course_id);
+    })
+    .catch( error => console.error(error) ); // If there is any error you will catch them here
+}
+
+//User feedback to inform that the news has been successfully pubblicated
+function display_pubblication_success(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+    output_html.innerHTML = `
+        <p class="mb-2 mt-3 text-success">The news has been successfully pubblicated!</p>
+    `;
+}
+
 //...
 
 //User: load all his courses
