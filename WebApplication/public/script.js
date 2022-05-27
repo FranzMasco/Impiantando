@@ -1753,7 +1753,9 @@ function loadCourses_user(user_id){
 
             //Add button to unsubscribe from the course
             courses_text += `<br>
-               <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button><div id="user_message`+self_id+`"></div></div></div><br>`;
+                             <button class="btn btn-warning mx-2" onclick="check_news('`+self_id+`');">Check latest news</button>
+                             <button class="btn btn-danger" onclick="submit_request('`+self_id+`');">Unsubscribe</button>
+                             <div id="user_message`+self_id+`"></div></div></div><br>`;
 
             courses_text += `<hr>`;
         }

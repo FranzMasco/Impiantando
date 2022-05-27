@@ -61,6 +61,45 @@
                     }).catch( error => console.error(error) ); //catch dell'errore
                 }
             }
+
+            //The user clicks the checknews button of course [course_id]
+            //If the user is authenticated --> display last news
+            function check_news(course_id){
+                const output_html = document.getElementById("user_message"+course_id);
+
+                //Get authentication data
+                user_id = getCookie("user_id");
+                token = getCookie("token");
+
+                if(!user_id || !token){
+                    console.log("Authentication required");
+                    return ;
+                }
+
+                //Check required data
+                if(!course_id){
+                    window.location.href = "errorPage.html";
+                    return;
+                }
+
+                output_html.innerHTML = `
+                    <div class="mb-2 mt-3">
+                    <label for="newsText" class="form-label"><b>Pubblication date: </b></label>
+                    <textarea class="form-control" id="newsText" name="newsText" readonly></textarea>
+                    </div>
+                    <div class="mb-2 mt-3">
+                    <button class="btn btn-secondary" onclick="close_news('`+course_id+`')">Close news</button>
+                    </div>
+                `;
+            }
+
+            //Close latest news list
+            function close_news(course_id){
+                const output_html = document.getElementById("user_message"+course_id);
+                output_html.innerHTML = "";
+            }
+
+
         </script>
     </head>
     <body>
