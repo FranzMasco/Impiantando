@@ -378,15 +378,14 @@ router.patch('/courses/:id/reviews', async (req, res) => {
 
     Course.findOneAndUpdate(
     { _id: course_id }, 
-    { $push: { reviews: {vote: review}} },
+    { $push: { reviews: {vote: Number(review)}} },
     function (error, success) {
         if (error) {
-            console.log(error);
             res.status(500).send(error);
-        } else {
-            console.log(success);
+        }else{
+            res.status(200).send("OK");  
         }
-    });  
+    });
 });
 
 module.exports = router
