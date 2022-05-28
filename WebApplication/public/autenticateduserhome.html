@@ -242,7 +242,33 @@
                 if(review.innerText=="0"){
                     reviewMessage.innerHTML = `<p class="alert alert-warning mb-2 mt-4">Your vote has to be at least 1/5</p>`;
                 }else{
-                    reviewMessage.innerHTML = `<p class="alert alert-success mb-2 mt-4">Thanks for your feedback!</p>`;
+
+                    //Get authentication data
+                    var user_id = getCookie("user_id");
+                    var token = getCookie("token");
+                    var user_level = getCookie("user_level");
+
+                    if(!user_id || !token || !user_level){
+                        console.log("Authentication required");
+                        return ;
+                    }
+
+                    if(user_level=="user"){
+                        fetch('../api/v2/courses/'+course_id+'/reviews', {
+                            method: 'PATCH',
+                            headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
+                            body: JSON.stringify( { review: review.innerHTML } ),
+                        })
+                        .then((resp) => {
+                            if(resp.status==200){
+                                reviewMessage.innerHTML = `<p class="alert alert-success mb-2 mt-4">Thanks for your feedback!</p>`;
+                            }else{
+                                reviewMessage.innerHTML = `<p class="alert alert-danger mb-2 mt-4">Error!</p>`;
+                            }
+                        }).catch( error => console.error(error) ); //catch dell'errore
+                    }else{
+                        console.log("Authentication error");
+                    }
                 }
             }
 
