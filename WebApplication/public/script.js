@@ -443,7 +443,8 @@ function loadCourses(sport_center_id){
 
             courses_text += `
             <br>
-                <button class="btn btn-secondary" onclick="getPartecipantsNumber('`+self_id+`');">Partecipants number</button>
+                <button class="btn btn-secondary mx-1" onclick="getPartecipantsNumber('`+self_id+`');">Partecipants number</button>
+                <button class="btn btn-info mx-1" onclick="getReviews('`+self_id+`');">Reviews</button>
                 <button class="btn btn-primary mx-1" onclick="submit_request('`+self_id+`')">Submit</button>
                 <span id="partecipants`+self_id+`"></span>
                 <div id="user_message`+self_id+`"></div>
@@ -478,6 +479,78 @@ function getPartecipantsNumber(course_id){
     })
     .catch( error => console.error(error) ); //catch dell'errore
 
+}
+//...
+
+//Context: the user is exploring the courses offered by the selected sport center
+//Purpose: display the latest reviews and valutation average
+function getReviews(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+
+    output_html.innerHTML = `
+        <div class="mb-2 mt-3">
+            <p><b>Review average: </b> 2.5/5</p>
+        </div>
+        <div class="mb-2 mt-3">
+            <p><b>Latest reviews:</b></p>
+            <div class="card mb-2 mt-3" style="width: 18rem;">
+                <div class="card-header">
+                    <span><b>Date:</b> 30 September 2022</span>
+                </div>
+                <div class="mb-2 mt-2 mx-3">
+                    <span><b>Vote:</b></span>
+                    <i id="star_1_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_2_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_3_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_4_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_5_`+course_id+`" class="fa fa-star"></i>
+                </div>
+            </div>
+            <div class="card mb-2 mt-3" style="width: 18rem;">
+                <div class="card-header">
+                    <span><b>Date:</b> 30 September 2022</span>
+                </div>
+                <div class="mb-2 mt-2 mx-3">
+                    <span><b>Vote:</b></span>
+                    <i id="star_1_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_2_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_3_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_4_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_5_`+course_id+`" class="fa fa-star"></i>
+                </div>
+            </div>
+            <div class="card mb-2 mt-3" style="width: 18rem;">
+                <div class="card-header">
+                    <span><b>Date:</b> 30 September 2022</span>
+                </div>
+                <div class="mb-2 mt-2 mx-3">
+                    <span><b>Vote:</b></span>
+                    <i id="star_1_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_2_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_3_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_4_`+course_id+`" class="fa fa-star"></i>
+                    <i id="star_5_`+course_id+`" class="fa fa-star"></i>
+                </div>
+            </div>
+        </div>
+    `;
+    /*
+    fetch('../api/v2/courses/'+course_id+'/participants_number', {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        console.log(data);
+        
+        output_html.innerHTML = `
+            <div class="mb-2 mt-3">
+                <p><b>Number of partecipants: </b>`+data["partecipants"]+`</p>
+            </div>
+        `;
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+    */
 }
 //...
 
