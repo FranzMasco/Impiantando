@@ -486,71 +486,69 @@ function getPartecipantsNumber(course_id){
 //Purpose: display the latest reviews and valutation average
 function getReviews(course_id){
     const output_html = document.getElementById("partecipants"+course_id);
-
-    output_html.innerHTML = `
-        <div class="mb-2 mt-3">
-            <p><b>Review average: </b> 2.5/5</p>
-        </div>
-        <div class="mb-2 mt-3">
-            <p><b>Latest reviews:</b></p>
-            <div class="card mb-2 mt-3" style="width: 18rem;">
-                <div class="card-header">
-                    <span><b>Date:</b> 30 September 2022</span>
-                </div>
-                <div class="mb-2 mt-2 mx-3">
-                    <span><b>Vote:</b></span>
-                    <i id="star_1_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_2_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_3_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_4_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_5_`+course_id+`" class="fa fa-star"></i>
-                </div>
-            </div>
-            <div class="card mb-2 mt-3" style="width: 18rem;">
-                <div class="card-header">
-                    <span><b>Date:</b> 30 September 2022</span>
-                </div>
-                <div class="mb-2 mt-2 mx-3">
-                    <span><b>Vote:</b></span>
-                    <i id="star_1_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_2_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_3_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_4_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_5_`+course_id+`" class="fa fa-star"></i>
-                </div>
-            </div>
-            <div class="card mb-2 mt-3" style="width: 18rem;">
-                <div class="card-header">
-                    <span><b>Date:</b> 30 September 2022</span>
-                </div>
-                <div class="mb-2 mt-2 mx-3">
-                    <span><b>Vote:</b></span>
-                    <i id="star_1_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_2_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_3_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_4_`+course_id+`" class="fa fa-star"></i>
-                    <i id="star_5_`+course_id+`" class="fa fa-star"></i>
-                </div>
-            </div>
-        </div>
-    `;
-    /*
-    fetch('../api/v2/courses/'+course_id+'/participants_number', {
+    
+    fetch('../api/v2/courses/'+course_id+'/reviews', {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
     })
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         console.log(data);
-        
-        output_html.innerHTML = `
+
+        var output_content = "";
+
+        if(data["reviews"].length>0){
+
+            //Review average
+            output_content = `
             <div class="mb-2 mt-3">
-                <p><b>Number of partecipants: </b>`+data["partecipants"]+`</p>
+                <p><b>Review average: </b> `+Math.round(data["average"]*10)/10+`/5</p>
             </div>
-        `;
+            `;
+
+            //Display latest reviews
+            output_content += `
+                <div class="mb-2 mt-3">
+                <p><b>Latest reviews:</b></p>
+            `;
+
+            for(r in data["reviews"]){
+                output_content += ` 
+                    <div class="card mb-2 mt-3" style="width: 18rem;">
+                        <div class="card-header">
+                            <span><b>Date:</b> `+date_format_1(new Date(data["reviews"][r]["date"]))+`</span>
+                        </div>
+                        <div class="mb-2 mt-2 mx-3">
+                            <span><b>Vote:</b></span>
+                `;
+
+                //Color stars according to the vote
+                var expressedVote = data["reviews"][r]["vote"];
+                for(var n=1; n<=5; n++){
+                    if(expressedVote>=n){
+                        output_content += `<i class="fa fa-star rating-color"></i>`;
+                    }else{
+                        output_content += `<i class="fa fa-star"></i>`;
+                    }
+                }
+
+                output_content += `
+                        </div>
+                    </div>
+                `;
+            }
+            output_content += `</div>`;
+        }else{
+            output_content = `
+                <div class="mb-2 mt-3 mx-3">
+                <p>No review has been published yet</p>
+                </div>
+            `;
+        }
+
+        output_html.innerHTML = output_content;
     })
     .catch( error => console.error(error) ); //catch dell'errore
-    */
 }
 //...
 
