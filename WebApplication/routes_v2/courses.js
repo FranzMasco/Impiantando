@@ -369,6 +369,57 @@ router.delete('/courses/:id/managers', async (req, res, next) => {
 });
 /**---*/
 
+//Get latest reviews and reviews average
+router.get('/courses/:id/reviews', async (req, res) => {
+    let course_id = req.params.id;
+    
+    try{
+        var course = await Course.findOne({_id:course_id});
+    }catch(err){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+    
+    if (!course) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
+    var sum=0;
+    for(review in course.reviews){
+        sum+=course.reviews[review]["vote"];
+    }
+
+    //Prepare only the last 5 news
+        latest_reviews = course.reviews;
+        //console.log("latest_reviews = "+latest_reviews);
+        //i. Sort by pubblication date
+        function custom_sort(a, b) {
+            //return new Date(a.date).getTime() - new Date(b.date).getTime();
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+        }        
+        latest_reviews.sort(custom_sort);
+        //console.log("latest_reviews = "+latest_reviews);
+
+        //ii. Take only first five elements
+        latest_reviews = latest_reviews.slice(0, 5)
+        //console.log("latest_reviews = "+latest_reviews);
+    //...
+
+    let response =
+        {
+            course: "/api/v2/courses/" + course.id,
+            reviews: latest_reviews,
+            average: sum/course.reviews.length
+        };
+
+    res.status(200).json(response);
+
+    
+});
+
 //Add a review
 router.patch('/courses/:id/reviews', tokenChecker);
 router.patch('/courses/:id/reviews', async (req, res) => {
