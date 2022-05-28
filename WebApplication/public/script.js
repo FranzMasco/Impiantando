@@ -1785,6 +1785,7 @@ function loadCourses_manager(user_id){
             courses_text += `<br>
                             <button class="btn btn-info mx-2" onclick="show_partecipants('`+self_id+`')">Partecipants</button>
                             <button class="btn btn-warning mx-2" onclick="show_news_pubblication_form('`+self_id+`')">Public news</button>
+                            <button class="btn btn-primary mx-2" onclick="show_reviews('`+self_id+`')">Reviews</button>
                             <br>
                             <div class="mx-3 my-3" id="partecipants`+self_id+`"></div>
                             </div></div>
@@ -1870,6 +1871,78 @@ function show_news_pubblication_form(course_id){
     `;
 }
 
+//Context: Course manager user wants to read reviews about one of his courses
+//Output: Print reviews
+//Input: @param[course_id] id of the selected course
+function show_reviews(course_id){
+    const output_html = document.getElementById("partecipants"+course_id);
+    
+    fetch('../api/v2/courses/'+course_id+'/reviews', {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        console.log(data);
+
+        var output_content = "";
+
+        if(data["reviews"].length>0){
+
+            //Review average
+            output_content = `
+            <div class="mb-2 mt-3">
+                <p><b>Review average: </b> `+Math.round(data["average"]*10)/10+`/5</p>
+            </div>
+            `;
+
+            //Display latest reviews
+            output_content += `
+                <div class="mb-2 mt-3">
+                <p><b>Latest reviews:</b></p>
+            `;
+
+            for(r in data["reviews"]){
+                output_content += ` 
+                    <div class="card mb-2 mt-3" style="width: 18rem;">
+                        <div class="card-header">
+                            <span><b>Date:</b> `+date_format_1(new Date(data["reviews"][r]["date"]))+`</span>
+                        </div>
+                        <div class="mb-2 mt-2 mx-3">
+                            <span><b>Vote:</b></span>
+                `;
+
+                //Color stars according to the vote
+                var expressedVote = data["reviews"][r]["vote"];
+                for(var n=1; n<=5; n++){
+                    if(expressedVote>=n){
+                        output_content += `<i class="fa fa-star rating-color"></i>`;
+                    }else{
+                        output_content += `<i class="fa fa-star"></i>`;
+                    }
+                }
+
+                output_content += `
+                        </div>
+                    </div>
+                `;
+            }
+            output_content += `</div>`;
+        }else{
+            output_content = `
+                <div class="mb-2 mt-3 mx-3">
+                <p>No review has been published yet</p>
+                </div>
+            `;
+        }
+
+        output_content += `<button class="btn btn-secondary my-3" onclick="hide_partecipants('`+course_id+`');">Close</button>`
+
+        output_html.innerHTML = output_content;
+    })
+    .catch( error => console.error(error) ); //catch dell'errore
+}
+//...
 
 function public_news(course_id){
     //Check athentication data
