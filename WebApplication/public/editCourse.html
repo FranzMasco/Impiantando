@@ -331,6 +331,23 @@
                 `;
             }//...display not periodic course editing form
 
+            //Check if the user is authenticated
+            // IF(the user is authenticated) THEN display logout
+            function display_logout(){
+
+                const output_html = document.getElementById("logout");
+
+                //Retrive authentication data
+                var username = getCookie("username");
+                var token = getCookie("token");
+
+                if(username && token){
+                    output_html.innerHTML = `
+                        <button class="btn btn-danger" onclick="logout();">Logout</button>
+                    `;
+                }
+            }
+
         </script>
     </head>
     <body>
@@ -345,7 +362,8 @@
             </nav>
         <div class="p-5 bg-success text-dark rounded">
             <h1>Impiantando</h1>
-            <p>Web application version 2.0</p>        
+            <p>Web application version 2.0</p>  
+            <span id="logout"></span>       
         </div>
         <div class="container mt-5">
             <div class="card" style="width:400px">
@@ -358,5 +376,6 @@
             <div id="outputJS"></div>
         </div>
         <script>edit_course()</script>
+        <script>display_logout()</script>
     </body>
 </html>
