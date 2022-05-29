@@ -285,11 +285,13 @@
             <span id="logout"></span>      
         </div>
         <div class="container mt-5">
+            <button type="button" class="btn btn-primary" onclick="window.location.href='impiantiadmin.html'">Go back to Homepage</button><br><br>
             <div class="card" style="width:400px">
                 <div class="card-header">User details</div>
                 <div class="card-body"><b>Username: </b><span id="username"></span></div>
                 <div class="card-body"><b>Sport center: </b><span id="sport_center_name"></span></div>
             </div>
+            
             <br>
             <h3>Course managers</h3>
             <div class="card" style="width:500px">
@@ -298,7 +300,7 @@
             <br>  
             <div id="output_current_managers"></div>
             <div id="output_new_managers"></div>
-            <button type="button" class="btn btn-danger" onclick="window.location.href='impiantiadmin.html'">Go back to Homepage</button>
+            
         </div>
         <script>course_managers()</script>
         <script>display_logout()</script>
