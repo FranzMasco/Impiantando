@@ -21,6 +21,7 @@ const managersv2 = require('./routes_v2/managers.js');
 const sport_centersv2 = require('./routes_v2/sport_centers.js');
 const subscriptionsv2 = require('./routes/subscriptionsv2.js');
 const news = require('./routes_v2/news');
+const sport_facilitiesv2 = require('./routes_v2/sport_facilities.js');
 //...
 
 //Configure Express.js parsing middleware
@@ -47,6 +48,7 @@ app.use("/api/v2", sport_centersv2)
 
 //Sport facilities API
 app.use("/api/v1", sport_facilities)
+app.use("/api/v2", sport_facilitiesv2)
 
 //Courses API
 app.use("/api/v1", courses)
