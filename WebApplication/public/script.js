@@ -79,6 +79,7 @@ function loadFacilities(sport_center_id) {
                 <div class="card-text p-2"><p><b>Name: </b>`+name+`</p>
                 <p><b>Description: </b>`+description+`</p></div>
                 </div>
+                <span id="calendar`+self_id+`">Ciao</span>
                 <br>
                 <hr>
             `;
