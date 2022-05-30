@@ -153,7 +153,6 @@ router.get('/courses/:id', async (req, res) => {
             start_date: course.start_date,
             end_date: course.end_date,
             time_schedules: course.time_schedules,
-            exceptions: course.exceptions,
             managers: links
         };
     res.status(200).json(response);
@@ -176,7 +175,7 @@ router.get('/courses/:id/users', async (req, res) => {
 });
 
 //Get course news
-router.get('/courses/:id/news', async (req, res) => {
+router.get('/courses/:id/news', async (req, res) => {    
     let courses = await Course.findOne({_id:req.params.id});
 
     if (!courses) {
