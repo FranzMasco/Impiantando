@@ -17,6 +17,39 @@
             .rating-color-permanent{
                 color:#fbc634 !important;
             }
+
+            .nav-link {
+                -webkit-box-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+                font-size: 12px;
+                text-align: center;
+                text-transform: uppercase;
+                color: #3d3d3d;
+                font-weight: 500;
+                -webkit-transition: none;
+                -o-transition: none;
+                transition: none;
+                border-radius: 2px 2px 0 0;
+                padding-left: 0;
+                padding-right: 0;
+                cursor: pointer;
+            }
+
+            .nav-link.active {
+                background: #104455;
+                border-color: #104455;
+                color: #fff;
+            }
+            .nav-link.active:focus {
+                border-color: #104455;
+            }
+            .nav-link:hover:not(.active) {
+                background: #46c1be;
+                border-color: #46c1be;
+                color: #fff;
+            }
+
         </style>
 
         <!-- Latest compiled JavaScript -->
@@ -151,6 +184,59 @@
                     wrongInput.innerHTML("Username and password are required");
                 }
 
+            }
+
+
+            //Display course calendar of the given sport facility
+            function displayCalendar(sport_facility_id){
+                const html_calendar = document.getElementById("calendar"+sport_facility_id);
+
+                html_calendar.innerHTML = `
+                    <!-- Schedule Top Navigation -->
+                    <nav class="nav nav-tabs" style="border-bottom: 2px solid #104455;">
+                        <a id="mon`+sport_facility_id+`" class="nav-link active" onclick="selectDay('`+sport_facility_id+`', 'mon')">Mon</a>
+                        <a id="tue`+sport_facility_id+`" class="nav-link" onclick="selectDay('`+sport_facility_id+`', 'tue')">Tue</a>
+                        <a id="wed`+sport_facility_id+`" class="nav-link" onclick="selectDay('`+sport_facility_id+`', 'wed')">Wed</a>
+                        <a id="thu`+sport_facility_id+`" class="nav-link" onclick="selectDay('`+sport_facility_id+`', 'thu')">Thu</a>
+                        <a id="fri`+sport_facility_id+`" class="nav-link" onclick="selectDay('`+sport_facility_id+`', 'fri')">Fri</a>
+                        <a id="sat`+sport_facility_id+`" class="nav-link" onclick="selectDay('`+sport_facility_id+`', 'sat')">Sat</a>
+                        <a id="sun`+sport_facility_id+`" class="nav-link" onclick="selectDay('`+sport_facility_id+`', 'sun')"></a>
+                    </nav>
+
+                    <div class="card mb-2 mt-3">
+                        <div class="card-header">
+                            Corso di nuoto
+                        </div>
+                        <span class="mb-2 mt-3 mx-3" name="interval">
+                        <p><b>From: </b>12:30</p>
+                        <p><b>To: </b>13:30</p>
+                        </span>
+                    </div>
+
+                    <div class="card mb-2 mt-3">
+                        <div class="card-header">
+                            Corso di nuoto
+                        </div>
+                        <span class="mb-2 mt-3 mx-3" name="interval">
+                        <p><b>From: </b>12:30</p>
+                        <p><b>To: </b>13:30</p>
+                        </span>
+                    </div>
+                `;
+            }
+            //...
+            
+            function selectDay(sport_facility_id, weekDay){
+                //Select clicked day
+                var weekArray = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+                for(var d in weekArray){
+                    var element = document.getElementById(weekArray[d]+sport_facility_id);
+                    if(weekArray[d]==weekDay){
+                        element.classList.add("active");    
+                    }else{
+                        element.classList.remove("active");
+                    }
+                }
             }
 
         </script>
