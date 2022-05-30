@@ -132,6 +132,11 @@ function loadFacilities_administrator(sport_center_id){
         //console.log(data);
         if(data.length>0){
             html_facilities.innerHTML = "<p>Here is the list of the sport facilities that has been inserted: </p><br>";
+        }else{
+            html_facilities.innerHTML = `
+                    <p>There are no sport facilities registered yet</p>
+                    <br>            
+            `;
         }
         
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -148,9 +153,12 @@ function loadFacilities_administrator(sport_center_id){
                     <div class='card-text p-2'>
                         <p><b>Name:</b> `+name+`</p>
                         <p><b>Description:</b> `+description+`</p>
-                        <button class="btn btn-warning" onclick="show_form('`+self_id+`')">Edit</button>
+                        <input type="button" class="btn btn-info" name="calendar" value="Calendar" onclick="adminCalendar('`+self_id+`')">
+                        <button class="btn btn-warning mx-1" onclick="show_form('`+self_id+`')">Edit</button>
                         <button class="btn btn-danger" onclick="deleteSportFacility('`+self_id+`', '`+sport_center_id+`');">Delete</button>
                     </div>
+                    <span id="calendar`+self_id+`">
+                    </span>
                 </div>
                 <div hidden="true" class="container mt-3" id="editForm`+self_id+`">
                     <br>
@@ -282,6 +290,160 @@ function updateSportFacility(id_sport_facility, sport_center_id){
     }else{
         console.log("Authentication error");
     }
+}
+//...
+
+//Display the calendar of the courses which are organized in the give sport facility
+//@param[id_sport_facility]: id of the sport facility
+function adminCalendar(id_sport_facility){
+    const html_calendar = document.getElementById("calendar"+id_sport_facility);
+
+    html_calendar.innerHTML = `
+        <!-- Schedule Top Navigation -->
+        <nav class="nav nav-tabs" style="border-bottom: 2px solid #104455;">
+            <a id="mon`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'mon')">Mon</a>
+            <a id="tue`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'tue')">Tue</a>
+            <a id="wed`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'wed')">Wed</a>
+            <a id="thu`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'thu')">Thu</a>
+            <a id="fri`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'fri')">Fri</a>
+            <a id="sat`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'sat')">Sat</a>
+            <a id="sun`+id_sport_facility+`" class="nav-link" onclick="selectDayAdmin('`+id_sport_facility+`', 'sun')">Sun</a>
+        </nav>
+
+        <span id="courses`+id_sport_facility+`">
+        </span>
+    `;
+}
+//...
+
+//Disaplay schedule of the given day in the given sport facility
+//@param[sport_facility_id]: id of the sport facility
+//@param[weekDay]: day of the week from monday to sunday
+function selectDayAdmin(sport_facility_id, weekDay){
+    //Select clicked day
+    var weekArray = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    for(var d in weekArray){
+        var element = document.getElementById(weekArray[d]+sport_facility_id);
+        if(weekArray[d]==weekDay){
+            element.classList.add("active");    
+        }else{
+            element.classList.remove("active");
+        }
+    }
+
+    const html_output_courses = document.getElementById("courses"+sport_facility_id);
+    var output = "";
+
+    //Get courses and select the ones which are in the given day
+    fetch('../api/v2/sport_facilities/'+sport_facility_id+'/courses')
+    .then((resp) => resp.json()) //trasfor data into JSON
+    .then(function(data) {
+        //console.log(data);
+        if(data.length>0){
+            for (var i = 0; i < data.length; i++){ //iterate overe recived data
+                var course = data[i];
+
+                let name = course["name"];
+                let periodic = course["periodic"];
+                let self = course["course"];
+                let self_id = self.substring(self.lastIndexOf('/') + 1);
+
+                let start_date = "";
+                let end_date = "";
+                
+                let specific_date = "";
+                let specific_start_time = "";
+                let specific_end_time = "";
+
+                if(periodic){   //the course is offered for example every monday
+                    start_date = new Date(course["start_date"]);
+                    end_date = new Date(course["end_date"]);
+                    
+                    //Get events of the selected day
+                    var selectedDaySchedule;
+                    if(weekDay=="mon"){
+                        selectedDaySchedule = course["time_schedules"]["monday"]["event"];
+                    }else if(weekDay=="tue"){
+                        selectedDaySchedule = course["time_schedules"]["tuesday"]["event"];
+                    }else if(weekDay=="wed"){
+                        selectedDaySchedule = course["time_schedules"]["wednesday"]["event"];
+                    }else if(weekDay=="thu"){
+                        selectedDaySchedule = course["time_schedules"]["thursday"]["event"];
+                    }else if(weekDay=="fri"){
+                        selectedDaySchedule = course["time_schedules"]["friday"]["event"];
+                    }else if(weekDay=="sat"){
+                        selectedDaySchedule = course["time_schedules"]["saturday"]["event"];
+                    }else if(weekDay=="sun"){
+                        selectedDaySchedule = course["time_schedules"]["sunday"]["event"];
+                    }
+
+                    if(selectedDaySchedule.length>0){
+                        output += `
+                        <div class="card mb-2 mt-3 mx-3">
+                            <div class="card-header">
+                                `+name+` - <b>Recurrent event</b>
+                            </div>                                
+                        `;
+
+                        output += `
+                            <span class="mb-2 mt-3 mx-3">
+                                <p><b>Start date: </b>`+date_format_1(start_date)+`</p>
+                                <p><b>End date: </b>`+date_format_1(end_date)+`</p>
+                            </span>
+                        `;
+
+                        for(time in selectedDaySchedule){
+                            time_interval = selectedDaySchedule[time];
+                            output += `
+                                <span class="mb-2 mt-1 mx-3" name="interval">
+                                <p><b>From: </b>`+time_interval["from"]+`</p>
+                                <p><b>To: </b>`+time_interval["to"]+`</p>
+                                </span>                                 
+                            `;
+                        }
+                    }                                
+                }else{  //the course is a only once event
+
+                    //Display the event only if it is held in the selected day
+                    specific_date = new Date(course["specific_date"]);
+                    weekDayNumber = specific_date.getDay();
+                    specific_start_time = course["specific_start_time"];
+                    specific_end_time = course["specific_end_time"];
+
+                    var weekArray = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+                    var outputWeekDay = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+                    if(weekArray[weekDayNumber]==weekDay){
+                        output += `
+                        <div class="card mb-2 mt-3 mx-3">
+                            <div class="card-header">
+                                `+name+` - <b>Only once event</b>
+                            </div>                                
+                            <span class="mb-2 mt-3 mx-3">
+                                <p><b>Date: </b>`+outputWeekDay[weekDayNumber]+` `+date_format_1(specific_date)+`</p>
+                                <p><b>From: </b>`+specific_start_time+`<b> To: </b>`+specific_end_time+`</p>
+                            </span>
+                        `;
+                    }
+                }
+                output += "</div>";
+            }
+        }else{
+            output += `
+                <div class="card mb-2 mt-3">
+                    <div class="card-header">
+                        No courses
+                    </div>
+                    <span class="mb-2 mt-3 mx-3" name="interval">
+                    <p>There is no course in this sport facility</p>
+                    </span>
+                </div>
+            
+            `;                        
+        }
+
+        html_output_courses.innerHTML = output;
+    });
 }
 //...
 
@@ -1333,7 +1495,7 @@ function insertManager(){
     })
     .then((resp) => {
         close_insert_manager_form();
-        loadCourses_administrator(sport_center_id);
+        loadManagers_administrator(sport_center_id);
     })
     .catch( error => console.error(error) ); // If there is any error you will catch them here
 }
