@@ -2133,7 +2133,7 @@ function insertUser(){
         return ;
     }
 
-    fetch('../api/v1/users', {
+    fetch('../api/v2/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify( { name: u_name, surname: u_surname,email: u_email,birth_date: u_birth_date,username: u_username,password: u_password,} ),

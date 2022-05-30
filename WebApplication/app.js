@@ -21,6 +21,7 @@ const managersv2 = require('./routes_v2/managers.js');
 const sport_centersv2 = require('./routes_v2/sport_centers.js');
 const subscriptionsv2 = require('./routes/subscriptionsv2.js');
 const news = require('./routes_v2/news');
+const usersv2 = require('./routes_v2/users.js');
 //...
 
 //Configure Express.js parsing middleware
@@ -59,6 +60,7 @@ app.use("/api/v2", managersv2)
 
 //User API
 app.use("/api/v1", users)
+app.use("/api/v2", usersv2)
 //...
 
 //User registration
