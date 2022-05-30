@@ -1628,7 +1628,7 @@ function getCookie(cname) {
 //DD-MM-YY-HH:MM:SS
 function date_format(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
     var second = d.getSeconds();
     var minute = d.getMinutes();
@@ -1640,7 +1640,7 @@ function date_format(d){
 //DD-MM-YYYY
 function date_format_1(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
 
     return day+"-"+month+"-"+year;
@@ -1657,7 +1657,7 @@ function date_format_2(d){
 //YYYY-MM-DD
 function date_format_3(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
     test = d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
     console.log("date: "+test)
@@ -1667,7 +1667,7 @@ function date_format_3(d){
 //YYYY-MM-DD time: HH:MM
 function date_format_4(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
     var minute = d.getMinutes();
     var hour = d.getHours();
