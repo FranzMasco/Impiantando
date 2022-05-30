@@ -78,9 +78,10 @@ function loadFacilities(sport_center_id) {
                 <div class="card">
                 <div class="card-text p-2"><p><b>Name: </b>`+name+`</p>
                 <p><b>Description: </b>`+description+`</p></div>
-                <button class="btn btn-secondary">Show courses calendar</button>
+                <button class="btn btn-secondary" onclick="displayCalendar('`+self_id+`')">Show courses calendar</button>
                 </div>
-                <span id="calendar`+self_id+`">Ciao</span>
+                <span id="calendar`+self_id+`">
+                </span>
                 <br>
                 <hr>
             `;
