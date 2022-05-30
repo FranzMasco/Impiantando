@@ -44,7 +44,6 @@ const News = require('../models/news');
             start_date: course.start_date,
             end_date: course.end_date,
             time_schedules: course.time_schedules,
-            exceptions: course.exceptions,
             creation_date: course.creation_date,
             managers: links
         };
@@ -79,7 +78,6 @@ router.post('/courses', async (req, res) => {
     let course_time_schedules_friday = req.body.time_schedules_friday;
     let course_time_schedules_saturday = req.body.time_schedules_saturday;
     let course_time_schedules_sunday = req.body.time_schedules_sunday;
-    let course_exceptions = req.body.exceptions;
     let course_creation_date = req.body.creation_date;
 
     //console.log(course_time_schedules_wednesday.event[0]);
@@ -115,7 +113,6 @@ router.post('/courses', async (req, res) => {
             saturday: course_time_schedules_saturday,
             sunday: course_time_schedules_sunday
         },
-        exceptions: course_exceptions,
         creation_date: course_creation_date
     });
 
@@ -157,7 +154,6 @@ router.get('/courses/:id', async (req, res) => {
             end_date: course.end_date,
             time_schedules: course.time_schedules,
             exceptions: course.exceptions,
-            creation_date: course.creation_date,
             managers: links
         };
     res.status(200).json(response);

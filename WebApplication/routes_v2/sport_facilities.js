@@ -125,7 +125,6 @@ router.get('/sport_facilities/:id/courses', async (req, res) => {
             start_date: course.start_date,
             end_date: course.end_date,
             time_schedules: course.time_schedules,
-            exceptions: course.exceptions,
             creation_date: course.creation_date,
             managers: links
         };
