@@ -7,7 +7,8 @@ const express = require('express');
 const { response } = require('../app');
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
-const Facilities = require('../models/facilities'); 
+const Facilities = require('../models/facilities');
+const Course = require('../models/course');
 
 router.get('/sport_facilities', async (req, res) => {
     let sport_facilities = await Facilities.find({});
@@ -86,5 +87,50 @@ router.patch('/sport_facilities/:id', async (req, res) => {
     })
 });
 
+
+router.get('/sport_facilities/:id/courses', async (req, res) => {
+
+    let sportFacility = await Facilities.findOne({_id:req.params.id});
+
+    if (!sportFacility) {
+        res.status(404).send()
+        console.log('resource not found')
+        return;
+    }
+
+    let courses = await Course.find({sport_facility_id: sportFacility.id});
+
+    let response = courses.map( (course) => {
+        let managers_array = course.managers;
+        let links = [];
+        managers_array.forEach(manager => {
+            links.push("/api/v2/managers/"+manager);
+        })
+        return {
+            course: "/api/v2/courses/" + course.id,
+            name: course.name,
+            description: course.description,
+            sport: course.sport,
+            sport_facility_id:course.sport_facility_id,
+            sport_center_id:course.sport_center_id,
+            sport_facility: "/api/v2/sport_facilities/"+course.sport_facility_id,
+            sport_center: "/api/v2/sport_centers/"+course.sport_center_id,
+            managers_id: course.managers,
+            users: course.users,
+            reviews: course.reviews,
+            periodic: course.periodic,
+            specific_date: course.specific_date,
+            specific_start_time: course.specific_start_time,
+            specific_end_time: course.specific_end_time,
+            start_date: course.start_date,
+            end_date: course.end_date,
+            time_schedules: course.time_schedules,
+            exceptions: course.exceptions,
+            creation_date: course.creation_date,
+            managers: links
+        };
+    });
+    res.status(200).json(response);
+})
 
 module.exports = router

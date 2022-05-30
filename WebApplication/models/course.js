@@ -37,7 +37,7 @@ const course_schema = mongoose.Schema({
     name: String,
     description: String,
     sport: String,
-    sport_facility_id: mongoose.Schema.Types.ObjectId,
+    sport_facility_id: String,
     sport_center_id: mongoose.Schema.Types.ObjectId,
     managers: [mongoose.Schema.Types.ObjectId],
     reviews: [{_id: false, date: {type: Date, default: Date.now}, vote: Number}],
