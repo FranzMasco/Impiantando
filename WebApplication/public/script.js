@@ -1456,7 +1456,7 @@ function login(login_type){
     var wrongInput = document.getElementById("wrongInput");
 
     if(login_type=='A'){
-        fetch('/api/v1/authentications/admin', {
+        fetch('/api/v2/authentications/admin', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify( { username: username, password: password } ),
@@ -1495,7 +1495,7 @@ function login(login_type){
         .catch( error => console.error(error) ); // If there is any error you will catch them here
     }else if(login_type=='R'){
         
-        fetch('/api/v1/authentications/responsabile', {
+        fetch('/api/v2/authentications/responsabile', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify( { username: username, password: password } ),
@@ -1525,7 +1525,7 @@ function login(login_type){
         
     }else if(login_type=='U'){
         
-        fetch('/api/v1/authentications/user', {
+        fetch('/api/v2/authentications/user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify( { username: username, password: password } ),

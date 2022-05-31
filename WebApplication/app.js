@@ -16,6 +16,7 @@ const registrations = require('./routes/subscriptions.js');
 
 
 //Resource REST API VERSION 2
+const authenticationv2 = require('./routes_v2/authentications.js');
 const coursesv2 = require('./routes_v2/courses.js');
 const managersv2 = require('./routes_v2/managers.js');
 const sport_centersv2 = require('./routes_v2/sport_centers.js');
@@ -41,6 +42,7 @@ app.use('/', express.static('public'));
 
 //Authentication
 app.use('/api/v1', authentication);
+app.use('/api/v2/', authenticationv2);
 
 //Resource routing
 //Sport center API
