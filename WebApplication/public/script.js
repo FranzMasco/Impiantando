@@ -2,7 +2,7 @@
 function loadSportCenters() {
     const html_sport_centers = document.getElementById('output_sportCenters');
 
-    fetch('../api/v1/sport_centers')
+    fetch('../api/v2/sport_centers')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -57,7 +57,7 @@ function loadFacilities(sport_center_id) {
 
     const html_facilities = document.getElementById('output_facilities');
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -103,7 +103,7 @@ function getFacilities_array(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {    
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -126,7 +126,7 @@ function loadFacilities_administrator(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -363,7 +363,7 @@ function loadCourses(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/courses')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -566,7 +566,7 @@ function loadCourses_administrator(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/courses')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -725,7 +725,7 @@ function load_formNewCourse(sport_center_id){
     }
 
     //Load sport facilies in order to select where to add the course
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {    
         for (var i = 0; i < data.length; i++){ //iterate overe recived data

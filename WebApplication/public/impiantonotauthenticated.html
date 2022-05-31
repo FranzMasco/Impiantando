@@ -70,7 +70,7 @@
                 const html_sc_location = document.getElementById("sc_location");
 
                 //Retrive sport center information from DB
-                fetch('../api/v1/sport_centers/'+sport_center_id)
+                fetch('../api/v2/sport_centers/'+sport_center_id)
                 .then((resp) => resp.json()) //trasfor data into JSON
                 .then(function(data) {
                     //console.log(data);
