@@ -147,7 +147,7 @@
                 var wrongInput = document.getElementById("wrongInput"+course_id);
 
                 if(username!="" && password!=""){
-                    fetch('/api/v1/authentications/user', {
+                    fetch('/api/v2/authentications/user', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json' },
                         body: JSON.stringify( { username: username, password: password } ),
