@@ -248,6 +248,13 @@ router.delete('/courses/:id', async (req, res) => {
     });
     //...
 
+    //Delete all the news which are about the course
+    let news = await News.find({course_id: course.id});
+    news.forEach(single_news=>{
+        single_news.deleteOne();
+    });
+    //...
+
     await course.deleteOne()
     res.status(204).json({status: "success"});
 });
