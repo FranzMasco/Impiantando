@@ -507,6 +507,7 @@ function updateManager(id_manager, sport_center_id){
         })
         .then((resp) => {
             console.log(resp);
+            alert("Manager updated successfully");
             loadManagers_administrator(sport_center_id);
         }).catch( error => console.error(error) ); //catch dell'errore
     }else{
@@ -1494,6 +1495,7 @@ function insertManager(){
         }),
     })
     .then((resp) => {
+        alert("Manager insert correctly");
         close_insert_manager_form();
         loadManagers_administrator(sport_center_id);
     })
