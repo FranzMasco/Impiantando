@@ -1704,7 +1704,7 @@ function loadCourses_manager(user_id){
         return;
     }
 
-    fetch('../api/v1/managers/'+user_id+'/courses')
+    fetch('../api/v2/managers/'+user_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);

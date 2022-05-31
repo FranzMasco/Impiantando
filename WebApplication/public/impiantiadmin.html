@@ -173,7 +173,7 @@
                     //Get token
                     token = getCookie("token");
 
-                    fetch('../api/v1/managers/'+manager_id, {
+                    fetch('../api/v2/managers/'+manager_id, {
                         method: 'DELETE',
                         headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
                         body: JSON.stringify( { manager_id: manager_id} ),
