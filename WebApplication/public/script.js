@@ -2,7 +2,7 @@
 function loadSportCenters() {
     const html_sport_centers = document.getElementById('output_sportCenters');
 
-    fetch('../api/v1/sport_centers')
+    fetch('../api/v2/sport_centers')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -57,7 +57,7 @@ function loadFacilities(sport_center_id) {
 
     const html_facilities = document.getElementById('output_facilities');
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -103,7 +103,7 @@ function getFacilities_array(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {    
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -126,7 +126,7 @@ function loadFacilities_administrator(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -278,7 +278,7 @@ function updateSportFacility(id_sport_facility, sport_center_id){
     token = getCookie("token");
     auth_level = getCookie("user_level");
     if(auth_level=="administrator"){
-        fetch('../api/v1/sport_facilities/'+id_sport_facility, {
+        fetch('../api/v2/sport_facilities/'+id_sport_facility, {
             method: 'PATCH',
             headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
             body: JSON.stringify( { name: new_name, description: new_description } ),
@@ -471,7 +471,7 @@ function insertSportFacility(){
         return ;
     }
 
-    fetch('../api/v1/sport_facilities', {
+    fetch('../api/v2/sport_facilities', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', "x-access-token": token},
         body: JSON.stringify( { name: f_name, description: f_description, id_s_c: sport_center_id } ),
@@ -525,7 +525,7 @@ function loadCourses(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/courses')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -728,7 +728,7 @@ function loadCourses_administrator(sport_center_id){
         return;
     }
 
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/courses')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -887,7 +887,7 @@ function load_formNewCourse(sport_center_id){
     }
 
     //Load sport facilies in order to select where to add the course
-    fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+    fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {    
         for (var i = 0; i < data.length; i++){ //iterate overe recived data
@@ -1166,7 +1166,7 @@ function insertCourse(){
         }
         console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
         //Insert new course with using POST API
-        fetch('../api/v1/courses', {
+        fetch('../api/v2/courses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1214,7 +1214,7 @@ function insertCourse(){
         }
 
         //Insert new course with using POST API
-        fetch('../api/v1/courses', {
+        fetch('../api/v2/courses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1323,7 +1323,7 @@ function PATCH_editCourse(course_id, periodicity){
         console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
 
         //Edit course using PATCH API
-        fetch('../api/v1/courses/'+course_id, {
+        fetch('../api/v2/courses/'+course_id, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1372,7 +1372,7 @@ function PATCH_editCourse(course_id, periodicity){
         }
 
         //Insert new course with using POST API
-        fetch('../api/v1/courses/'+course_id, {
+        fetch('../api/v2/courses/'+course_id, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1618,7 +1618,7 @@ function login(login_type){
     var wrongInput = document.getElementById("wrongInput");
 
     if(login_type=='A'){
-        fetch('/api/v1/authentications/admin', {
+        fetch('/api/v2/authentications/admin', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify( { username: username, password: password } ),
@@ -1657,7 +1657,7 @@ function login(login_type){
         .catch( error => console.error(error) ); // If there is any error you will catch them here
     }else if(login_type=='R'){
         
-        fetch('/api/v1/authentications/responsabile', {
+        fetch('/api/v2/authentications/responsabile', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify( { username: username, password: password } ),
@@ -1687,7 +1687,7 @@ function login(login_type){
         
     }else if(login_type=='U'){
         
-        fetch('/api/v1/authentications/user', {
+        fetch('/api/v2/authentications/user', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify( { username: username, password: password } ),
@@ -1790,7 +1790,7 @@ function getCookie(cname) {
 //DD-MM-YY-HH:MM:SS
 function date_format(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
     var second = d.getSeconds();
     var minute = d.getMinutes();
@@ -1802,7 +1802,7 @@ function date_format(d){
 //DD-MM-YYYY
 function date_format_1(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
 
     return day+"-"+month+"-"+year;
@@ -1819,7 +1819,7 @@ function date_format_2(d){
 //YYYY-MM-DD
 function date_format_3(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
     test = d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
     console.log("date: "+test)
@@ -1829,7 +1829,7 @@ function date_format_3(d){
 //YYYY-MM-DD time: HH:MM
 function date_format_4(d){
     var day = d.getDate();
-    var month = d.getMonth();
+    var month = d.getMonth()+1;
     var year = d.getFullYear();
     var minute = d.getMinutes();
     var hour = d.getHours();
@@ -1866,7 +1866,7 @@ function loadCourses_manager(user_id){
         return;
     }
 
-    fetch('../api/v1/managers/'+user_id+'/courses')
+    fetch('../api/v2/managers/'+user_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
@@ -1979,7 +1979,7 @@ function show_partecipants(course_id){
         return ;
     }
 
-    fetch('../api/v1/courses/'+course_id+'/users', {
+    fetch('../api/v2/courses/'+course_id+'/users', {
         method: 'GET',
         headers: {'Content-Type': 'application/json', "x-access-token": token},
     })
@@ -2165,7 +2165,7 @@ function loadCourses_user(user_id){
         return;
     }
 
-    fetch('../api/v1/users/'+user_id+'/courses')
+    fetch('../api/v2/users/'+user_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);

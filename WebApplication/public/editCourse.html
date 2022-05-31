@@ -43,7 +43,7 @@
                 }
                 
                 //Retrive course information through API
-                fetch('../api/v1/courses/'+course_id)
+                fetch('../api/v2/courses/'+course_id)
                 .then((resp) => resp.json()) //trasfor data into JSON
                 .then(function(data) {
                     
@@ -168,7 +168,7 @@
                 var sportFacilities = [];
 
                 //Load sport facilies in order to select where to add the course
-                fetch('../api/v1/sport_centers/'+sport_center_id+'/sport_facilities')
+                fetch('../api/v2/sport_centers/'+sport_center_id+'/sport_facilities')
                 .then((resp) => resp.json()) //trasfor data into JSON
                 .then(function(data) {    
                     for (var i = 0; i < data.length; i++){ //iterate overe recived data

@@ -29,7 +29,6 @@ router.get('/users/:id/courses', async (req, res) => {
             start_date: course.start_date,
             end_date: course.end_date,
             time_schedules: course.time_schedules,
-            exceptions: course.exceptions,
             creation_date: course.creation_date,
             sport_facility: "/api/v2/sport_facilities/"+course.sport_facility_id,
             sport_center: "/api/v2/sport_centers/"+course.sport_center_id,

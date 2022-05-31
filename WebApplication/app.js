@@ -16,10 +16,12 @@ const registrations = require('./routes/subscriptions.js');
 
 
 //Resource REST API VERSION 2
+const administrators = require('./routes_v2/administrators.js');
+const authenticationv2 = require('./routes_v2/authentications.js');
 const coursesv2 = require('./routes_v2/courses.js');
 const managersv2 = require('./routes_v2/managers.js');
 const sport_centersv2 = require('./routes_v2/sport_centers.js');
-const subscriptionsv2 = require('./routes/subscriptionsv2.js');
+const subscriptionsv2 = require('./routes_v2/subscriptions.js');
 const news = require('./routes_v2/news');
 const usersv2 = require('./routes_v2/users.js');
 const sport_facilitiesv2 = require('./routes_v2/sport_facilities.js');
@@ -41,6 +43,7 @@ app.use('/', express.static('public'));
 
 //Authentication
 app.use('/api/v1', authentication);
+app.use('/api/v2/', authenticationv2);
 
 //Resource routing
 //Sport center API
@@ -75,6 +78,10 @@ app.use("/api/v2", subscriptionsv2);
 
 //News API
 app.use("/api/v2/", news);
+//...
+
+//Administrators API
+app.use("/api/v2/", administrators);
 //...
 
 //Default 404 handler

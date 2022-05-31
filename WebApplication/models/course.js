@@ -57,8 +57,7 @@ const course_schema = mongoose.Schema({
         saturday: {event:[{_id: false, from: String, to: String}]},
         sunday: {event:[{_id: false, from: String, to: String}]}
     },
-    exceptions: [Date],
-    creation_date: {type: Date, default: Date.now}
+    creation_date: {type: Date, default: Date.now()}
 },{collection: 'course'});
 
 
