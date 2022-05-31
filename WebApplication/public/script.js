@@ -835,7 +835,7 @@ function deleteCourse(id_course, sport_center_id){
         auth_level = getCookie("user_level");
 
         if(auth_level=="administrator"){
-            fetch('../api/v1/courses/'+id_course, {
+            fetch('../api/v2/courses/'+id_course, {
                 method: 'DELETE',
                 headers: { "x-access-token": token },
             })

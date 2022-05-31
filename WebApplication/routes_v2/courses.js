@@ -224,12 +224,30 @@ router.get('/courses/:id/participants_number', async (req, res) => {
 
 router.delete('/courses/:id', tokenChecker);
 router.delete('/courses/:id', async (req, res) => {
+    
     let course = await Course.findById(req.params.id).exec();
     if (!course) {
         res.status(404).json({status: "error"})
         console.log('resource not found')
         return;
     }
+
+    //Delete all the references in Manager collection
+    let managers = await ManagerUser.find({courses : course.id});
+
+    managers.forEach(manager => {
+        ManagerUser.findByIdAndUpdate({_id:manager.id},{$pull:{courses:course.id}},function (error, success) {
+            if (error) {
+                console.log(error);
+                res.status(500).send(error);
+            } else {
+                console.log("OK");
+                console.log(success);
+            }
+        });
+    });
+    //...
+
     await course.deleteOne()
     res.status(204).json({status: "success"});
 });

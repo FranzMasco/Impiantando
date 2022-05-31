@@ -135,8 +135,6 @@ router.delete('/managers/:id', async (req, res) => {
     let managers = await Managers.findOne({_id:req.params.id});
     let courses = await Courses.find({_id: {$in: managers.courses}});
 
-    
-
     courses.forEach(course => {
         console.log(course.name+" "+course._id+" "+req.params.id );
         Courses.findByIdAndUpdate({_id:course._id},{$pull:{managers:req.params.id}},function (error, success) {
