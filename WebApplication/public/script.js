@@ -1166,7 +1166,8 @@ function insertCourse(){
         
         //Control that all required data has been inserted
         if(c_name=="" || start_date=="" || end_date==""){
-            console.log("Missing required information")
+            console.log("Missing required information");
+            alert("Missing required information");
             return;
         }
         console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
@@ -1215,7 +1216,8 @@ function insertCourse(){
 
         //Control that all required data has been inserted
         if(c_name=="" || specific_date=="" || specific_start_time=="" || specific_end_time==""){
-            console.log("Missing required information")
+            console.log("Missing required information");
+            alert("Missing required information");
             return;
         }
 
