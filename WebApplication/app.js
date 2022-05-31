@@ -16,6 +16,7 @@ const registrations = require('./routes/subscriptions.js');
 
 
 //Resource REST API VERSION 2
+const administrators = require('./routes_v2/administrators.js');
 const authenticationv2 = require('./routes_v2/authentications.js');
 const coursesv2 = require('./routes_v2/courses.js');
 const managersv2 = require('./routes_v2/managers.js');
@@ -77,6 +78,10 @@ app.use("/api/v2", subscriptionsv2);
 
 //News API
 app.use("/api/v2/", news);
+//...
+
+//Administrators API
+app.use("/api/v2/", administrators);
 //...
 
 //Default 404 handler

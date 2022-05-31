@@ -19,7 +19,7 @@ const Managers = require('../models/manager_user');
             name: user.sport_center.name,
             address: user.sport_center.address,
             description: user.sport_center.description,
-            administrator: "/api/v2/admin_users/"+user.id
+            administrator: "/api/v2/administrators/"+user.id
         };
     });
     res.status(200).json(response);
@@ -83,7 +83,7 @@ router.get('/sport_centers/:id', async (req, res) => {
         name: sp_c.sport_center.name,
         address: sp_c.sport_center.address,
         description: sp_c.sport_center.description,
-        administrator: "/api/v2/admin_users/"+sp_c.id
+        administrator: "/api/v2/administrators/"+sp_c.id
     }
     res.status(200).json(response);
 })
