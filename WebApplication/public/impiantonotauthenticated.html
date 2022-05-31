@@ -106,11 +106,11 @@
                     login_form.innerHTML = `
                         <h2>Login: </h2>
                         <label for="username">Username: </label>
-                        <input type="text" name="username" id="loginUsername" required> <br>
+                        <input type="text" name="username" id="loginUsername`+course_id+`" required> <br>
                         <label for="password">Password: </label>
-                        <input type="password" name="password" id="loginPassword" required> <br>
+                        <input type="password" name="password" id="loginPassword`+course_id+`" required> <br>
                         <input type="button" class="btn btn-primary" value="Sign in" onclick="user_login('`+course_id+`')">
-                        <span id="wrongInput" style="color: red;"></span>
+                        <span id="wrongInput`+course_id+`" style="color: red;"></span>
                     `;
 
                 }else{  //authenticated --> register user to the course
@@ -141,10 +141,10 @@
                 const login_form = document.getElementById("login_form"+course_id);
 
                 //get the form object
-                var username = document.getElementById("loginUsername").value;
-                var password = document.getElementById("loginPassword").value;
+                var username = document.getElementById("loginUsername"+course_id).value;
+                var password = document.getElementById("loginPassword"+course_id).value;
 
-                var wrongInput = document.getElementById("wrongInput");
+                var wrongInput = document.getElementById("wrongInput"+course_id);
 
                 if(username!="" && password!=""){
                     fetch('/api/v1/authentications/user', {
