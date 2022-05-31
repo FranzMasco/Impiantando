@@ -236,7 +236,7 @@ function deleteSportFacility(id_sport_facility, sport_center_id){
         auth_level = getCookie("user_level");
 
         if(auth_level=="administrator"){
-            fetch('../api/v1/sport_facilities/'+id_sport_facility, {
+            fetch('../api/v2/sport_facilities/'+id_sport_facility, {
                 method: 'DELETE',
                 headers: { "x-access-token": token },
             })
@@ -270,7 +270,7 @@ function updateSportFacility(id_sport_facility, sport_center_id){
     token = getCookie("token");
     auth_level = getCookie("user_level");
     if(auth_level=="administrator"){
-        fetch('../api/v1/sport_facilities/'+id_sport_facility, {
+        fetch('../api/v2/sport_facilities/'+id_sport_facility, {
             method: 'PATCH',
             headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
             body: JSON.stringify( { name: new_name, description: new_description } ),
@@ -309,7 +309,7 @@ function insertSportFacility(){
         return ;
     }
 
-    fetch('../api/v1/sport_facilities', {
+    fetch('../api/v2/sport_facilities', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', "x-access-token": token},
         body: JSON.stringify( { name: f_name, description: f_description, id_s_c: sport_center_id } ),
