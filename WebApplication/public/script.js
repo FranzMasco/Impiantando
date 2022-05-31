@@ -470,7 +470,9 @@ function insertSportFacility(){
 
     //Check that all required fileds are not empty
     if(f_name=="" || f_description=="" || sport_center_id=="" || auth_level!="administrator"){
-        return ;
+        alert("Missing required information");
+        console.log("Missing required information");
+        return;
     }
 
     fetch('../api/v2/sport_facilities', {
@@ -1485,6 +1487,12 @@ function insertManager(){
     console.log("society: "+m_society);
     console.log("username: "+m_username);
     console.log("password: "+m_password);
+
+    if(m_name=="" || m_surname=="" || m_username=="" || m_password==""){
+        alert("Missing required information");
+        console.log("Missing required information");
+        return;
+    }
 
     //Insert new course with using POST API
     fetch('../api/v2/managers', {
