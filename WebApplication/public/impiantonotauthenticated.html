@@ -121,7 +121,7 @@
                         //Get token
                         token = getCookie("token");
 
-                        fetch('../api/v1/registrations', {
+                        fetch('../api/v2/registrations', {
                             method: 'PATCH',
                             headers: { 'Content-type': 'application/json; charset=UTF-8', "x-access-token": token },
                             body: JSON.stringify( { course_id: course_id, user_id: user_id } ),
