@@ -2003,7 +2003,7 @@ function loadCourses_user(user_id){
         return;
     }
 
-    fetch('../api/v1/users/'+user_id+'/courses')
+    fetch('../api/v2/users/'+user_id+'/courses')
     .then((resp) => resp.json()) //trasfor data into JSON
     .then(function(data) {
         //console.log(data);
