@@ -132,20 +132,15 @@ router.delete('/managers/:id', async (req, res) => {
         console.log('resource not found')
         return;
     }
-    let managers = await Managers.findOne({_id:req.params.id});
-    let courses = await Courses.find({_id: {$in: managers.courses}});
 
-    courses.forEach(course => {
-        console.log(course.name+" "+course._id+" "+req.params.id );
-        Courses.findByIdAndUpdate({_id:course._id},{$pull:{managers:req.params.id}},function (error, success) {
-            if (error) {
-                console.log(error);
-                res.status(500).send(error);
-            } else {
-                console.log(success);
-            }
-        });
+    //Delete all the references in Courses collection
+    Courses.updateMany({managers : manager.id},{$pull:{managers:manager.id}}, function (err, result) {
+        if (err){
+            console.log(err)
+        }
     });
+    //...
+
     await manager.deleteOne();
     res.status(204).json({status: "success"});
 });
