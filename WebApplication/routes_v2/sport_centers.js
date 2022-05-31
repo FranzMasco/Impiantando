@@ -30,6 +30,24 @@ const Managers = require('../models/manager_user');
  * administrator to ensure data consistency
 */
 router.post('/sport_centers', async (req, res) => {
+
+    //Check required attributes
+    if  ( 
+            !req.body.name     ||
+            !req.body.surname  ||
+            !req.body.username ||
+            !req.body.password ||
+            !req.body.sport_center              ||
+            !req.body.sport_center.address      ||
+            !req.body.sport_center.name         ||
+            !req.body.sport_center.address.city ||
+            !sport_center.address.location
+        )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let admin_name = req.body.name;
     let admin_surname = req.body.surname;
     let admin_email = req.body.email;
@@ -49,7 +67,6 @@ router.post('/sport_centers', async (req, res) => {
     //Check if sport center already exists
     const sportCenterExists = await AdminUser.findOne({ 'sport_center.name': sport_center_name }).select("sport_center.name").lean();
     if (sportCenterExists) {res.status(409).send('sport center already exists'); return;}
-
 
     let admin = new AdminUser({
         name: admin_name,
