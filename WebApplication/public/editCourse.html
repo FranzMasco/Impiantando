@@ -43,7 +43,7 @@
                 }
                 
                 //Retrive course information through API
-                fetch('../api/v1/courses/'+course_id)
+                fetch('../api/v2/courses/'+course_id)
                 .then((resp) => resp.json()) //trasfor data into JSON
                 .then(function(data) {
                     

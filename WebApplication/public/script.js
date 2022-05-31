@@ -673,7 +673,7 @@ function deleteCourse(id_course, sport_center_id){
         auth_level = getCookie("user_level");
 
         if(auth_level=="administrator"){
-            fetch('../api/v1/courses/'+id_course, {
+            fetch('../api/v2/courses/'+id_course, {
                 method: 'DELETE',
                 headers: { "x-access-token": token },
             })
@@ -1004,7 +1004,7 @@ function insertCourse(){
         }
         console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
         //Insert new course with using POST API
-        fetch('../api/v1/courses', {
+        fetch('../api/v2/courses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1052,7 +1052,7 @@ function insertCourse(){
         }
 
         //Insert new course with using POST API
-        fetch('../api/v1/courses', {
+        fetch('../api/v2/courses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1161,7 +1161,7 @@ function PATCH_editCourse(course_id, periodicity){
         console.log("Array interval: "+JSON.stringify(dayIntervalArrays));
 
         //Edit course using PATCH API
-        fetch('../api/v1/courses/'+course_id, {
+        fetch('../api/v2/courses/'+course_id, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1210,7 +1210,7 @@ function PATCH_editCourse(course_id, periodicity){
         }
 
         //Insert new course with using POST API
-        fetch('../api/v1/courses/'+course_id, {
+        fetch('../api/v2/courses/'+course_id, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', "x-access-token": token},
             body: JSON.stringify(
@@ -1817,7 +1817,7 @@ function show_partecipants(course_id){
         return ;
     }
 
-    fetch('../api/v1/courses/'+course_id+'/users', {
+    fetch('../api/v2/courses/'+course_id+'/users', {
         method: 'GET',
         headers: {'Content-Type': 'application/json', "x-access-token": token},
     })
