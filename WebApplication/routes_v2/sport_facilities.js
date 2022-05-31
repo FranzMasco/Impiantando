@@ -9,6 +9,9 @@ const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Facilities = require('../models/facilities');
 const Course = require('../models/course');
+const Managers = require('../models/manager_user');
+const News = require('../models/news');
+const Users = require('../models/utente');
 
 router.get('/sport_facilities', async (req, res) => {
     let sport_facilities = await Facilities.find({});
@@ -71,6 +74,38 @@ router.delete('/sport_facilities/:id', async (req, res) => {
         console.log('resource not found')
         return;
     }
+
+    //Delete all the courses in the given sport facility
+    let courses = await Course.find({sport_facility_id: sport_facility.id});
+    courses.forEach(course => {
+        //Delete all the references in Manager collection
+        Managers.updateMany({courses : course.id},{$pull:{courses:course.id}}, function (err, result) {
+            if (err){
+                console.log(err)
+            }
+        });
+        //...
+
+        //Delete all the news which are about the course
+        News.deleteMany({course_id: course.id}).catch(function(error){
+            console.log(error); // Failure
+        });
+        //...
+
+        //Delete all the references in User collection
+        Users.updateMany({courses : course.id}, {$pull:{courses:course.id}}, function (err, result) {
+            if (err){
+                console.log(err)
+            }
+        });
+        //...
+    });
+
+    Course.deleteMany({sport_facility_id: sport_facility.id}).catch(function(error){
+        console.log(error); // Failure
+    });
+    //...
+
     await sport_facility.deleteOne()
     res.status(204).json({status: "success"});
 });

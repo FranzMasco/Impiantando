@@ -244,7 +244,7 @@ function deleteSportFacility(id_sport_facility, sport_center_id){
         auth_level = getCookie("user_level");
 
         if(auth_level=="administrator"){
-            fetch('../api/v1/sport_facilities/'+id_sport_facility, {
+            fetch('../api/v2/sport_facilities/'+id_sport_facility, {
                 method: 'DELETE',
                 headers: { "x-access-token": token },
             })
