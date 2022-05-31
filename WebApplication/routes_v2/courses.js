@@ -233,25 +233,24 @@ router.delete('/courses/:id', async (req, res) => {
     }
 
     //Delete all the references in Manager collection
-    let managers = await ManagerUser.find({courses : course.id});
-
-    managers.forEach(manager => {
-        ManagerUser.findByIdAndUpdate({_id:manager.id},{$pull:{courses:course.id}},function (error, success) {
-            if (error) {
-                console.log(error);
-                res.status(500).send(error);
-            } else {
-                console.log("OK");
-                console.log(success);
-            }
-        });
+    ManagerUser.updateMany({courses : course.id},{$pull:{courses:course.id}}, function (err, result) {
+        if (err){
+            console.log(err)
+        }
     });
     //...
 
     //Delete all the news which are about the course
-    let news = await News.find({course_id: course.id});
-    news.forEach(single_news=>{
-        single_news.deleteOne();
+    News.deleteMany({course_id: course.id}).catch(function(error){
+        console.log(error); // Failure
+    });
+    //...
+
+    //Delete all the references in User collection
+    Users.updateMany({courses : course.id}, {$pull:{courses:course.id}}, function (err, result) {
+        if (err){
+            console.log(err)
+        }
     });
     //...
 
