@@ -252,6 +252,7 @@ function deleteSportFacility(id_sport_facility, sport_center_id){
                 if(resp.status==403){
                     console.log("Authentication error");
                 }else{
+                    alert("Sport facilities deleted successfully");
                     loadFacilities_administrator(sport_center_id);
                 }
             })
@@ -284,6 +285,7 @@ function updateSportFacility(id_sport_facility, sport_center_id){
             body: JSON.stringify( { name: new_name, description: new_description } ),
         })
         .then((resp) => {
+            alert("Sport facility updated")
             console.log(resp);
             loadFacilities_administrator(sport_center_id);
         }).catch( error => console.error(error) ); //catch dell'errore
@@ -477,6 +479,7 @@ function insertSportFacility(){
         body: JSON.stringify( { name: f_name, description: f_description, id_s_c: sport_center_id } ),
     })
     .then((resp) => {
+        alert("Sport facility inserted");
         close_insert_form();
         loadFacilities_administrator(sport_center_id);
     })
@@ -844,6 +847,7 @@ function deleteCourse(id_course, sport_center_id){
                 if(resp.status==403){
                     console.log("Authentication error");
                 }else{
+                    alert("Course deleted successfully");
                     loadCourses_administrator(sport_center_id);
                 }
             })
@@ -1189,6 +1193,7 @@ function insertCourse(){
             } ),
         })
         .then((resp) => {
+            alert("Periodic course inserted successfully");
             close_insert_course_form();
             loadCourses_administrator(sport_center_id);
         })
@@ -1231,6 +1236,7 @@ function insertCourse(){
             } ),
         })
         .then((resp) => {
+            alert("Single time course inserted successfully");
             close_insert_course_form();
             loadCourses_administrator(sport_center_id);
         })

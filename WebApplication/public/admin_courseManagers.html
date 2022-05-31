@@ -222,6 +222,7 @@
                     body: JSON.stringify( { manager_id: manager_id } ),
                 })
                 .then((resp) => {
+                    alert("Manager added to the course");
                     console.log("Manager added to the course");
                     course_managers();
                 }).catch( error => console.error(error) ); //catch dell'errore
@@ -244,6 +245,7 @@
                     body: JSON.stringify( { manager_id: manager_id } ),
                 })
                 .then((resp) => {
+                    alert("Manager removed");
                     console.log("Manager removed");
                     course_managers();
                 }).catch( error => console.error(error) ); //catch dell'errore
