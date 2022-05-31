@@ -97,7 +97,7 @@ router.get('/managers/:id/courses', async (req, res) => {
             links.push("/api/v2/managers/"+manager);
         })
         return {
-            self: "/api/v1/courses/"+course.id,
+            self: "/api/v2/courses/"+course.id,
             name: course.name,
             description: course.description,
             sport: course.sport,
@@ -113,8 +113,8 @@ router.get('/managers/:id/courses', async (req, res) => {
             end_date: course.end_date,
             time_schedules: course.time_schedules,
             creation_date: course.creation_date,
-            sport_facility: "/api/v1/sport_facilities/"+course.sport_facility_id,
-            sport_center: "/api/v1/sport_centers/"+course.sport_center_id,
+            sport_facility: "/api/v2/sport_facilities/"+course.sport_facility_id,
+            sport_center: "/api/v2/sport_centers/"+course.sport_center_id,
             managers: links
         };
     });
