@@ -2,6 +2,7 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../app');
 const mongoose = require('mongoose');
+const facilities = require('../models/facilities');
 
 describe('GET /api/v2/sport_facilities', () => {
     let connection;
@@ -33,4 +34,24 @@ describe('GET /api/v2/sport_facilities', () => {
         .send({name: 'Piscina', id_s_c: '628501997debfcb7b90be07f'})
         .expect(409);
     })
+
+    test('POST /api/v2/sport_facilities of a sport facility that does not exist', () => {
+        return request(app).post('/api/v2/sport_facilities')
+        .set('x-access-token', token).set('Accept', 'application/json')
+        .send({name: 'Test', description: 'Sport facility inserita attraverso test', id_s_c: '628501997debfcb7b90be07f'})
+        .expect(201);
+    })
+
+    test('DELETE /api/v2/sport_facilities/:id of a sport facility that does not exist', () => {
+        return request(app).delete('/api/v2/sport_facilities/628371f870f00f63080bd17b')
+        .set('x-access-token', token).set('Accept', 'application/json')
+        .expect(404, {status: 'error'});
+    })
+
+    /*test('DELETE /api/v2/sport_facilities/:id of a sport facility that exists', () => {
+        //let sport_facility = facilities.findOne({'name': 'Test'});
+        return request(app).delete('/api/v2/sport_facilities/'+sport_facility.id)
+        .set('x-access-token', token).set('Accept', 'application/json')
+        .expect(204);
+    })*/
 })
