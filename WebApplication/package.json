@@ -4,7 +4,7 @@
   "description": "Universita degli studi di Trento - Ingegneria del Software",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --setupFiles dotenv/config",
     "start_local": "node -r dotenv/config index.js"
   },
   "jest": {
