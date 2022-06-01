@@ -145,6 +145,13 @@ router.delete('/sport_facilities/:id', async (req, res) => {
 
 router.patch('/sport_facilities/:id', tokenChecker);
 router.patch('/sport_facilities/:id', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     Facilities.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((sport_facility) => {
         if (!sport_facility) {
             return res.status(404).send();
