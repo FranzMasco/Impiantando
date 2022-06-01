@@ -20,4 +20,13 @@ describe('GET /api/v2/news', () => {
     test('GET /api/v2/news should respond with status 200', async () => {
         request(app).get('/api/v2/news').expect(200);
     })
+
+    test('GET /api/v2/news/:id should respond with status 200', async () => {
+        request(app).get('/api/v2/news/62907f61b5c3cca8975b201f').expect(200);
+    })
+
+    test('GET /api/v2/news/:id with an id that does not exist should respond with status 404', async () => {
+        request(app).get('/api/v2/news/62907f61b5c3cca8975b201e').expect(404);
+    })
+    
 })
