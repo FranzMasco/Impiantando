@@ -121,10 +121,18 @@ router.get('/sport_centers/:id', async (req, res) => {
 })
 
 router.get('/sport_centers/:id/sport_facilities', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let facilities = await Facilities.find({id_s_c:req.params.id});
+
     let response = facilities.map( (facility) => {
         return {
-            self: "/api/v2/sport_centers/"+facility.id_s_c+"/sport_facilities/" + facility.id,
+            self: "/api/v2/sport_facilities/" + facility.id,
             name: facility.name,
             description: facility.description,
             id_s_c:facility.id_s_c,
@@ -135,6 +143,14 @@ router.get('/sport_centers/:id/sport_facilities', async (req, res) => {
 });
 
 router.get('/sport_centers/:id/courses', async (req, res) => {
+    
+    //Check valid ID
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let courses = await Courses.find({sport_center_id:req.params.id});
     let response = courses.map( (course) => {
         let managers_array = course.managers;
@@ -150,6 +166,7 @@ router.get('/sport_centers/:id/courses', async (req, res) => {
             sport_facility_id:course.sport_facility_id,
             sport_center_id:course.sport_center_id,
             managers_id: course.managers,
+            users: course.users,
             reviews: course.reviews,
             periodic: course.periodic,
             specific_date: course.specific_date,
@@ -169,6 +186,14 @@ router.get('/sport_centers/:id/courses', async (req, res) => {
 });
 
 router.get('/sport_centers/:id/managers', async (req, res) => {
+
+    //Check valid ID
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let managers = await Managers.find({sport_center:req.params.id});
 
     let response = managers.map( (manager) => {
@@ -188,6 +213,8 @@ router.get('/sport_centers/:id/managers', async (req, res) => {
             email:manager.email,
             society:manager.society,
             birth_date: manager.birth_date,
+            username: manager.username,
+            password: manager.password,
             courses_id: manager.courses,
             courses: links
         };

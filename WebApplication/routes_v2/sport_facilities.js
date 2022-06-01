@@ -29,6 +29,17 @@ router.get('/sport_facilities', async (req, res) => {
 
 router.post('/sport_facilities', tokenChecker);
 router.post('/sport_facilities', async (req, res) => {
+
+    //Check required attributes
+    if  ( 
+        !req.body.name     ||
+        !req.body.id_s_c
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let facility_name = req.body.name;
     let facility_description = req.body.description;
     let facility_id_s_c = req.body.id_s_c;
