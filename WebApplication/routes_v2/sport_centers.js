@@ -1,5 +1,6 @@
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const router = express.Router();
 const AdminUser = require('../models/admin_user'); // sport center is a user_admin's subdocutment
 const Facilities = require('../models/facilities'); 
@@ -41,7 +42,7 @@ router.post('/sport_centers', async (req, res) => {
             !req.body.sport_center.address      ||
             !req.body.sport_center.name         ||
             !req.body.sport_center.address.city ||
-            !sport_center.address.location
+            !req.body.sport_center.address.location
         )
     {
         res.status(400).send("Bad input - missing required information");
@@ -94,7 +95,21 @@ router.post('/sport_centers', async (req, res) => {
 });
 
 router.get('/sport_centers/:id', async (req, res) => {
-    let sp_c = await AdminUser.findOne({'sport_center.id':req.params.id});
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
+    let sp_c = await AdminUser.findOne({'sport_center._id':req.params.id});
+
+    if (!sp_c) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let response = {
         self: "/api/v2/sport_centers/"+sp_c.sport_center.id,
         name: sp_c.sport_center.name,
