@@ -8,7 +8,7 @@ describe('GET /api/v2/sport_facilities', () => {
     
     beforeAll( async() => {
         jest.setTimeout(8000);
-        connection = await mongoose.connect(process.env.DB_URL);
+        connection = await mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll( () => { 
         mongoose.connection.close(true);
