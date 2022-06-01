@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Facilities = require('../models/facilities');
@@ -62,11 +63,25 @@ router.post('/sport_facilities', async (req, res) => {
      * Link to the newly created resource is returned in the Location header
      * https://www.restapitutorial.com/lessons/httpmethods.html
     */
-    res.location("/api/v2/sport_facilities/:id" + sport_facility_id).status(201).send();    
+    res.location("/api/v2/sport_facilities/" + sport_facility_id).status(201).send();    
 });
 
 router.get('/sport_facilities/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let facility = await Facilities.findOne({'_id':req.params.id});
+
+    if (!facility) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let response = {
             self: "/api/v2/sport_facilities/"+facility.id,
             name: facility.name,
@@ -79,6 +94,13 @@ router.get('/sport_facilities/:id', async (req, res) => {
 
 router.delete('/sport_facilities/:id', tokenChecker);
 router.delete('/sport_facilities/:id', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+    
     let sport_facility = await Facilities.findById(req.params.id).exec();
     if (!sport_facility) {
         res.status(404).json({status: "error"})
@@ -117,8 +139,8 @@ router.delete('/sport_facilities/:id', async (req, res) => {
     });
     //...
 
-    await sport_facility.deleteOne()
-    res.status(204).json({status: "success"});
+    await sport_facility.deleteOne();
+    res.status(204).send();
 });
 
 router.patch('/sport_facilities/:id', tokenChecker);
