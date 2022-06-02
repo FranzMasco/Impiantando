@@ -180,11 +180,25 @@ router.get('/courses/:id', async (req, res) => {
 
 router.get('/courses/:id/users', tokenChecker);
 router.get('/courses/:id/users', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let courses = await Course.findOne({_id:req.params.id});
+
+    if (!courses) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let users = await Users.find({_id: {$in: courses.users}});
     let response = users.map( (user) => {
         return {
-            self: "/api/v2/course/" + req.params.id+"/users/"+user.id,
+            self: "/api/v2/course/" + req.params.id,
             name: user.name,
             surname: user.surname,
             username: user.username,
