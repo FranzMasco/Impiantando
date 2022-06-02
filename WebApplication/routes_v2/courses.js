@@ -233,6 +233,13 @@ router.get('/courses/:id/news', async (req, res) => {
 });
 
 router.get('/courses/:id/participants_number', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let courses = await Course.findOne({_id:req.params.id});
 
     if(!courses){
