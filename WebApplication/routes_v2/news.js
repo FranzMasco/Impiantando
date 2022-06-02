@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const News = require('../models/news');
@@ -29,6 +30,17 @@ const News = require('../models/news');
 
 router.post('/news', tokenChecker);
 router.post('/news', async (req, res) => {
+
+    //Check required attributes
+    if  ( 
+        !req.body.text     ||
+        !req.body.course_id
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let news_text = req.body.text;
     let course_id = req.body.course_id;
     let pubblication_date = req.body.pubblication_date;
