@@ -176,6 +176,13 @@ router.delete('/managers/:id', async (req, res) => {
 
 router.patch('/managers/:id', tokenChecker);
 router.patch('/managers/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     Managers.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((manager) => {
         if (!manager) {
             return res.status(404).send();
