@@ -207,7 +207,7 @@ router.patch('/managers/:id', async (req, res) => {
 
     Managers.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((manager) => {
         if (!manager) {
-            return res.status(404).send();
+            return res.status(404).json({status: "error"});
         }
         res.status(200).send(manager);
     }).catch((error) => {

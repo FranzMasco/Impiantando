@@ -318,7 +318,7 @@ router.patch('/courses/:id', async (req, res) => {
 
     Course.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((course) => {
         if (!course) {
-            return res.status(404).send();
+            return res.status(404).json({status: "error"});
         }
         res.status(200).send(course);
     }).catch((error) => {

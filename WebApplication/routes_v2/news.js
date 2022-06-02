@@ -118,7 +118,7 @@ router.patch('/news/:id', async (req, res) => {
 
     News.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((news) => {
         if (!news) {
-            return res.status(404).json({status: "error"})
+            return res.status(404).json({status: "error"});
         }
         res.status(200).send(news);
     }).catch((error) => {
