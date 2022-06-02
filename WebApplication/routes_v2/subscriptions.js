@@ -52,7 +52,7 @@ router.patch('/registrations', async (req, res, next) => {
     next();
 
 }, async (req, res, next) => {
-
+    
     //Add course to user list of registrations
     let course_id = req.body.course_id;
     let user_id = req.body.user_id;
@@ -78,9 +78,25 @@ router.patch('/registrations', async (req, res, next) => {
 router.patch('/unsubscribe', tokenChecker);
 router.patch('/unsubscribe', async (req, res, next) => {
 
+    //Check required attributes
+    if  ( 
+        !req.body.course_id     ||
+        !req.body.user_id
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     //Delete user to course subscribers
     let course_id = req.body.course_id;
     let user_id = req.body.user_id;
+
+    if(!mongoose.Types.ObjectId.isValid(req.body.course_id) || !mongoose.Types.ObjectId.isValid(req.body.user_id) ){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
 
     Course.findOneAndUpdate(
     { _id: course_id }, 
