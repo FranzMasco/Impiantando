@@ -444,6 +444,13 @@ router.delete('/courses/:id/managers', async (req, res, next) => {
 
 //Get latest reviews and reviews average
 router.get('/courses/:id/reviews', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let course_id = req.params.id;
     
     try{
@@ -465,7 +472,7 @@ router.get('/courses/:id/reviews', async (req, res) => {
         sum+=course.reviews[review]["vote"];
     }
 
-    //Prepare only the last 5 news
+    //Prepare only the last 5 reviews
         latest_reviews = course.reviews;
         //console.log("latest_reviews = "+latest_reviews);
         //i. Sort by pubblication date
@@ -489,8 +496,6 @@ router.get('/courses/:id/reviews', async (req, res) => {
         };
 
     res.status(200).json(response);
-
-    
 });
 
 //Add a review
