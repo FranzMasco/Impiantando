@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Facilities = require('../models/facilities');
@@ -29,6 +30,17 @@ router.get('/sport_facilities', async (req, res) => {
 
 router.post('/sport_facilities', tokenChecker);
 router.post('/sport_facilities', async (req, res) => {
+
+    //Check required attributes
+    if  ( 
+        !req.body.name     ||
+        !req.body.id_s_c
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let facility_name = req.body.name;
     let facility_description = req.body.description;
     let facility_id_s_c = req.body.id_s_c;
@@ -51,11 +63,25 @@ router.post('/sport_facilities', async (req, res) => {
      * Link to the newly created resource is returned in the Location header
      * https://www.restapitutorial.com/lessons/httpmethods.html
     */
-    res.location("/api/v2/sport_facilities/:id" + sport_facility_id).status(201).send();    
+    res.location("/api/v2/sport_facilities/" + sport_facility_id).status(201).send();    
 });
 
 router.get('/sport_facilities/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let facility = await Facilities.findOne({'_id':req.params.id});
+
+    if (!facility) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let response = {
             self: "/api/v2/sport_facilities/"+facility.id,
             name: facility.name,
@@ -68,6 +94,13 @@ router.get('/sport_facilities/:id', async (req, res) => {
 
 router.delete('/sport_facilities/:id', tokenChecker);
 router.delete('/sport_facilities/:id', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+    
     let sport_facility = await Facilities.findById(req.params.id).exec();
     if (!sport_facility) {
         res.status(404).json({status: "error"})
@@ -106,15 +139,22 @@ router.delete('/sport_facilities/:id', async (req, res) => {
     });
     //...
 
-    await sport_facility.deleteOne()
-    res.status(204).json({status: "success"});
+    await sport_facility.deleteOne();
+    res.status(204).send();
 });
 
 router.patch('/sport_facilities/:id', tokenChecker);
 router.patch('/sport_facilities/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     Facilities.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((sport_facility) => {
         if (!sport_facility) {
-            return res.status(404).send();
+            return res.status(404).json({status: "error"})
         }
         res.status(200).send(sport_facility);
     }).catch((error) => {
@@ -124,11 +164,17 @@ router.patch('/sport_facilities/:id', async (req, res) => {
 
 
 router.get('/sport_facilities/:id/courses', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
 
     let sportFacility = await Facilities.findOne({_id:req.params.id});
 
     if (!sportFacility) {
-        res.status(404).send()
+        res.status(404).json({status: "error"})
         console.log('resource not found')
         return;
     }
