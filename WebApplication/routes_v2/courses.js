@@ -51,12 +51,22 @@ const News = require('../models/news');
     res.status(200).json(response);
 });
 
-/**
- * In order to create a new sport center it is necessary to create the correponding
- * administrator to ensure data consistency
-*/
+
 router.post('/courses', tokenChecker);
 router.post('/courses', async (req, res) => {
+
+    //Check required attributes
+    if  ( 
+        !req.body.name                  ||
+        !req.body.sport_facility_id     ||
+        !req.body.sport_center_id       ||
+        !req.body.periodic
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let course_name = req.body.name;
     let course_description = req.body.description;
     let course_sport = req.body.sport;
@@ -80,14 +90,9 @@ router.post('/courses', async (req, res) => {
     let course_time_schedules_sunday = req.body.time_schedules_sunday;
     let course_creation_date = req.body.creation_date;
 
-    //console.log(course_time_schedules_wednesday.event[0]);
-
     //Check if course already exists
     const courseExists = await Course.findOne({name: course_name, sport_facility: course_sport_facility_id}).select("name").lean();
     if (courseExists) {res.status(409).send('course already exists'); return;}
-
-    //Check if the sport facility exists
-
 
     let course = new Course({
         name: course_name,
