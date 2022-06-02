@@ -133,7 +133,21 @@ router.post('/courses', async (req, res) => {
 });
 
 router.get('/courses/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let course = await Course.findOne({'_id':req.params.id});
+
+    if (!course) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let managers_array = course.managers;
     let links = [];
     managers_array.forEach(manager => {
