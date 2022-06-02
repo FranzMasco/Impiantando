@@ -5,12 +5,27 @@
 
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const router = express.Router();
 const Users = require('../models/utente'); 
 const Courses = require('../models/course'); 
 
 router.get('/users/:id/courses', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let users = await Users.findOne({_id:req.params.id});
+
+    if (!users) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let courses = await Courses.find({_id: {$in: users.courses}});
     let response = courses.map( (course) => {
         return {
@@ -31,8 +46,7 @@ router.get('/users/:id/courses', async (req, res) => {
             time_schedules: course.time_schedules,
             creation_date: course.creation_date,
             sport_facility: "/api/v2/sport_facilities/"+course.sport_facility_id,
-            sport_center: "/api/v2/sport_centers/"+course.sport_center_id,
-            course: "/api/v2/courses/"+course.id
+            sport_center: "/api/v2/sport_centers/"+course.sport_center_id
         };
     });
     res.status(200).json(response);
