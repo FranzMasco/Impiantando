@@ -63,6 +63,13 @@ router.post('/news', async (req, res) => {
 });
 
 router.get('/news/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let news = await News.findOne({'_id':req.params.id});
 
     if (!news) {
@@ -96,9 +103,15 @@ router.delete('/news/:id', async (req, res) => {
 
 router.patch('/news/:id', tokenChecker);
 router.patch('/news/:id', async (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     News.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((news) => {
         if (!news) {
-            return res.status(404).send();
+            return res.status(404).json({status: "error"})
         }
         res.status(200).send(news);
     }).catch((error) => {
