@@ -54,6 +54,18 @@ router.get('/users/:id/courses', async (req, res) => {
 
 
 router.post('/users', async (req, res) => {
+    //Check required attributes
+    if  ( 
+        !req.body.name     ||
+        !req.body.surname  ||
+        !req.body.username ||
+        !req.body.password
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let user_name = req.body.name;
     let user_surname = req.body.surname;
     let user_email = req.body.email;
@@ -63,7 +75,7 @@ router.post('/users', async (req, res) => {
     let user_courses = req.body.courses;
 
     //Check if a manager already exists
-    const userExists = await Users.findOne({username: user_username}).select("name").lean();
+    const userExists = await Users.findOne({username: user_username}).select("username").lean();
     if(userExists) {res.status(400).send('user already exists');return;}
 
     let user = new Users({
