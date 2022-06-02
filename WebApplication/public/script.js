@@ -1726,10 +1726,10 @@ function login(login_type){
                 setCookie("user_level", user_level, 1);
                 window.location.href="autenticateduserhome.html";
             }else if(data.username==false){ //wrong username
-                wrongInput.classList.add("alert alert-danger");
+                
                 wrongInput.innerHTML = "Bad username )-:";
             }else if(data.password==false){ //wrong password
-                wrongInput.classList.add("alert alert-danger");
+                
                 wrongInput.innerHTML = "Bad password )-:";
             }            
         })
