@@ -209,7 +209,14 @@ router.get('/courses/:id/users', async (req, res) => {
 });
 
 //Get course news
-router.get('/courses/:id/news', async (req, res) => {    
+router.get('/courses/:id/news', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+    
     let courses = await Course.findOne({_id:req.params.id});
 
     if (!courses) {
@@ -501,7 +508,7 @@ router.get('/courses/:id/reviews', async (req, res) => {
 //Add a review
 router.patch('/courses/:id/reviews', tokenChecker);
 router.patch('/courses/:id/reviews', async (req, res) => {
-    
+
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
         res.status(404).json({status: "error"})
         console.log('resource not found')
