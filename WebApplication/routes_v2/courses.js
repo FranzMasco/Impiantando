@@ -275,6 +275,13 @@ router.delete('/courses/:id', async (req, res) => {
 
 router.patch('/courses/:id', tokenChecker);
 router.patch('/courses/:id', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     Course.findByIdAndUpdate(req.params.id, req.body, {new: true}).then((course) => {
         if (!course) {
             return res.status(404).send();
