@@ -10,6 +10,36 @@ const router = express.Router();
 const Users = require('../models/utente'); 
 const Courses = require('../models/course'); 
 
+
+router.get('/users/:id', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
+    let user = await Users.findOne({'_id':req.params.id});
+
+    if (!user) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
+    let response = {
+            self: "/api/v2/users/"+user.id,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            birth_date: user.birth_date,
+            username: user.username,
+            password: user.password,
+            courses_id: user.courses
+        };
+    res.status(200).json(response);
+})
+
 router.get('/users/:id/courses', async (req, res) => {
 
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
