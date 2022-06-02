@@ -389,6 +389,12 @@ router.patch('/courses/:id/managers', async (req, res, next) => {
     let course_id = req.params.id;
     let manager_id = req.body.manager_id;
 
+    if(!mongoose.Types.ObjectId.isValid(manager_id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     Course.findOneAndUpdate(
     { _id: course_id }, 
     { $push: { managers: manager_id  } },
@@ -429,9 +435,21 @@ router.patch('/courses/:id/managers', async (req, res, next) => {
 router.delete('/courses/:id/managers', tokenChecker);
 router.delete('/courses/:id/managers', async (req, res, next) => {
 
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     //Remove manager from course list of managers
     let course_id = req.params.id;
     let manager_id = req.body.manager_id;
+
+    if(!mongoose.Types.ObjectId.isValid(manager_id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
 
     Course.findOneAndUpdate(
     { _id: course_id }, 
