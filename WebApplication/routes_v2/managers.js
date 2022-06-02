@@ -84,7 +84,21 @@ router.post('/managers', async (req, res) => {
 });
 
 router.get('/managers/:id', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let manager = await Managers.findOne({id:req.params.id});
+
+    if (!manager) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let response = {
         self: "/api/v2/managers/"+ manager.id,
         name: manager.name,
