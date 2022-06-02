@@ -43,7 +43,7 @@ app.use('/', express.static('public'));
 
 //Authentication
 app.use('/api/v1', authentication);
-app.use('/api/v2/', authenticationv2);
+app.use('/api/v2', authenticationv2);
 
 //Resource routing
 //Sport center API
