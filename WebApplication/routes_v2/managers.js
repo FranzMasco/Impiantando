@@ -116,7 +116,21 @@ router.get('/managers/:id', async (req, res) => {
 })
 
 router.get('/managers/:id/courses', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let managers = await Managers.findOne({_id:req.params.id});
+
+    if (!managers) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let courses = await Courses.find({_id: {$in: managers.courses}});
     //console.log(courses);
     let response = courses.map( (course) => {
@@ -133,6 +147,7 @@ router.get('/managers/:id/courses', async (req, res) => {
             sport_facility_id:course.sport_facility_id,
             sport_center_id:course.sport_center_id,
             managers_id: course.managers,
+            users: course.users,
             reviews: course.reviews,
             periodic: course.periodic,
             specific_date: course.specific_date,
@@ -153,7 +168,7 @@ router.get('/managers/:id/courses', async (req, res) => {
 //Delets a manager and its references in the courses
 router.delete('/managers/:id', tokenChecker);
 router.delete('/managers/:id', async (req, res) => {
-    
+
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
         res.status(404).json({status: "error"})
         console.log('resource not found')
