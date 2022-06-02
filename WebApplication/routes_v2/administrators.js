@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const router = express.Router();
 const AdminUser = require('../models/admin_user');
 
@@ -30,7 +31,20 @@ const AdminUser = require('../models/admin_user');
 });
 
 router.get('/administrators/:id', async (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let admin = await AdminUser.findOne({id:req.params.id});
+
+    if (!admin) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let response = {
             self: "/api/v2/administrators/" + admin.id,
             name: admin.name,
