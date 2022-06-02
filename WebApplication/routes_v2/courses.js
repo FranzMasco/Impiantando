@@ -335,7 +335,21 @@ router.patch('/courses/:id', async (req, res) => {
  * Get all managers of the specified course
  */
 router.get('/courses/:id/managers', async (req, res) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let course = await Course.findOne({_id:req.params.id});
+
+    if (!course) {
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     let managers = await ManagerUser.find({_id: {$in: course.managers}});
 
     let response = managers.map( (manager) => {
