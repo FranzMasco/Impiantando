@@ -501,6 +501,13 @@ router.get('/courses/:id/reviews', async (req, res) => {
 //Add a review
 router.patch('/courses/:id/reviews', tokenChecker);
 router.patch('/courses/:id/reviews', async (req, res) => {
+    
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
+
     //Add review to course list of reviews
     let course_id = req.params.id;
     let review = req.body.review;
