@@ -5,6 +5,7 @@
 
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Managers = require('../models/manager_user');
@@ -28,7 +29,7 @@ router.get('/managers', async (req, res) => {
             society: manager.society,
             courses: manager.courses,
             sport_center_id: manager.sport_center,
-            sport_center: "/api/v2/sport_centers/"+sport_center_id
+            sport_center: "/api/v2/sport_centers/"+manager.sport_center
         };
     });
     res.status(200).json(response);
@@ -36,6 +37,20 @@ router.get('/managers', async (req, res) => {
 
 router.post('/managers', tokenChecker);
 router.post('/managers', async (req, res) => {
+
+    //Check required attributes
+    if  ( 
+        !req.body.name             ||
+        !req.body.surname          ||
+        !req.body.username         ||
+        !req.body.password         ||
+        !req.body.sport_center_id
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     let manager_name = req.body.name;
     let manager_surname = req.body.surname;
     let manager_email = req.body.email;
