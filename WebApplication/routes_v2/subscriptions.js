@@ -4,6 +4,7 @@
 */
 const express = require('express');
 const { response } = require('../app');
+const mongoose = require("mongoose");
 const tokenChecker = require('./tokenChecker.js');
 const router = express.Router();
 const Course = require('../models/course');
@@ -16,9 +17,25 @@ const Users = require('../models/utente');
 router.patch('/registrations', tokenChecker);
 router.patch('/registrations', async (req, res, next) => {
 
+    //Check required attributes
+    if  ( 
+        !req.body.course_id     ||
+        !req.body.user_id
+    )
+    {
+        res.status(400).send("Bad input - missing required information");
+        return ;
+    }
+
     //Add user to course subscribers
     let course_id = req.body.course_id;
     let user_id = req.body.user_id;
+
+    if(!mongoose.Types.ObjectId.isValid(req.body.course_id) || !mongoose.Types.ObjectId.isValid(req.body.user_id) ){
+        res.status(404).json({status: "error"})
+        console.log('resource not found')
+        return;
+    }
 
     Course.findOneAndUpdate(
     { _id: course_id }, 
