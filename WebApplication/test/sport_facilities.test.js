@@ -8,14 +8,12 @@ function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-  }
+}
   
 
 describe('/api/v2/sport_facilities', () => {
     let connection;
     
-
-
     beforeAll( async() => {
         jest.setTimeout(8000);
         connection = await mongoose.connect(process.env.DB_URL_TEST);

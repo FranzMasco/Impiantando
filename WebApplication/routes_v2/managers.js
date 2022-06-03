@@ -63,7 +63,7 @@ router.post('/managers', async (req, res) => {
 
     //Check if a manager already exists
     const managersExists = await Managers.findOne({name: manager_name, surname: manager_surname, sport_center: manager_sport_center_id}).select("sport_center").lean();
-    if(managersExists) {res.status(400).send('user already exists');return;}
+    if(managersExists) {res.status(409).send('user already exists');return;}
 
     let manager = new Managers({
         name: manager_name,
