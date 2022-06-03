@@ -176,6 +176,61 @@ describe('/api/v2/managers', () => {
     })
 
 
+    describe('PATCH method tests', () => {
+
+        //PATCH without token
+        test('PATCH /api/v2/managers/:id without JSON web token. Should respond with status 401', () => {
+            return request(app)
+              .patch('/api/v2/managers/'+manager_id)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(401);
+        });
+
+
+        //PATCH with invalid token
+        test('PATCH /api/v2/managers/:id with invalid token. Should respond with status 403', () => {
+            return request(app)
+              .patch('/api/v2/managers/'+manager_id)
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(403);
+        });
+
+        //PATCH with invalid resource id
+        test('PATCH /api/v2/managers/:id with invalid id. Should respond with status 404', () => {
+            return request(app)
+              .patch('/api/v2/managers/notValidID')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(404);
+        });
+
+        //PATCH with valid data
+        test('PATCH /api/v2/managers/:id with correct data. Should respond with status 200. In the response there must be the updated information.', () => {
+            return request(app)
+              .patch('/api/v2/managers/'+manager_id)
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: "new_name",
+              })
+              .expect(200)
+              .then((response) => {
+                //Check updated data
+                expect(response.body.name).toBe("new_name");
+              });
+        });
+    })
+
     /*
     var token = jwt.sign({username: 'antonio.gialli',id: '628501997debfcb7b90be07e'}, process.env.SUPER_SECRET, {expiresIn: 86400});
     describe('GET methods tests', () => {
