@@ -151,44 +151,57 @@ describe('/api/v2/sport_facilities', () => {
         })
     })
 
-    
+    describe('PATCH method tests', () => {
+        //PATCH without token
 
-    test('GET /api/v2/sport_facilities/:id should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_facilities/628371f870f00f63080bd17c').expect(200);
+        //PATCH with invalid token
+
+        //PATCH with invalid resource id
+
+        //PATCH with valid data
     })
 
-    test('GET /api/v2/sport_facilities/:id/courses should respond with status 404 if the sport facility does not exist', async () => {
-        return request(app).get('/api/v2/sport_facilities/628371f870f00f63080bd17b/courses').expect(404);
-    })
+    describe('DELETE method tests', () => {
+        //DELETE without token
+        test('DELETE /api/v2/sport_facilities/:id without JSON web token. Should respond with status 401', () => {
+            return request(app)
+                .delete('/api/v2/sport_facilities/'+sport_facility_id)
+                .set('Accept', 'application/json')
+                .accept(401);
+        });
 
-    test('GET /api/v2/sport_facilities/:id/courses should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_facilities/628371f870f00f63080bd17c/courses').expect(200);
-    })
-        
-    describe('DELETE methods test', () => {
+        //DELETE with invalid token
+        test('DELETE /api/v2/sport_facilities/:id with invalid token. Should respond with status 403', () => {
+            return request(app)
+                .delete('/api/v2/sport_facilities/'+sport_facility_id)
+                .set('x-access-token', token_not_valid)
+                .set('Accept', 'application/json')
+                .accept(403);
+        });
+
+        //DELETE with invalid resource id
         test('DELETE /api/v2/sport_facilities/:id of a sport facility that does not exist', () => {
-            return request(app).delete('/api/v2/sport_facilities/628371f870f00f63080bd17b')
-            .set('x-access-token', token).set('Accept', 'application/json')
-            .expect(404, {status: 'error'});
-        })
-    })
-    
-    describe('DELETE method successfull', () => {
-        let test_facility_post, test_facility;
-        beforeAll( async() => {
-            test_facility_post = new Facilities({
-                name: 'Test', description: 'Sport facility inserita attraverso test', id_s_c: '628501997debfcb7b90be07f'
-            });
-            test_facility = await test_facility_post.save();
-        })
-    
+            return request(app)
+            .delete('/api/v2/sport_facilities/notValidID')
+            .set('x-access-token', token)
+            .set('Accept', 'application/json')
+            .expect(404);
+        });
+
+        //DELETE with valid data
         test('DELETE /api/v2/sport_facilities/:id of a sport facility that exists', () => {
-            //let sport_facility = facilities.findOne({'name': 'Test'});
-            return request(app).delete('/api/v2/sport_facilities/'+test_facility.id)
-            .set('x-access-token', token).set('Accept', 'application/json')
+            return request(app)
+            .delete('/api/v2/sport_facilities/'+sport_facility_id)
+            .set('x-access-token', token)
+            .set('Accept', 'application/json')
             .expect(204);
         })
     })
 
-    
+    describe('GET /sport_facilities/:id/courses', () => {
+        test('GET /api/v2/sport_facilities/:id/courses should respond with status 200', async () => {
+            return request(app).get('/api/v2/sport_facilities/628371f870f00f63080bd17c/courses').expect(200);
+        })
+    })
+
 })
