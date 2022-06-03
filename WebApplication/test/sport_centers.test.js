@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const app = require('../app');
 const mongoose = require('mongoose');
 
-describe('GET /api/v2/sport_centers', () => {
+describe('/api/v2/sport_centers', () => {
     let connection;
     
     beforeAll( async() => {
