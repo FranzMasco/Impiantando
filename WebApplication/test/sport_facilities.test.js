@@ -199,8 +199,44 @@ describe('/api/v2/sport_facilities', () => {
     })
 
     describe('GET /sport_facilities/:id/courses', () => {
+
+        //POST with valid data
+        //store _id and another information about the created resource for future test cases
+        test('POST /api/v2/managers with correct data. Should respond with status 201', async () => {
+            
+            //Prepare a random name to avoid conflicts
+            new_sport_facility_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+
+            return request(app)
+              .post('/api/v2/sport_facilities')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: new_sport_facility_name, 
+                description: 'Sport facility inserita attraverso test', 
+                id_s_c: '628501997debfcb7b90be07f'
+              })
+              .expect(201)
+              .then((response) => {
+                //Get ID of the manager just created from location header field
+                //and store it for later test cases
+                let locationHeaderField = response.headers["location"];
+                sport_facility1_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
+              });
+        });
+
+        //GET courses in a specific sport_facility with not valid ID. Should respond with status 404
+        test('GET /api/v2/sport_facilities/:id/courses with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/sport_facilities/notValidID/courses')
+                .expect(404);
+        })
+
+        //GET courses in a specific sport_facility with valid ID. Should respond with an array of courses
         test('GET /api/v2/sport_facilities/:id/courses should respond with status 200', async () => {
-            return request(app).get('/api/v2/sport_facilities/628371f870f00f63080bd17c/courses').expect(200);
+            return request(app)
+                .get('/api/v2/sport_facilities/'+sport_facility1_id+'/courses')
+                .expect(200);
         })
     })
 
