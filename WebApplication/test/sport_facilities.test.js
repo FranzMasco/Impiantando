@@ -153,12 +153,55 @@ describe('/api/v2/sport_facilities', () => {
 
     describe('PATCH method tests', () => {
         //PATCH without token
+        test('PATCH /api/v2/sport_facilities/:id without JSON web token. Should respond with status 401', () => {
+            return request(app)
+              .patch('/api/v2/sport_facilities/'+sport_facility_id)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(401);
+        });
 
         //PATCH with invalid token
+        test('PATCH /api/v2/sport_facilities/:id with invalid token. Should respond with status 403', () => {
+            return request(app)
+              .patch('/api/v2/sport_facilities/'+sport_facility_id)
+              .set('x-access-token', token_not_valid)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(403);
+        });
 
         //PATCH with invalid resource id
+        test('PATCH /api/v2/sport_facilities/:id with invalid id. Should respond with status 404', () => {
+            return request(app)
+              .patch('/api/v2/sport_facilities/notValidID')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(404);
+        });
 
         //PATCH with valid data
+        test('PATCH /api/v2/sport_facilities/:id with correct data. Should respond with status 200. In the response there must be the updated information.', () => {
+            return request(app)
+              .patch('/api/v2/sport_facilities/'+sport_facility_id)
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: "new_name",
+              })
+              .expect(200)
+              .then((response) => {
+                //Check updated data
+                expect(response.body.name).toBe("new_name");
+              });
+        });
     })
 
     describe('DELETE method tests', () => {
@@ -167,7 +210,7 @@ describe('/api/v2/sport_facilities', () => {
             return request(app)
                 .delete('/api/v2/sport_facilities/'+sport_facility_id)
                 .set('Accept', 'application/json')
-                .accept(401);
+                .expect(401);
         });
 
         //DELETE with invalid token
@@ -176,7 +219,7 @@ describe('/api/v2/sport_facilities', () => {
                 .delete('/api/v2/sport_facilities/'+sport_facility_id)
                 .set('x-access-token', token_not_valid)
                 .set('Accept', 'application/json')
-                .accept(403);
+                .expect(403);
         });
 
         //DELETE with invalid resource id
