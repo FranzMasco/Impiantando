@@ -30,6 +30,8 @@ describe('/api/v2/managers', () => {
     //Stored information
     var manager_id;
     var manager_name;
+    var manager1_id;
+    var manager1_name;
 
     describe('POST method tests', () => {
         
@@ -268,5 +270,82 @@ describe('/api/v2/managers', () => {
               .set('Accept', 'application/json')
               .expect(204);
         });
-    })    
+    })
+    
+    describe('GET /managers/:id/courses method (list of courses that a manager runs) tests', () => {
+
+        //Mock function
+        let responseSpy;
+        beforeAll( () => {
+            const Courses = require('../models/course');
+            responseSpy = jest.spyOn(Courses, 'find').mockImplementation(() => {
+                return [ 
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb3",
+                        name: "CorsoTest",
+                        managers: []
+                    },
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb4",
+                        name: "Corso di tennis",
+                        managers: []
+                    }
+                ];
+            });
+        });
+
+        afterAll(async () => {
+            responseSpy.mockRestore();
+        });
+
+        //POST with valid data
+        //store _id and another information about the created resource for future test cases
+        test('POST /api/v2/managers with correct data. Should respond with status 201', async () => {
+            
+            //Prepare a random name to avoid conflicts
+            manager1_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+
+            return request(app)
+              .post('/api/v2/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: manager1_name,
+                surname: "test",
+                email: "test",
+                birth_date: "2000-08-20",
+                username: "test",
+                password: "test",
+                society: "test",
+                sport_center_id: "628501997debfcb7b90be07f",
+              })
+              .expect(201)
+              .then((response) => {
+                //Get ID of the manager just created from location header field
+                //and store it for later test cases
+                let locationHeaderField = response.headers["location"];
+                manager1_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
+              });
+        });
+
+        //GET courses managed by a specific manager with not valid ID. Should respond with status 404
+        test('GET /api/v2/managers/:id/courses with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/managers/notValidID/courses')
+                .expect(404);
+        })
+
+        //GET courses managed by a specific manager with valid ID. Should respond with an array of courses
+        test('GET /api/v2/managers/:id/courses with valid ID. Should respond with an array of courses. Returned data tested with a mock function.', async () => {
+            return request(app)
+                .get('/api/v2/managers/'+manager1_id+'/courses')
+                .expect(200)
+                .then((response) => {
+                    //First element of the response should be "CorsoTest"
+                    expect(response.body[0].name).toBe("CorsoTest");
+                });
+        })
+
+    })
+
 });
