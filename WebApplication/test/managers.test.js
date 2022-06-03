@@ -143,6 +143,39 @@ describe('/api/v2/managers', () => {
     })
 
 
+    describe('GET methods tests', () => {
+
+        //GET all the resources
+        test('GET /api/v2/managers should respond with status 200. At least two resources due to previous POST', async () => {
+            return request(app)
+                .get('/api/v2/managers')
+                .expect(200)
+                .then((response) => {
+                    //The length of the response should be at least two due to previous posts
+                    expect(response.body.length).toBeGreaterThanOrEqual(2);
+                });
+        })
+        
+        //GET specific resource with not valid ID. Should respond with status 404
+        test('GET /api/v2/managers/:id with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/managers/notValidID')
+                .expect(404);
+        })
+
+        //GET specific resource with valid ID. Should respond with status 200 and with the data of the previously created resource
+        test('GET /api/v2/managers/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
+            return request(app)
+                .get('/api/v2/managers/'+manager_id)
+                .expect(200)
+                .then((response) => {
+                    expect(response.body.name).toBe(manager_name);
+                });
+        })
+
+    })
+
+
     /*
     var token = jwt.sign({username: 'antonio.gialli',id: '628501997debfcb7b90be07e'}, process.env.SUPER_SECRET, {expiresIn: 86400});
     describe('GET methods tests', () => {

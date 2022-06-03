@@ -91,7 +91,7 @@ router.get('/managers/:id', async (req, res) => {
         return;
     }
 
-    let manager = await Managers.findOne({id:req.params.id});
+    let manager = await Managers.findOne({_id:req.params.id});
 
     if (!manager) {
         res.status(404).json({status: "error"})
