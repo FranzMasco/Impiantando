@@ -82,26 +82,67 @@ describe('/api/v2/users', () => {
         });
     })
 
-    /*
+    
     describe('GET methods tests', () => {
         
+        //Mock function
+        let responseSpy;
+        beforeAll( () => {
+            const Courses = require('../models/course');
+            responseSpy = jest.spyOn(Courses, 'find').mockImplementation(() => {
+                return [ 
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb3",
+                        name: "CorsoTest",
+                        managers: []
+                    },
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb4",
+                        name: "Corso di tennis",
+                        managers: []
+                    }
+                ];
+            });
+        });
+
+        afterAll(async () => {
+            responseSpy.mockRestore();
+        });
+
         //GET specific resource with not valid ID. Should respond with status 404
-        test('GET /api/v2/managers/:id with not valid ID. Should respond with status 404.', async () => {
+        test('GET /api/v2/users/:id with not valid ID. Should respond with status 404.', async () => {
             return request(app)
-                .get('/api/v2/managers/notValidID')
+                .get('/api/v2/users/notValidID')
                 .expect(404);
         })
 
         //GET specific resource with valid ID. Should respond with status 200 and with the data of the previously created resource
-        test('GET /api/v2/managers/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
+        test('GET /api/v2/users/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
             return request(app)
-                .get('/api/v2/managers/'+manager_id)
+                .get('/api/v2/users/'+user_id)
                 .expect(200)
                 .then((response) => {
-                    expect(response.body.name).toBe(manager_name);
+                    expect(response.body.username).toBe(user_username);
+                });
+        })
+
+        //GET courses attended by a specific user with not valid ID. Should respond with status 404
+        test('GET /api/v2/users/:id/courses with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/users/notValidID/courses')
+                .expect(404);
+        })
+
+        //GET courses attended by a specific user with valid ID. Should respond with an array of courses
+        test('GET /api/v2/users/:id/courses with valid ID. Should respond with an array of courses. Returned data tested with a mock function.', async () => {
+            return request(app)
+                .get('/api/v2/users/'+user_id+'/courses')
+                .expect(200)
+                .then((response) => {
+                    //First element of the response should be "CorsoTest"
+                    expect(response.body[0].name).toBe("CorsoTest");
                 });
         })
 
     })
-    */
 });
