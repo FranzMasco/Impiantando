@@ -19,7 +19,7 @@ router.post('/authentications/admin', async function(req, res) {
 	// find the user
 	let user = await AdminUser.findOne({
 		username: req.body.username
-	}).exec();
+	});
 
 	// user not found
 	if (!user) {
@@ -66,7 +66,7 @@ router.post('/authentications/user', async function(req, res) {
 	// find the user
 	let user = await Utente.findOne({
 		username: req.body.username
-	}).exec();
+	});
 
 	// user not found
 	if (!user) {
@@ -111,7 +111,7 @@ router.post('/authentications/responsabile', async function(req, res) {
 	// find the user
 	let user = await Responsabile.findOne({
 		username: req.body.username
-	}).exec();
+	});
 
 	// user not found
 	if (!user) {
