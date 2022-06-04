@@ -30,8 +30,12 @@ describe('/api/v2/sport_centers', () => {
     //stored information
     var sport_center_id;
     var sport_center_name;
+    var admin_name;
+    var admin_surname;
     var sport_center1_id;
     var sport_center1_name;
+    var admin1_name;
+    var admin1_surname;
 
     describe('POST method tests', () => {
 
@@ -64,6 +68,98 @@ describe('/api/v2/sport_centers', () => {
                 .set('x-access-token', token_not_valid)
                 .set('Accept', 'application/json')
                 .expect(403);
+        });
+
+        //POST with valid data
+        //store _id and another information about the created resource for future test cases
+        test('POST /api/v2/sport_centers with correct data. Should respond with status 201', () => {
+
+            //Prepare a random name to avoid conflicts
+            sport_center_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+            admin_name = "Test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+            admin_surname = "Test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+
+            return request(app)
+                .post('/api/v2/sport_centers')
+                .set('x-access-token', token)
+                .set('Accept', 'application/json')
+                .send({
+                    name: admin_name,
+                    surname: admin_surname,
+                    username: 'carlo.alberto',
+                    password: 'carlo.alberto',
+                    sport_center: {
+                        name: sport_center_name,
+                        address: {
+                            city: 'CittàTest',
+                            location: 'IndirizzoTest'
+                        }
+                    }
+                }) 
+                .expect(201)
+                .then((response) => {
+                    //Get ID of the sport manager just created from location header field
+                    //and store it for later test cases
+                    let locationHeaderField = response.headers["location"];
+                    sport_center_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/')+1);
+                });      
+        });
+
+        //POST of a resource which already exists
+        test('POST /api/v2/sport_centers with correct data but the specified sport_facility already exists. Should respond with status 201', () => {
+            return request(app)
+                .post('/api/v2/sport_centers')
+                .set('x-access-token', token)
+                .set('Accept', 'application/json')
+                .send({
+                    name: admin_name,
+                    surname: admin_surname,
+                    username: 'carlo.alberto',
+                    password: 'carlo.alberto',
+                    sport_center: {
+                        name: sport_center_name,
+                        address: {
+                            city: 'CittàTest',
+                            location: 'IndirizzoTest'
+                        }
+                    }
+                }) 
+                .expect(409);      
+        });
+
+        //POST with valid data
+        //store _id and another information about the created resource for future test cases
+        test('POST /api/v2/sport_centers with correct data. Should respond with status 201', () => {
+
+            //Prepare a random name to avoid conflicts
+            sport_center1_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+            admin1_name = "Test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+            admin1_surname = "Test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+
+            return request(app)
+                .post('/api/v2/sport_centers')
+                .set('x-access-token', token)
+                .set('Accept', 'application/json')
+                .send({
+                    name: admin1_name,
+                    surname: admin1_surname,
+                    username: 'carlo.alberto',
+                    password: 'carlo.alberto',
+                    sport_center: {
+                        name: sport1_center_name,
+                        address: {
+                            city: 'CittàTest',
+                            location: 'IndirizzoTest'
+                        }
+                    }
+                }) 
+                .expect(201)
+                .then((response) => {
+                    //Get ID of the sport manager just created from location header field
+                    //and store it for later test cases
+                    let locationHeaderField = response.headers["location"];
+                    sport_center1_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/')+1);
+                });      
         });
     })
 
