@@ -737,4 +737,51 @@ describe('/api/v2/courses', () => {
               });
         });
     })
+    describe('DELETE method tests', () => {
+
+        //DELETE without token
+        test('DELETE /api/v2/courses/:id without JSON web token. Should respond with status 401', () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id)
+              .set('Accept', 'application/json')
+              .expect(401);
+        });
+
+
+        //DELETE with invalid token
+        test('DELETE /api/v2/courses/:id with invalid token. Should respond with status 403', () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id)
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .expect(403);
+        });
+
+        //DELETE with invalid resource id
+        test('DELETE /api/v2/courses/:id with invalid id. Should respond with status 404', () => {
+            return request(app)
+              .delete('/api/v2/courses/notValidID')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .expect(404);
+        });
+
+        //DELETE with valid data
+        test('DELETE /api/v2/courses/:id with correct data. Should respond with status 204.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id)
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .expect(204);
+        });
+
+        //DELETE with valid data: delete also the second course created to clean the database
+        test('DELETE /api/v2/courses/:id with correct data. Should respond with status 204. Delete the second course created in order to clean the database.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course1_id)
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .expect(204);
+        });
+    })
 });
