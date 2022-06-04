@@ -522,4 +522,164 @@ describe('/api/v2/courses', () => {
         });
 
     })
+
+    describe('TEST /courses/:id/managers methods (view/assign/remove course managers) tests', () => {
+
+        //Create a manager and store his ID
+        test('POST /api/v2/managers - Create a manager and store his ID. Should respond with status 201', () => {
+            
+            //Prepare a random name to avoid conflicts
+            manager_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+
+            return request(app)
+              .post('/api/v2/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: manager_name,
+                surname: "test",
+                email: "test",
+                birth_date: "2000-08-20",
+                username: "test",
+                password: "test",
+                society: "test",
+                sport_center_id: "628501997debfcb7b90be07f",
+              })
+              .expect(201)
+              .then((response) => {
+                //Get ID of the manager just created from location header field
+                //and store it for later test cases
+                let locationHeaderField = response.headers["location"];
+                manager_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
+              });
+        });
+
+        //Assign manager to a course without token
+        test('PATCH /api/v2/courses/:id/managers - Assign manager to a course without token. Should respond with status 401.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/managers')
+              .set('Accept', 'application/json')
+              .send({
+                  manager_id: manager_id
+              })
+              .expect(401);
+        });
+
+        //Assign manager to a course with a not valid token
+        test('PATCH /api/v2/courses/:id/managers - Assign manager to a course with a not valid token. Should respond with status 403.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/managers')
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .send({
+                  manager_id: manager_id
+              })
+              .expect(403);
+        });
+
+        //Assign manager to a course with a not valid course id
+        test('PATCH /api/v2/courses/:id/managers - Assign manager to a course with a not valid course id. Should respond with status 404.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/notValidID/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                manager_id: manager_id
+              })
+              .expect(404);
+        });
+
+
+        //Assign manager to a course with a not valid manager id
+        test('PATCH /api/v2/courses/:id/managers - Assign manager to a course with a not valid manager id. Should respond with status 404.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                manager_id: "notValid"
+              })
+              .expect(404);
+        });
+
+        //Assign manager to a course with valid data. Should respond with status 200
+        test('PATCH /api/v2/courses/:id/managers - Assign manager to a course with valid data. Should respond with status 200.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                manager_id: manager_id
+              })
+              .expect(200);
+        });
+
+        //Remove manager from a course without token
+        test('DELETE /api/v2/courses/:id/managers - Remove manager from a course without token. Should respond with status 401.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id+'/managers')
+              .set('Accept', 'application/json')
+              .send({
+                  manager_id: manager_id
+              })
+              .expect(401);
+        });
+
+        //Remove manager from a course with a not valid token
+        test('DELETE /api/v2/courses/:id/managers - Remove manager from a course with a not valid token. Should respond with status 403.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id+'/managers')
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .send({
+                  manager_id: manager_id
+              })
+              .expect(403);
+        });
+
+        //Remove manager from a course with a not valid course id
+        test('DELETE /api/v2/courses/:id/managers - Remove manager from a course with a not valid course id. Should respond with status 404.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/notValidID/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                manager_id: manager_id
+              })
+              .expect(404);
+        });
+
+        //Remove manager from a course with a not valid manager id
+        test('DELETE /api/v2/courses/:id/managers - Remove manager from a course with a not valid manager id. Should respond with status 404.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id+'/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                manager_id: "notValid"
+              })
+              .expect(404);
+        });
+
+        //Remove manager from a course with valid data. Should respond with status 200 
+        test('DELETE /api/v2/courses/:id/managers - Remove manager from a course with valid data. Should respond with status 200.', async () => {
+            return request(app)
+              .delete('/api/v2/courses/'+course_id+'/managers')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                manager_id: manager_id
+              })
+              .expect(200);
+        });
+
+        //Delete previously created manager in order to clean the database
+        test('DELETE /api/v2/managers/:id - Delete previously created manager in order to clean the database. Should respond with status 204.', () => {
+            return request(app)
+              .delete('/api/v2/managers/'+manager_id)
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .expect(204);
+        });
+    })
 });
