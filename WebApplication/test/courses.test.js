@@ -302,4 +302,133 @@ describe('/api/v2/courses', () => {
         })
 
     })
+
+    describe('TEST /courses/:id/reviews methods (view latest course reviews and add reviews) tests', () => {
+
+        //Public a review on the previously created course without token. Should respond with status 401.
+        test('PATCH /api/v2/courses/:id/reviews - Public a review on the previously created course without token. Should respond with status 401.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('Accept', 'application/json')
+              .send({
+                  review: 5
+              })
+              .expect(401);
+        });
+        
+        //Public a review on the previously created course with invalid token. Should respond with status 403.
+        test('PATCH /api/v2/courses/:id/reviews - Public a review on the previously created course with invalid token. Should respond with status 403.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 5
+              })
+              .expect(403);
+        });
+        
+        //Public a review on the previously created course with invalid resource ID. Should respond with status 404.
+        test('PATCH /api/v2/courses/:id/reviews - Public a review on the previously created course with invalid resource ID. Should respond with status 404.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/notValidID/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 5
+              })
+              .expect(404);
+        });
+
+        //Public a review on the previously created course with valid data. Should respond with status 200.
+        test('PATCH /api/v2/courses/:id/reviews - Public a review on the previously created course with valid data. Should respond with status 200.', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 5
+              })
+              .expect(200);
+        });
+
+        //Public five new reviews (TOT 6) on the previously created course for later tests
+        test('PATCH /api/v2/courses/:id/reviews - Public five [1/5] new reviews (TOT 6) on the previously created course for later tests', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 4
+              })
+              .expect(200);
+        });
+
+        test('PATCH /api/v2/courses/:id/reviews - Public five [2/5] new reviews (TOT 6) on the previously created course for later tests', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 3
+              })
+              .expect(200);
+        });
+
+        test('PATCH /api/v2/courses/:id/reviews - Public five [3/5] new reviews (TOT 6) on the previously created course for later tests', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 2
+              })
+              .expect(200);
+        });
+
+        test('PATCH /api/v2/courses/:id/reviews - Public five [4/5] new reviews (TOT 6) on the previously created course for later tests', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 1
+              })
+              .expect(200);
+        });
+
+        test('PATCH /api/v2/courses/:id/reviews - Public five [5/5] new reviews (TOT 6) on the previously created course for later tests', async () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id+'/reviews')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  review: 1
+              })
+              .expect(200);
+        });
+
+
+        //View latest review with invalid ID
+        test('GET /api/v2/courses/:id/reviews - Get latest review with invalid resource ID. Should respond with status 404.', async () => {
+            return request(app)
+              .get('/api/v2/courses/notValidID/reviews')
+              .expect(404);
+        });
+
+        //View latest review about previously created course
+        test('GET /api/v2/courses/:id/reviews - Get latest review about previously created course. Should respond with status 200. The response should contain 5 reviews and the most recent one should have vote 1.', async () => {
+            return request(app)
+              .get('/api/v2/courses/'+course_id+'/reviews')
+              .expect(200).then((response) => {
+
+                //The response contains exatcly 5 reviews
+                expect(response.body.reviews.length).toBe(5);
+
+                //Latest review vote has to be 1
+                expect(response.body.reviews[0].vote).toBe(1);
+
+              });
+        });
+    })
 });
