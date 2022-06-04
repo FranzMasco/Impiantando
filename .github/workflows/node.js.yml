@@ -26,6 +26,7 @@ jobs:
       SUPER_SECRET: ${{ secrets.SUPER_SECRET }} # Must be set as a GitHub secret
       DB_URL: ${{ secrets.DB_URL }} # Must be set as a GitHub secret
       DB_URL_TEST: ${{ secrets.DB_URL_TEST }} # Must be set as a GitHub secret
+      CI: true
 
     strategy:
       matrix:
