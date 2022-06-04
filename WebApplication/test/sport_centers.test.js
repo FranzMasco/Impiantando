@@ -163,12 +163,46 @@ describe('/api/v2/sport_centers', () => {
         });
     })
 
-    test('GET /api/v2/sport_centers should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_centers').expect(200);
+    describe('GET methods tests', () => {
+        //GET all the resources
+        test('GET /api/v2/sport_centers should respond with status 200', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers')
+                .expect(200)
+                .then((response) => {
+                    //The length of the response should be at least two due to previous posts
+                    expect(response.body.length).toBeGreaterThanOrEqual(2);
+                });
+        });
+
+        //GET specific resource with not valid ID. Should respond with status 404
+        test('GET /api/v2/sport_centers/:id with not valid ID. Should respond with status 404.', async () =>{
+            return request(app)
+                .get('/api/v2/sport_centers/notValidID')
+                .expect(404);
+        });
+
+        //GET specific resource with valid ID. Should respond with status 200 and with the data of the previously created resource
+        test('GET /api/v2/sport_centers/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/'+sport_center_id)
+                .expect(200)
+                .then((response) => {
+                    expect(response.body.name).toBe(sport_center_name);
+                });
+        })
     })
 
-    test('GET /api/v2/sport_centers/:id should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_centers/628501997debfcb7b90be07f').expect(200);
+    describe('GET /sport_centers/:id/sport_facilities', () => {
+
+    })
+
+    describe('GET /sport_centers/:id/courses', () => {
+        
+    })
+
+    describe('GET /sport_centers/:id/managers', () => {
+        
     })
 
     test('GET /api/v2/sport_centers/:id/sport_facilities should respond with status 200', async () => {
