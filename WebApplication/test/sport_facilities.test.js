@@ -251,6 +251,7 @@ describe('/api/v2/sport_facilities', () => {
     describe('GET /sport_facilities/:id/courses', () => {
 
         //Mock function
+        let responseSpy;
         beforeAll(()=>{
             const Courses = require('../models/course');
             responseSpy = jest.spyOn(Courses, 'find').mockImplementation(()=>{
@@ -258,11 +259,13 @@ describe('/api/v2/sport_facilities', () => {
                     {
                         self: "/api/v2/courses/628672b1083fee9208460bb3",
                         name: "CorsoTest",
+                        managers: [],
                         sport_facility_id: sport_facility1_id
                     },
                     {
                         self: "/api/v2/courses/628672b1083fee9208460bb4",
                         name: "Corso di tennis",
+                        managers: [],
                         sport_facility_id: sport_facility1_id
                     }
                 ]

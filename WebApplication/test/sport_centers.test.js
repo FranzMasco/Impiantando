@@ -24,9 +24,6 @@ describe('/api/v2/sport_centers', () => {
     //Correct token
     var token = jwt.sign({username: 'antonio.gialli',id: '628501997debfcb7b90be07e'}, process.env.SUPER_SECRET, {expiresIn: 86400});
 
-    //Invalid token
-    var token_not_valid = "This token is not valid";
-
     //stored information
     var sport_center_id;
     var sport_center_name;
@@ -51,23 +48,6 @@ describe('/api/v2/sport_centers', () => {
                     password: 'myPassword'
                 })
                 .expect(400);
-        });
-
-        //POST without token
-        test('POST /api/v2/sport_centers without JSON web token. Should respond with status 401', () => {
-            return request(app)
-                .post('/api/v2/sport_centers')
-                .set('Accept', 'application/json')
-                .expect(401);
-        });
-
-        //POST with invalid token
-        test('POST /api/v2/sport_centers with required parameters not specified. Should respond with status 400', () => {
-            return request(app)
-                .post('/api/v2/sport_centers')
-                .set('x-access-token', token_not_valid)
-                .set('Accept', 'application/json')
-                .expect(403);
         });
 
         //POST with valid data
@@ -146,7 +126,7 @@ describe('/api/v2/sport_centers', () => {
                     username: 'carlo.alberto',
                     password: 'carlo.alberto',
                     sport_center: {
-                        name: sport1_center_name,
+                        name: sport_center1_name,
                         address: {
                             city: 'CittàTest',
                             location: 'IndirizzoTest'
@@ -194,26 +174,150 @@ describe('/api/v2/sport_centers', () => {
     })
 
     describe('GET /sport_centers/:id/sport_facilities', () => {
+        //Mock function
+        let responseSpy;
+        beforeAll(()=>{
+            const Facilities = require('../models/facilities');
+            responseSpy = jest.spyOn(Facilities, 'find').mockImplementation(()=>{
+                return [
+                    {
+                        self: "/api/v2/sport_facilities/628672b1083fee9208460bb3",
+                        name: "FacilityTest",
+                        description: "DescriptionTest",
+                        sport_center_id: sport_center1_id
+                    },
+                    {
+                        self: "/api/v2/sport_facilities/628672b1083fee9208460bb4",
+                        name: "Campo da Tennis",
+                        description: "Descrizione campo da tennis",
+                        sport_center_id: sport_center1_id
+                    }
+                ]
+            })
+        });
 
+        afterAll(async () => {
+            responseSpy.mockRestore();
+        });
+
+        //GET sport_facility in a specific sport_center with not valid ID. Should respond with status 404
+        test('GET /api/v2/sport_centers/:id/sport_facilities with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/notValidID/sport_facilities')
+                .expect(404);
+        })
+
+        //GET courses in a specific sport_center with valid ID. Should respond with an array of courses
+        test('GET /api/v2/sport_centers/:id/sport_facilities should respond with status 200', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/'+sport_center1_id+'/sport_facilities')
+                .expect(200)
+                .then((response) => {
+                    expect(response.body[0].name).toBe("FacilityTest");
+                });
+        })
     })
 
     describe('GET /sport_centers/:id/courses', () => {
-        
+        //Mock function
+        let responseSpy;
+        beforeAll(()=>{
+            const Courses = require('../models/course');
+            responseSpy = jest.spyOn(Courses, 'find').mockImplementation(()=>{
+                return [
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb3",
+                        name: "CorsoTest",
+                        managers: [],
+                        sport_center_id: sport_center1_id
+                    },
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb4",
+                        name: "Corso di tennis",
+                        managers: [],
+                        sport_center_id: sport_center1_id
+                    }
+                ]
+            })
+        });
+
+        afterAll(async () => {
+            responseSpy.mockRestore();
+        });
+
+        //GET courses in a specific sport_center with not valid ID. Should respond with status 404
+        test('GET /api/v2/sport_centers/:id/courses with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/notValidID/courses')
+                .expect(404);
+        })
+
+        //GET courses in a specific sport_center with valid ID. Should respond with an array of courses
+        test('GET /api/v2/sport_centers/:id/courses should respond with status 200', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/'+sport_center1_id+'/courses')
+                .expect(200)
+                .then((response) => {
+                    expect(response.body[0].name).toBe("CorsoTest");
+                });
+        })
     })
 
     describe('GET /sport_centers/:id/managers', () => {
-        
-    })
+        //Mock function
+        let responseSpy;
+        beforeAll(()=>{
+            const Managers = require('../models/manager_user');
+            responseSpy = jest.spyOn(Managers, 'find').mockImplementation(()=>{
+                return [
+                    {
+                        self: "/api/v2/managers/628672b1083fee9208460bb3",
+                        name: 'test',
+                        surname: "test",
+                        email: "test",
+                        birth_date: "2000-08-20",
+                        username: "test",
+                        password: "test",
+                        society: "test",
+                        courses: [],
+                        sport_center_id: sport_center1_id,
+                    },
+                    {
+                        self: "/api/v2/managers/628672b1083fee9208460bb4",
+                        name: 'test1',
+                        surname: "test1",
+                        email: "test1",
+                        birth_date: "2000-08-20",
+                        username: "test1",
+                        password: "test1",
+                        society: "test1",
+                        courses: [],
+                        sport_center_id: sport_center1_id,
+                    }
+                ]
+            })
+        });
 
-    test('GET /api/v2/sport_centers/:id/sport_facilities should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_centers/628501997debfcb7b90be07f/sport_facilities').expect(200);
-    })
+        afterAll(async () => {
+            responseSpy.mockRestore();
+        });
 
-    test('GET /api/v2/sport_centers/:id/courses should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_centers/628501997debfcb7b90be07f/courses').expect(200);
-    })
+        //GET managers in a specific sport_center with not valid ID. Should respond with status 404
+        test('GET /api/v2/sport_centers/:id/managers with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/notValidID/managers')
+                .expect(404);
+        })
 
-    test('GET /api/v2/sport_centers/:id/managers should respond with status 200', async () => {
-        return request(app).get('/api/v2/sport_centers/628501997debfcb7b90be07f/managers').expect(200);
+        //GET courses in a specific sport_facility with valid ID. Should respond with an array of courses
+        test('GET /api/v2/sport_centers/:id/managers should respond with status 200', async () => {
+            return request(app)
+                .get('/api/v2/sport_centers/'+sport_center1_id+'/managers')
+                .expect(200)
+                .then((response) => {
+                    expect(response.body[0].name).toBe("test");
+                });
+        })
+
     })
 })
