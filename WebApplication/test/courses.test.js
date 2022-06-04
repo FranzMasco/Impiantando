@@ -240,4 +240,66 @@ describe('/api/v2/courses', () => {
         })
 
     })
+
+    describe('GET /courses/:id/participants_number method (get number of users that attend the course) tests', () => {
+
+        //Create a user to be subscribed to the previously created course
+        test('POST /api/v2/users Create a user to be subscribed to the previously created course. Should respond with status 201. In this step the ID of the new user is stored.', async () => {
+            
+            //Prepare a random name to avoid conflicts
+            user_username = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+
+            return request(app)
+              .post('/api/v2/users')
+              .set('Accept', 'application/json')
+              .send({
+                name: "test",
+                surname: "test",
+                email: "test",
+                birth_date: "2000-08-20",
+                username: user_username,
+                password: "test"
+              })
+              .expect(201)
+              .then((response) => {
+                //Get ID of the user just created from location header field
+                //and store it for later test cases
+                let locationHeaderField = response.headers["location"];
+                user_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
+              });
+        });
+
+        //Subscribe a user to the previously created course
+        test('PATCH /api/v2/registrations with correct data. Should respond with status 200. Subscribe a user to the previously created course for later tests.', async () => {
+            return request(app)
+              .patch('/api/v2/registrations')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  course_id: course_id,
+                  user_id: user_id
+              })
+              .expect(200);
+        });
+
+
+        //GET number of users which attend a given course with not valid ID. Should respond with status 404
+        test('GET /api/v2/courses/:id/participants_number (number of users which attend a given course) with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/courses/notValidID/participants_number')
+                .expect(404);
+        })
+
+        //GET number of users which attend a given course with valid ID. Should respond with value greater than or equal to one due to previous test cases.
+        test('GET /api/v2/courses/:id/participants_number with valid data. Should respond with value greater than or equal to one due to previous test cases.', async () => {
+            return request(app)
+                .get('/api/v2/courses/'+course_id+'/participants_number')
+                .expect(200)
+                .then((response) => {
+                    //Number of partecipants should be greater than or equal to one due to previous tests
+                    expect(response.body.partecipants).toBeGreaterThanOrEqual(1);
+                });
+        })
+
+    })
 });
