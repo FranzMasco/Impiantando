@@ -682,4 +682,59 @@ describe('/api/v2/courses', () => {
               .expect(204);
         });
     })
+
+    describe('PATCH method tests', () => {
+
+        //PATCH without token
+        test('PATCH /api/v2/courses/:id without JSON web token. Should respond with status 401', () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(401);
+        });
+
+
+        //PATCH with invalid token
+        test('PATCH /api/v2/courses/:id with invalid token. Should respond with status 403', () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id)
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(403);
+        });
+
+        //PATCH with invalid resource id
+        test('PATCH /api/v2/courses/:id with invalid id. Should respond with status 404', () => {
+            return request(app)
+              .patch('/api/v2/courses/notValidID')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  name: "test"
+              })
+              .expect(404);
+        });
+
+        //PATCH with valid data
+        test('PATCH /api/v2/courses/:id with correct data. Should respond with status 200. In the response there must be the updated information.', () => {
+            return request(app)
+              .patch('/api/v2/courses/'+course_id)
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: "new_name",
+              })
+              .expect(200)
+              .then((response) => {
+                //Check updated data
+                expect(response.body.name).toBe("new_name");
+              });
+        });
+    })
 });
