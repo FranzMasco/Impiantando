@@ -168,6 +168,84 @@ describe('/api/v2/subscriptions', () => {
 
     describe('Unsubscription test', () => {
 
+        /*Unsubscribe the previously created user from the previously created course*/
+        
+        //PATCH without token
+        test('PATCH /api/v2/unsubscribe without JSON web token. Should respond with status 401', () => {
+            return request(app)
+              .patch('/api/v2/unsubscribe')
+              .set('Accept', 'application/json')
+              .send({
+                  course_id: course_id,
+                  user_id: user_id
+              })
+              .expect(401);
+        });
+
+
+        //PATCH with invalid token
+        test('PATCH /api/v2/unsubscribe with invalid token. Should respond with status 403', () => {
+            return request(app)
+              .patch('/api/v2/unsubscribe')
+              .set('x-access-token', invalid_token)
+              .set('Accept', 'application/json')
+              .send({
+                  course_id: course_id,
+                  user_id: user_id
+              })
+              .expect(403);
+        });
+
+        //PATCH with invalid course id
+        test('PATCH /api/v2/unsubscribe with invalid course id. Should respond with status 404', () => {
+            return request(app)
+              .patch('/api/v2/unsubscribe')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                course_id: "notValidID",
+                user_id: user_id
+              })
+              .expect(404);
+        });
+
+        //PATCH with invalid user id
+        test('PATCH /api/v2/unsubscribe with invalid user id. Should respond with status 404', () => {
+            return request(app)
+              .patch('/api/v2/unsubscribe')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                course_id: course_id,
+                user_id: "notValidID"
+              })
+              .expect(404);
+        });
+
+        //PATCH with missing required information
+        test('PATCH /api/v2/unsubscribe with missing required information. Should respond with status 400', () => {
+            return request(app)
+              .patch('/api/v2/unsubscribe')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                course_id: course_id
+              })
+              .expect(400);
+        });
+
+        //Unsubscription with valid data
+        test('PATCH /api/v2/unsubscribe with correct data. Should respond with status 200.', async () => {
+            return request(app)
+              .patch('/api/v2/unsubscribe')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  course_id: course_id,
+                  user_id: user_id
+              })
+              .expect(200);
+        });
 
         //DELETE the previously created course in order to clean the database 
         test('DELETE /api/v2/courses/:id with correct data. Delete previously created course in order to clean the database. Should respond with status 204.', () => {
