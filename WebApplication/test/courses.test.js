@@ -139,4 +139,105 @@ describe('/api/v2/courses', () => {
               });
         });
     })
+    describe('GET methods tests', () => {
+
+        //GET all the resources
+        test('GET /api/v2/courses should respond with status 200. At least two resources due to previous POST', async () => {
+            return request(app)
+                .get('/api/v2/courses')
+                .expect(200)
+                .then((response) => {
+                    //The length of the response should be at least two due to previous posts
+                    expect(response.body.length).toBeGreaterThanOrEqual(2);
+                });
+        })
+        
+        //GET specific resource with not valid ID. Should respond with status 404
+        test('GET /api/v2/courses/:id with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/courses/notValidID')
+                .expect(404);
+        })
+
+        //GET specific resource with valid ID. Should respond with status 200 and with the data of the previously created resource
+        test('GET /api/v2/courses/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
+            return request(app)
+                .get('/api/v2/courses/'+course_id)
+                .expect(200)
+                .then((response) => {
+                    expect(response.body.name).toBe(course_name);
+                });
+        })
+
+    })
+
+    describe('GET /courses/:id/users method (list of users that attend the course) tests', () => {
+
+        //Mock function
+        let responseSpy;
+        beforeAll( () => {
+            const Users = require('../models/utente');
+            responseSpy = jest.spyOn(Users, 'find').mockImplementation(() => {
+                return [ 
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb3",
+                        name: "test1",
+                        surname: "test1",
+                        username: "test1",
+                        user: "/api/v2/users/62890e25dd73635189848585"
+                    },
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb3",
+                        name: "test2",
+                        surname: "test2",
+                        username: "test2",
+                        user: "/api/v2/users/62890eb7dd73635189848589"
+                    }
+                ];
+            });
+        });
+
+        afterAll(async () => {
+            responseSpy.mockRestore();
+        });
+
+        //GET users which attend a given course without token. Should respond with status 401.
+        test('GET /api/v2/courses/:id/users without token. Should respond with status 401.', async () => {
+            return request(app)
+                .get('/api/v2/courses/'+course_id+'/users')
+                .expect(401);
+        })
+
+        //GET users which attend a given course with not valid token. Should respond with status 403.
+        test('GET /api/v2/courses/:id/users with not valid token. Should respond with status 403.', async () => {
+            return request(app)
+                .get('/api/v2/courses/'+course_id+'/users')
+                .set('x-access-token', invalid_token)
+                .set('Accept', 'application/json')
+                .expect(403);
+        })
+
+        //GET users which attend a given course with not valid ID. Should respond with status 404
+        test('GET /api/v2/courses/:id/users with not valid ID. Should respond with status 404.', async () => {
+            return request(app)
+                .get('/api/v2/courses/notValidID/users')
+                .set('x-access-token', token)
+                .set('Accept', 'application/json')
+                .expect(404);
+        })
+
+        //GET users which attend a given course with valid ID. Should respond with an array of users.
+        test('GET /api/v2/courses/:id/users with valid data. Should respond with an array of users. Returned data tested with a mock function.', async () => {
+            return request(app)
+                .get('/api/v2/courses/'+course_id+'/users')
+                .set('x-access-token', token)
+                .set('Accept', 'application/json')
+                .expect(200)
+                .then((response) => {
+                    //First element of the response should be "test1"
+                    expect(response.body[0].name).toBe("test1");
+                });
+        })
+
+    })
 });
