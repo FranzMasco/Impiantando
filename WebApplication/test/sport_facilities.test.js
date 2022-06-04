@@ -101,22 +101,29 @@ describe('/api/v2/sport_facilities', () => {
                 .expect(409);
         });
 
-        //POST with valid data --> create a new instance for later test cases
-        test('POST /api/v2/sport_facilities with correct data. Should respond with status 201', () => {
-
+        //POST with valid data
+        //store _id and another information about the created resource for future test cases
+        test('POST /api/v2/managers with correct data. Should respond with status 201', async () => {
+            
             //Prepare a random name to avoid conflicts
-            var new_sport_facility_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+            new_sport_facility_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
 
             return request(app)
-                .post('/api/v2/sport_centers')
-                .set('x-access-token', token)
-                .set('Accept', 'application/json')
-                .send({
-                    name: new_sport_facility_name, 
-                    description: 'Sport facility inserita attraverso test', 
-                    id_s_c: '628501997debfcb7b90be07f'
-                })
-                .expect(201);
+              .post('/api/v2/sport_facilities')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                name: new_sport_facility_name, 
+                description: 'Sport facility inserita attraverso test', 
+                id_s_c: '628501997debfcb7b90be07f'
+              })
+              .expect(201)
+              .then((response) => {
+                //Get ID of the manager just created from location header field
+                //and store it for later test cases
+                let locationHeaderField = response.headers["location"];
+                sport_facility1_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
+              });
         });
     })
 
@@ -243,29 +250,27 @@ describe('/api/v2/sport_facilities', () => {
 
     describe('GET /sport_facilities/:id/courses', () => {
 
-        //POST with valid data
-        //store _id and another information about the created resource for future test cases
-        test('POST /api/v2/managers with correct data. Should respond with status 201', async () => {
-            
-            //Prepare a random name to avoid conflicts
-            new_sport_facility_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
+        //Mock function
+        beforeAll(()=>{
+            const Courses = require('../models/course');
+            responseSpy = jest.spyOn(Courses, 'find').mockImplementation(()=>{
+                return [
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb3",
+                        name: "CorsoTest",
+                        sport_facility_id: sport_facility1_id
+                    },
+                    {
+                        self: "/api/v2/courses/628672b1083fee9208460bb4",
+                        name: "Corso di tennis",
+                        sport_facility_id: sport_facility1_id
+                    }
+                ]
+            })
+        });
 
-            return request(app)
-              .post('/api/v2/sport_facilities')
-              .set('x-access-token', token)
-              .set('Accept', 'application/json')
-              .send({
-                name: new_sport_facility_name, 
-                description: 'Sport facility inserita attraverso test', 
-                id_s_c: '628501997debfcb7b90be07f'
-              })
-              .expect(201)
-              .then((response) => {
-                //Get ID of the manager just created from location header field
-                //and store it for later test cases
-                let locationHeaderField = response.headers["location"];
-                sport_facility1_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
-              });
+        afterAll(async () => {
+            responseSpy.mockRestore();
         });
 
         //GET courses in a specific sport_facility with not valid ID. Should respond with status 404
@@ -279,7 +284,19 @@ describe('/api/v2/sport_facilities', () => {
         test('GET /api/v2/sport_facilities/:id/courses should respond with status 200', async () => {
             return request(app)
                 .get('/api/v2/sport_facilities/'+sport_facility1_id+'/courses')
-                .expect(200);
+                .expect(200)
+                .then((response) => {
+                    expect(response.body[0].name).toBe("CorsoTest");
+                });
+        })
+
+        //DELETE with valid data
+        test('DELETE /api/v2/sport_facilities/:id of a sport facility that exists', () => {
+            return request(app)
+            .delete('/api/v2/sport_facilities/'+sport_facility1_id)
+            .set('x-access-token', token)
+            .set('Accept', 'application/json')
+            .expect(204);
         })
     })
 
