@@ -431,4 +431,95 @@ describe('/api/v2/courses', () => {
               });
         });
     })
+
+    describe('TEST /courses/:id/news methods (get latest news about the specified course) tests', () => {
+
+        //Public a news about the previously created course with valid data. Should respond with status 200.
+        test('POST /api/v2/news - Public a news about the previously created course with valid data. Should respond with status 201.', async () => {
+            return request(app)
+              .post('/api/v2/news/')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  text: "test",
+                  course_id: course_id
+              })
+              .expect(201);
+        });
+
+        //Public four new news (TOT 5) on the previously created course for later tests
+        test('POST /api/v2/news - Public four [1/4] news (TOT 5) on the previously created course for later tests. Should respond with status 201.', async () => {
+            return request(app)
+              .post('/api/v2/news/')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  text: "test1",
+                  course_id: course_id
+              })
+              .expect(201);
+        });
+
+        test('POST /api/v2/news - Public four [2/4] news (TOT 5) on the previously created course for later tests. Should respond with status 201.', async () => {
+            return request(app)
+              .post('/api/v2/news/')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  text: "test2",
+                  course_id: course_id
+              })
+              .expect(201);
+        });
+
+        test('POST /api/v2/news - Public four [3/4] news (TOT 5) on the previously created course for later tests. Should respond with status 201.', async () => {
+            return request(app)
+              .post('/api/v2/news/')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  text: "test3",
+                  course_id: course_id
+              })
+              .expect(201);
+        });
+
+        test('POST /api/v2/news - Public four [4/4] news (TOT 5) on the previously created course for later tests. Should respond with status 201.', async () => {
+            return request(app)
+              .post('/api/v2/news/')
+              .set('x-access-token', token)
+              .set('Accept', 'application/json')
+              .send({
+                  text: "test4",
+                  course_id: course_id
+              })
+              .expect(201);
+        });
+
+
+        
+        //View latest news with invalid ID
+        test('GET /api/v2/courses/:id/news - Get latest news with invalid resource ID. Should respond with status 404.', async () => {
+            return request(app)
+              .get('/api/v2/courses/notValidID/news')
+              .expect(404);
+        });
+
+        
+        //View latest news about previously created course
+        test('GET /api/v2/courses/:id/news - Get latest news about previously created course. Should respond with status 200. The response should contain 3 news and the most recent one should have text equal to "test4".', async () => {
+            return request(app)
+              .get('/api/v2/courses/'+course_id+'/news')
+              .expect(200).then((response) => {
+
+                //The response contains exatcly 3 news
+                expect(response.body.length).toBe(3);
+
+                //Latest news test should be "test4"
+                expect(response.body[0]["text"]).toBe("test4");
+
+              });
+        });
+
+    })
 });
