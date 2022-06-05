@@ -45,7 +45,7 @@ router.patch('/registrations', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 
@@ -65,7 +65,7 @@ router.patch('/registrations', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 
@@ -106,7 +106,7 @@ router.patch('/unsubscribe', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 
@@ -126,7 +126,7 @@ router.patch('/unsubscribe', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 

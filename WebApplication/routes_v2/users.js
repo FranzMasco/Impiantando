@@ -15,7 +15,7 @@ router.get('/users/:id', async (req, res) => {
 
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
         res.status(404).json({status: "error"})
-        console.log('resource not found')
+        //console.log('resource not found')
         return;
     }
 
@@ -23,7 +23,7 @@ router.get('/users/:id', async (req, res) => {
 
     if (!user) {
         res.status(404).json({status: "error"})
-        console.log('resource not found')
+        //console.log('resource not found')
         return;
     }
 

@@ -10,17 +10,31 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+/*
+beforeAll(done => {
+    done()
+})
+  
+afterAll(done => {
+    done()
+    mongoose.disconnect();
+})
+*/
+
 describe('/api/v2/users', () => {
     let connection;
     
     beforeAll( async() => {
         jest.setTimeout(8000);
-        connection = await mongoose.connect(process.env.DB_URL_TEST);
+        jest.unmock('mongoose');
+        connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
-    afterAll( () => { 
-        mongoose.connection.close(true);
+    
+    afterAll( async () => {
+        await mongoose.connection.close(true);
     });
-
+    
+    
     //Stored information
     var user_id;
     var user_username;
@@ -40,7 +54,7 @@ describe('/api/v2/users', () => {
 
         //POST with valid data
         //store _id and another information about the created resource for future test cases
-        test('POST /api/v2/users with correct data. Should respond with status 201', async () => {
+        test('POST /api/v2/users with correct data. Should respond with status 201', () => {
             
             //Prepare a random name to avoid conflicts
             user_username = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
@@ -81,10 +95,8 @@ describe('/api/v2/users', () => {
               .expect(409);
         });
     })
-
     
     describe('GET methods tests', () => {
-        
         //Mock function
         let responseSpy;
         beforeAll( () => {
@@ -105,19 +117,20 @@ describe('/api/v2/users', () => {
             });
         });
 
-        afterAll(async () => {
+        afterAll( () => {
             responseSpy.mockRestore();
         });
 
         //GET specific resource with not valid ID. Should respond with status 404
-        test('GET /api/v2/users/:id with not valid ID. Should respond with status 404.', async () => {
+        test('GET /api/v2/users/:id with not valid ID. Should respond with status 404.', () => {
             return request(app)
                 .get('/api/v2/users/notValidID')
                 .expect(404);
         })
 
+        
         //GET specific resource with valid ID. Should respond with status 200 and with the data of the previously created resource
-        test('GET /api/v2/users/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
+        test('GET /api/v2/users/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', () => {
             return request(app)
                 .get('/api/v2/users/'+user_id)
                 .expect(200)
@@ -127,14 +140,14 @@ describe('/api/v2/users', () => {
         })
 
         //GET courses attended by a specific user with not valid ID. Should respond with status 404
-        test('GET /api/v2/users/:id/courses with not valid ID. Should respond with status 404.', async () => {
+        test('GET /api/v2/users/:id/courses with not valid ID. Should respond with status 404.', () => {
             return request(app)
                 .get('/api/v2/users/notValidID/courses')
                 .expect(404);
         })
 
         //GET courses attended by a specific user with valid ID. Should respond with an array of courses
-        test('GET /api/v2/users/:id/courses with valid ID. Should respond with an array of courses. Returned data tested with a mock function.', async () => {
+        test('GET /api/v2/users/:id/courses with valid ID. Should respond with an array of courses. Returned data tested with a mock function.', () => {
             return request(app)
                 .get('/api/v2/users/'+user_id+'/courses')
                 .expect(200)
@@ -143,6 +156,5 @@ describe('/api/v2/users', () => {
                     expect(response.body[0].name).toBe("CorsoTest");
                 });
         })
-
     })
 });

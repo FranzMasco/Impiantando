@@ -9,17 +9,22 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+
 describe('/api/v2/subscriptions', () => {
     let connection;
     
     beforeAll( async() => {
-        jest.setTimeout(8000);
-        connection = await mongoose.connect(process.env.DB_URL_TEST);
+      jest.setTimeout(10000);
+      jest.unmock('mongoose');
+      connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
-    afterAll( () => { 
-        mongoose.connection.close(true);
+    
+    afterAll( async () => {
+        await mongoose.connection.close(true);
     });
+    
 
+    
     //Correct token
     var token = jwt.sign({username: 'antonio.gialli',id: '628501997debfcb7b90be07e'}, process.env.SUPER_SECRET, {expiresIn: 86400});
 
@@ -35,7 +40,7 @@ describe('/api/v2/subscriptions', () => {
     describe('Registration tests', () => {
         
         //POST new course --> save identifier
-        test('POST /api/v2/courses with correct data in order to register a new course for later tests. Should respond with status 201. In this step the ID of the new course is stored.', async () => {
+        test('POST /api/v2/courses with correct data in order to register a new course for later tests. Should respond with status 201. In this step the ID of the new course is stored.', () => {
             
             //Prepare a random name to avoid conflicts
             course_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
@@ -60,7 +65,7 @@ describe('/api/v2/subscriptions', () => {
         });
 
         //POST new user --> save identifier
-        test('POST /api/v2/users with correct data in order to register a new user for later tests. Should respond with status 201. In this step the ID of the new user is stored.', async () => {
+        test('POST /api/v2/users with correct data in order to register a new user for later tests. Should respond with status 201. In this step the ID of the new user is stored.', () => {
             
             //Prepare a random name to avoid conflicts
             user_username = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
@@ -84,7 +89,7 @@ describe('/api/v2/subscriptions', () => {
                 user_id = locationHeaderField.substring(locationHeaderField.lastIndexOf('/') + 1); 
               });
         });
-
+        
         /*Register the previously created user to the previously created course*/
         
         //PATCH without token
@@ -98,8 +103,8 @@ describe('/api/v2/subscriptions', () => {
               })
               .expect(401);
         });
-
-
+        
+        
         //PATCH with invalid token
         test('PATCH /api/v2/registrations with invalid token. Should respond with status 403', () => {
             return request(app)
@@ -152,7 +157,7 @@ describe('/api/v2/subscriptions', () => {
         });
 
         //Registration with valid data
-        test('PATCH /api/v2/registrations with correct data. Should respond with status 200.', async () => {
+        test('PATCH /api/v2/registrations with correct data. Should respond with status 200.', () => {
             return request(app)
               .patch('/api/v2/registrations')
               .set('x-access-token', token)
@@ -163,13 +168,12 @@ describe('/api/v2/subscriptions', () => {
               })
               .expect(200);
         });
-
+        
     })
-
+    
     describe('Unsubscription test', () => {
 
         /*Unsubscribe the previously created user from the previously created course*/
-        
         //PATCH without token
         test('PATCH /api/v2/unsubscribe without JSON web token. Should respond with status 401', () => {
             return request(app)
@@ -235,7 +239,7 @@ describe('/api/v2/subscriptions', () => {
         });
 
         //Unsubscription with valid data
-        test('PATCH /api/v2/unsubscribe with correct data. Should respond with status 200.', async () => {
+        test('PATCH /api/v2/unsubscribe with correct data. Should respond with status 200.', () => {
             return request(app)
               .patch('/api/v2/unsubscribe')
               .set('x-access-token', token)

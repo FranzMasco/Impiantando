@@ -136,7 +136,7 @@ router.get('/courses/:id', async (req, res) => {
 
     if(!mongoose.Types.ObjectId.isValid(req.params.id)){
         res.status(404).json({status: "error"})
-        console.log('resource not found')
+        //console.log('resource not found')
         return;
     }
 
@@ -144,7 +144,7 @@ router.get('/courses/:id', async (req, res) => {
 
     if (!course) {
         res.status(404).json({status: "error"})
-        console.log('resource not found')
+        //console.log('resource not found')
         return;
     }
 
@@ -403,7 +403,7 @@ router.patch('/courses/:id/managers', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 
@@ -423,7 +423,7 @@ router.patch('/courses/:id/managers', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 
@@ -459,7 +459,7 @@ router.delete('/courses/:id/managers', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 
@@ -479,7 +479,7 @@ router.delete('/courses/:id/managers', async (req, res, next) => {
             console.log(error);
             res.status(500).send(error);
         } else {
-            console.log(success);
+            //console.log(success);
         }
     });
 

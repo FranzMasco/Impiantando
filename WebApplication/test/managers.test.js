@@ -15,11 +15,14 @@ describe('/api/v2/managers', () => {
     
     beforeAll( async() => {
         jest.setTimeout(8000);
-        connection = await mongoose.connect(process.env.DB_URL_TEST);
+        jest.unmock('mongoose');
+        connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
-    afterAll( () => { 
-        mongoose.connection.close(true);
+    
+    afterAll( async () => {
+        await mongoose.connection.close(true);
     });
+    
 
     //Correct token
     var token = jwt.sign({username: 'antonio.gialli',id: '628501997debfcb7b90be07e'}, process.env.SUPER_SECRET, {expiresIn: 86400});
@@ -32,7 +35,7 @@ describe('/api/v2/managers', () => {
     var manager_name;
     var manager1_id;
     var manager1_name;
-
+    
     describe('POST method tests', () => {
         
         //POST with missing required parameter
@@ -144,11 +147,9 @@ describe('/api/v2/managers', () => {
         });
     })
 
-
     describe('GET methods tests', () => {
-
         //GET all the resources
-        test('GET /api/v2/managers should respond with status 200. At least two resources due to previous POST', async () => {
+        test('GET /api/v2/managers should respond with status 200. At least two resources due to previous POST', () => {
             return request(app)
                 .get('/api/v2/managers')
                 .expect(200)
@@ -157,16 +158,16 @@ describe('/api/v2/managers', () => {
                     expect(response.body.length).toBeGreaterThanOrEqual(2);
                 });
         })
-        
+
         //GET specific resource with not valid ID. Should respond with status 404
-        test('GET /api/v2/managers/:id with not valid ID. Should respond with status 404.', async () => {
+        test('GET /api/v2/managers/:id with not valid ID. Should respond with status 404.', () => {
             return request(app)
                 .get('/api/v2/managers/notValidID')
                 .expect(404);
         })
-
+    
         //GET specific resource with valid ID. Should respond with status 200 and with the data of the previously created resource
-        test('GET /api/v2/managers/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', async () => {
+        test('GET /api/v2/managers/:id with valid ID. Should respond with status 200 and with the data of the previously created resource', () => {
             return request(app)
                 .get('/api/v2/managers/'+manager_id)
                 .expect(200)
@@ -174,10 +175,10 @@ describe('/api/v2/managers', () => {
                     expect(response.body.name).toBe(manager_name);
                 });
         })
-
+    
     })
 
-
+    
     describe('PATCH method tests', () => {
 
         //PATCH without token
@@ -294,13 +295,13 @@ describe('/api/v2/managers', () => {
             });
         });
 
-        afterAll(async () => {
+        afterAll( () => {
             responseSpy.mockRestore();
         });
 
         //POST with valid data
         //store _id and another information about the created resource for future test cases
-        test('POST /api/v2/managers with correct data. Should respond with status 201', async () => {
+        test('POST /api/v2/managers with correct data. Should respond with status 201', () => {
             
             //Prepare a random name to avoid conflicts
             manager1_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
@@ -329,14 +330,14 @@ describe('/api/v2/managers', () => {
         });
 
         //GET courses managed by a specific manager with not valid ID. Should respond with status 404
-        test('GET /api/v2/managers/:id/courses with not valid ID. Should respond with status 404.', async () => {
+        test('GET /api/v2/managers/:id/courses with not valid ID. Should respond with status 404.', () => {
             return request(app)
                 .get('/api/v2/managers/notValidID/courses')
                 .expect(404);
         })
 
         //GET courses managed by a specific manager with valid ID. Should respond with an array of courses
-        test('GET /api/v2/managers/:id/courses with valid ID. Should respond with an array of courses. Returned data tested with a mock function.', async () => {
+        test('GET /api/v2/managers/:id/courses with valid ID. Should respond with an array of courses. Returned data tested with a mock function.', () => {
             return request(app)
                 .get('/api/v2/managers/'+manager1_id+'/courses')
                 .expect(200)
@@ -347,5 +348,4 @@ describe('/api/v2/managers', () => {
         })
 
     })
-
 });
