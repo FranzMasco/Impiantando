@@ -198,7 +198,7 @@ router.get('/courses/:id/users', async (req, res) => {
     let users = await Users.find({_id: {$in: courses.users}});
     let response = users.map( (user) => {
         return {
-            self: "/api/v2/course/" + req.params.id,
+            self: "/api/v2/courses/" + req.params.id,
             name: user.name,
             surname: user.surname,
             username: user.username,
