@@ -60,7 +60,7 @@ router.post('/courses', async (req, res) => {
         !req.body.name                  ||
         !req.body.sport_facility_id     ||
         !req.body.sport_center_id       ||
-        !req.body.periodic
+        (!req.body.periodic && req.body.periodic!=0)
     )
     {
         res.status(400).send("Bad input - missing required information");
