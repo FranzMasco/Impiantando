@@ -29,10 +29,11 @@ describe('/api/v2/users', () => {
         jest.unmock('mongoose');
         connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
+    
     afterAll( async () => {
         await mongoose.connection.close(true);
     });
-
+    
     
     //Stored information
     var user_id;

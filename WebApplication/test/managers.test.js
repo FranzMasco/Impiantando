@@ -18,9 +18,11 @@ describe('/api/v2/managers', () => {
         jest.unmock('mongoose');
         connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
+    
     afterAll( async () => {
         await mongoose.connection.close(true);
     });
+    
 
     //Correct token
     var token = jwt.sign({username: 'antonio.gialli',id: '628501997debfcb7b90be07e'}, process.env.SUPER_SECRET, {expiresIn: 86400});
