@@ -1,0 +1,3070 @@
+openapi: 3.0.0
+info:
+  version: '2.0.0'
+  title: "Impiantando API"
+  description: API for managing sport centers
+servers:
+  - url: http://localhost:5000/api/v2
+    description: Server to use the web service locally
+paths:
+  /sport_centers:
+    get:
+      description: Gets all the sport_centers in the system.
+      summary: View all the sport centers
+      responses:
+        '200':
+          description: "Collection of sport centers"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_center'
+                  
+    post:
+      description: Creates a new sport center in the system. In order to populate the database with a new sport center it is required to create also the corresponding (unique) administrator.
+      summary: Register a new sport center
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - surname
+                - username
+                - password
+                - sport_center
+              properties:
+                name:
+                  type: string
+                  description: "Name of the sport center administrator"
+                surname:
+                  type: string
+                  description: "Surname of the sport center administrator"
+                email:
+                  type: string
+                  description: "Email address of the sport center administrator"
+                birth_date:
+                  type: string
+                  description: "Date of birth of the sport center administrator"
+                username:
+                  type: string
+                  description: "Username of the sport center administrator"
+                password:
+                  type: string
+                  description: "Password of the sport center administrator"
+                sport_center:
+                  type: object
+                  required:
+                    - name
+                    - address
+                  properties:
+                    name:
+                      type: string
+                      description: "Name of the sport center"
+                    description:
+                      type: string
+                      description: "Description of the sport center"
+                    address:
+                      type: object
+                      required:
+                        - city
+                        - location
+                      properties:
+                        city:
+                          type: string
+                          description: "City of the sport center"
+                        location:
+                          type: string
+                          description: "Location of the sport center"
+      responses:
+        '201':
+          description: 'Sport center created successfully. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created sport center.
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '409':
+          description: "Conflict - the specified administrator or sport center already exist"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "[user || sport center] already exists"
+                
+  /sport_centers/{id}:
+    get:
+      description: Gets a specific sport_center in the system from its ID.
+      summary: View a specific sport center
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport center to get
+      responses:
+        '200':
+          description: "View of a single sport center"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sport_center'
+        '404':
+          $ref: '#/components/responses/NotFound'
+                  
+  /sport_centers/{id}/sport_facilities:
+    get:
+      description: Gets all the sport facilities from a specific sport center.
+      summary: View all the sport facilities from a specific sport center
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport center
+      responses:
+        '200':
+          description: "View of all the facilities from a sport center"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_facility'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /sport_centers/{id}/courses:
+    get:
+      description: Gets all the courses of a specific sport center.
+      summary: View all the courses of a specific sport center.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport center
+      responses:
+        '200':
+          description: "View all the courses of a specific administrator"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /sport_centers/{id}/managers:
+    get:
+      description: Gets all managers that work in a specific sport center.
+      summary: View all managers that work in a specific sport center
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport center
+      responses:
+        '200':
+          description: "View all managers that work in a specific sport center"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manager_Users'
+        '404':
+          $ref: '#/components/responses/NotFound'          
+                  
+  /sport_facilities:
+    get:
+      description: Gets all the sport facilities in the system.
+      summary: View all the sport facilities in the system
+      responses:
+        '200':
+          description: "View of all the facilities in the system"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sport_facility'
+    post:
+      description: Creates a new sport facility (for example a tennis court) in the system. In order to create a new sport facility it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Register a new sport facility
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - id_s_c
+                - token
+              properties:
+                name:
+                  type: string
+                  description: "Name of the sport facility"
+                description:
+                  type: string
+                  description: "Description of the sport facility"
+                id_s_c:
+                  type: string
+                  description: "ID of the sport center"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '201':
+          description: 'Sport facility created successfully. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created sport facility.
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: "Conflict - the specified sport facility already exist"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "facility already exists"
+                
+  /sport_facilities/{id}:
+    get:
+      description: Gets a specific sport_facility in the system from its ID.
+      summary: View a specific sport facility
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport facility to get
+      responses:
+        '200':
+          description: "View of a single sport facility"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sport_facility'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      description: Modify a specific sport_facility in the system from its ID. In order to modify a sport facility it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Update a specific sport facility
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport facilty to be updated
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                name:
+                  type: string
+                  description: "Name of the sport facility"
+                description:
+                  type: string
+                  description: "Description of the sport facility"
+                id_s_c:
+                  type: string
+                  description: "ID of the sport center where the sport facility is placed"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: "ID of the sport facility which has been updated"
+                  name:
+                    type: string
+                    description: "Name of the sport facility which has been updated"
+                  description:
+                    type: string
+                    description: "Description of the sport facility which has been updated"
+                  id_s_c:
+                    type: string
+                    description: "ID of the sport center where the sport facility which has been updated is"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+    delete:
+      description: Removing a specific sport_facility in the system from its ID. In order to delete a sport facility it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Removing a specific sport facility
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport facilty to delete
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '204':
+          $ref: '#/components/responses/DeleteSuccess'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  /sport_facilities/{id}/courses:
+    get:
+      description: Get all the courses which take place in the sport facility with the specified ID
+      summary: Sport facility's courses
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the sport facility
+      responses:
+        '200':
+          description: "Courses which take place in the specified sport facility"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    course:
+                      type: string
+                      description: "Link to the resource of the specific course"
+                    name:
+                      type: string
+                      description: "Name of the course"
+                    description:
+                      type: string
+                      description: "Description of the course"
+                    sport:
+                      type: string
+                      description: "Sport of the course"
+                    sport_facility_id:
+                      type: string
+                      description: "ID of the sport facility where the course takes place"
+                    sport_center_id:
+                      type: string
+                      description: "ID of the sport center where the course takes place"
+                    sport_facility:
+                      type: string
+                      description: "Link to the resource of the specific sport facility where the course takes place"
+                    sport_center:
+                      type: string
+                      description: "Link to the resource of the specific sport center where the course takes place"
+                    managers_id:
+                      type: array
+                      items:
+                        type: string
+                        description: "ID of the manager of the course"
+                    users:
+                      type: array
+                      items:
+                        type: string
+                        description: "ID of the users that attends the course"
+                    reviews:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          date:
+                            type: string
+                            description: "Date of the creation of a review"
+                          vote:
+                            type: integer
+                            description: "Vote of a review"
+                    periodic:
+                      type: boolean
+                      description: "Tells us if the course will be periodic or not"
+                    specific_date:
+                      type: string
+                      description: "Date of a specific one time course"
+                    specific_start_time:
+                      type: string
+                      description: "Start time of a specific one time course"
+                    specific_end_time:
+                      type: string
+                      description: "End time of a specific one time course"
+                    start_date:
+                      type: string
+                      description: "Start date of a periodic course"
+                    end_date:
+                      type: string
+                      description: "End date of a periodic course"
+                    time_schedules:
+                      type: object
+                      properties:
+                        monday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                        tuesday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                        wednesday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                        thursday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                        friday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                        saturday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                        sunday:
+                          type: object
+                          properties:
+                            event:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                    description: "Start time of periodic courses"
+                                  to:
+                                    type: string
+                                    description: "End time of periodic courses"
+                    creation_date:
+                      type: string
+                      description: "Creation date of the course"
+                    managers:
+                      type: array
+                      items:
+                        type: string
+                        description: "Link to the resource of the specific manager of the course"
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  /users/{id}:
+    get:
+      description: Gets a specific standard user in the system from its ID.
+      summary: View a specific standard user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the specific user to get
+      responses:
+        '200':
+          description: "View of a single standard user"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+                
+  /users/{id}/courses:
+    get:
+      description: Gets the courses a specific user is enrolled in.
+      summary: View the courses of a specific user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user
+      responses:
+        '200':
+          description: "View the courses of a specific user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /users:
+    post:
+      description: Creates a new standard users in the system.
+      summary: Register a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - surname
+                - username
+                - password
+              properties:
+                name:
+                  type: string
+                  description: "Name of the user"
+                surname:
+                  type: string
+                  description: "Surname of the user"
+                email:
+                  type: string
+                  description: "Email of the user"
+                birth_date:
+                  type: string
+                  description: "Birth date of the user"
+                username:
+                  type: string
+                  description: "Username of the user"
+                password:
+                  type: string
+                  description: "Password of the user"
+                courses:
+                  type: array
+                  items:
+                    type: string
+                    description: "ID of the courses the user is enrolled in"
+      responses:
+        '201':
+          description: 'User created successfully. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created user.
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '409':
+          description: "Conflict - the specified standard user already exists"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "user already exists"
+                
+  /authentications/user:
+    post:
+      description: Let the standard-user authenticate himself. If the authentication process completes successfully a JSON web token is returned.
+      summary: Let the standard-user log in to the standard-user area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: "Username of the user that wants to login"
+                password:
+                  type: string
+                  description: "Password of the user that wants to login"
+      responses:
+        '200':
+          description: "Authentication completed"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                    example: true
+                  message:
+                    type: string
+                    description: "Message about the result of the authentication"
+                    example: "Authentication OK"
+                  user:
+                    type: string
+                    description: "Type of user who logged in"
+                    example: "user"
+                  token:
+                    type: string
+                    description: "Authentication token"
+                  username:
+                    type: string
+                    description: "User's username"
+                  id:
+                    type: string
+                    description: "ID of the user who has logged in"
+                  self:
+                    type: string
+                    description: "Link to the resource for a specific user"
+        '404':
+          description: "Authentication failed due to bad username or bad password"
+          content:
+              application/json:
+                schema:
+                 type: object
+                 required:
+                    - success
+                    - username
+                    - message
+                 properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                    example: false
+                  username:
+                    type: boolean
+                    description: "Tells us if the username is matched or not"
+                  password:
+                    type: boolean
+                    description: "Tells us if the password matches"
+                  message:
+                    type: string
+                    description: "Message that tells us if the authentication is failed"
+                    example: "Authentication failed. [Wrong password || User not found]."
+                      
+  /authentications/responsabile:
+    post:
+      description: Let the manager user authenticate himself. If the authentication process completes successfully a JSON web token is returned.
+      summary: Let the manager log in to the manager area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: "Username of the manager that wants to login"
+                password:
+                  type: string
+                  description: "Password of the manager that wants to login"
+      responses:
+        '200':
+          description: "Authentication completed"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                    example: true
+                  message:
+                    type: string
+                    description: "Message about the result of the authentication"
+                    example: "Authentication OK"
+                  user:
+                    type: string
+                    description: "Type of user who logged in"
+                    example: "responsabile"
+                  token:
+                    type: string
+                    description: "Authentication token"
+                  username:
+                    type: string
+                    description: "User's username"
+                  id:
+                    type: string
+                    description: "ID of the user who has logged in"
+                  self:
+                    type: string
+                    description: "Link to the resource for a specific user"
+        '404':
+          description: "Authentication failed due to bad username or bad password"
+          content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - success
+                    - username
+                    - message
+                  properties:
+                    success:
+                      type: boolean
+                      description: "Success of the authentication"
+                      example: false
+                    username:
+                      type: boolean
+                      description: "Tells us if the username is matched or not"
+                    password:
+                      type: boolean
+                      description: "Tells us if the password matches"
+                    message:
+                      type: string
+                      description: "Message that tells us if the authentication is failed"
+                      example: "Authentication failed. [Wrong password || User not found]."
+  /authentications/admin:
+    post:
+      description: Let the administrator user authenticate himself. If the authentication process completes successfully a JSON web token is returned.
+      summary: Let the admin log in to the admin area
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: "Username of the admin that wants to login"
+                password:
+                  type: string
+                  description: "Password of the admin that wants to login"
+      responses:
+        '200':
+          description: "Authentication completed"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: "Success of the authentication"
+                    example: true
+                  message:
+                    type: string
+                    description: "Message about the result of the authentication"
+                    example: "Authentication OK"
+                  user:
+                    type: string
+                    description: "Type of user who logged in"
+                    example: "administrator"
+                  token:
+                    type: string
+                    description: "Authentication token"
+                  username:
+                    type: string
+                    description: "User's username"
+                  id:
+                    type: string
+                    description: "ID of the user who has logged in"
+                  sport_center:
+                    type: object
+                    description: "Sport center where the administrator works"
+                    properties:
+                      address:
+                        type: object
+                        description: "Address of the sport center"
+                        properties:
+                          city:
+                            type: string
+                            description: "City of the sport center"
+                          location:
+                            type: string
+                            description: "Location of the sport center"
+                      name:
+                        type: string
+                        description: "Name of the sport center"
+                      description:
+                        type: string
+                        description: "Description of the sport center"
+                      _id:
+                        type: string
+                        description: "ID of the sport center"
+                  sport_center_ref:
+                    type: string
+                    description: "Link to the resource of the sport center"
+                  self:
+                    type: string
+                    description: "Link to the resource for a specific user"
+        '404':
+          description: "Authentication failed due to bad username or bad password"
+          content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - success
+                    - username
+                    - message
+                  properties:
+                    success:
+                      type: boolean
+                      description: "Success of the authentication"
+                      example: false
+                    username:
+                      type: boolean
+                      description: "Tells us if the username is matched or not"
+                    password:
+                      type: boolean
+                      description: "Tells us if the password matches"
+                    message:
+                      type: string
+                      description: "Message that tells us if the authentication is failed"
+                      example: "Authentication failed. [Wrong password || User not found]."
+  /courses:
+    get:
+      description: Gets all the courses in the system.
+      summary: View all the courses
+      responses:
+        '200':
+          description: "Collection of courses"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+    post:
+      description: Creates a new course in the system. In order to create a new course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Register a new course
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - sport_facility_id
+                - sport_center_id
+                - periodic
+                - token
+              properties:
+                name:
+                  type: string
+                  description: "Name of the course"
+                description:
+                  type: string
+                  description: "Description of the course"
+                sport:
+                  type: string
+                  description: "Sport of the course"
+                sport_facility_id:
+                  type: integer
+                  description: "ID of the sport facility where the course takes place"
+                sport_center_id:
+                  type: integer
+                  description: "ID of the sport center where the courses takes place"
+                periodic:
+                  type: boolean
+                  description: "Tells us if the course will be periodic or not"
+                specific_date:
+                  type: string
+                  description: "[This parameter has to be specified only if the course is a only once event (periodic=false)] Date of a specific one time course"
+                specific_start_time:
+                  type: string
+                  description: "[This parameter has to be specified only if the course is a only once event (periodic=false)] Start time of a specific one time course"
+                specific_end_time:
+                  type: string
+                  description: "[This parameter has to be specified only if the course is a only once event (periodic=false)] End time of a specific one time course"
+                start_date:
+                  type: string
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Start date of a periodic course"
+                end_date:
+                  type: string
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] End date of a periodic course"
+                time_schedules_monday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Monday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                time_schedules_tuesday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Tuesday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                time_schedules_wednesday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Wednesday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                time_schedules_thursday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Thursday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                time_schedules_friday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Friday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                time_schedules_saturday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Saturday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                time_schedules_sunday:
+                  description: "[This parameter has to be specified only if the course is a recurrent event (periodic=true)] Sunday schedule of a periodic course"
+                  type: object
+                  properties:
+                    event:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            description: "Start time of periodic courses"
+                          to:
+                            type: string
+                            description: "End time of periodic courses"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '201':
+          description: 'Course created successfully. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created course.
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: "Conflict - the specified course already exists"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "course already exists"
+                
+  /courses/{id}:
+    get:
+      description: Gets a specific course in the system from its ID.
+      summary: View a specific course
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course to get
+      responses:
+        '200':
+          description: "View of a single course"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Courses'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      description: Modify a specific course in the system from its ID. In order to modify a course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Update a specific course
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course to be updated
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                name:
+                  type: string
+                  description: "Name of the course"
+                description:
+                  type: string
+                  description: "Description of the course"
+                sport:
+                  type: string
+                  description: "Sport of the course"
+                sport_facility_id:
+                  type: integer
+                  description: "ID of the sport facility where the course takes place"
+                sport_center_id:
+                  type: integer
+                  description: "ID of the sport center where the course takes place"
+                managers:
+                  type: array
+                  items:
+                    type: integer
+                    description: "ID of the manager of the course"
+                users:
+                  type: array
+                  items:
+                    type: integer
+                    description: "ID of the users that attends the course"
+                reviews:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        description: "Date of the creation of a review"
+                      vote:
+                        type: integer
+                        description: "Vote of a review"
+                periodic:
+                  type: boolean
+                  description: "Tells us if the course will be periodic or not"
+                specific_date:
+                  type: string
+                  description: "[ONLY ONCE EVENT ONLY] Date of a specific one time course"
+                specific_start_time:
+                  type: string
+                  description: "[ONLY ONCE EVENT ONLY] Start time of a specific one time course"
+                specific_end_time:
+                  type: string
+                  description: "[ONLY ONCE EVENT ONLY] End time of a specific one time course"
+                start_date:
+                  type: string
+                  description: "[RECURRENT EVENT ONLY] Start date of a periodic course"
+                end_date:
+                  type: string
+                  description: "[RECURRENT EVENT ONLY] End date of a periodic course"
+                time_schedules:
+                  description: "[RECURRENT EVENT ONLY] Course week schedule"
+                  type: object
+                  properties:
+                    monday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                    tuesday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                    wednesday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                    thursday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                    friday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                    saturday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                    sunday:
+                      type: object
+                      properties:
+                        event:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                                description: "Start time of periodic courses"
+                              to:
+                                type: string
+                                description: "End time of periodic courses"
+                creation_date:
+                  type: string
+                  description: "Creation date of the course"
+                managers:
+                  type: array
+                  items:
+                    type: string
+                    description: "ID of the managers of the course"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: "ID of the course which has been updated"
+                  name:
+                    type: string
+                    description: "Name of the course which has been updated"
+                  description:
+                    type: string
+                    description: "Description of the course which has been updated"
+                  sport:
+                    type: string
+                    description: "Sport of the course which has been updated"
+                  sport_facility_id:
+                    type: string
+                    description: "ID of the sport facility where the course is held"
+                  sport_center_id:
+                    type: string
+                    description: "ID of the sport center where the course is held"
+                  managers:
+                    type: array
+                    items:
+                      type: string
+                      description: "ID of the managers of the course"
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          description: "Date of the creation of a review"
+                        vote:
+                          type: integer
+                          description: "Vote of a review"
+                  users:
+                    type: array
+                    items:
+                      type: integer
+                      description: "ID of the users that attends the course"
+                  periodic:
+                    type: boolean
+                    description: "Tells us if the course will be periodic or not"
+                  start_date:
+                    type: string
+                    description: "[RECURRENT EVENT ONLY] Start date of a periodic course"
+                  end_date:
+                    type: string
+                    description: "[RECURRENT EVENT ONLY] End date of a periodic course"
+                  creation_date:
+                    type: string
+                    description: "Creation date of the course"
+                  time_schedules:
+                    description: "[RECURRENT EVENT ONLY] Course week schedule"
+                    type: object
+                    properties:
+                      monday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+                      tuesday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+                      wednesday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+                      thursday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+                      friday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+                      saturday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+                      sunday:
+                        type: object
+                        properties:
+                          event:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                from:
+                                  type: string
+                                  description: "Start time of periodic courses"
+                                to:
+                                  type: string
+                                  description: "End time of periodic courses"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+          
+    delete:
+      description: Removing a specific course in the system from its ID.  In order to delete a course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Removing a specific course
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course to delete
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"    
+      responses:
+        '204':
+          $ref: '#/components/responses/DeleteSuccess'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /courses/{id}/users:
+    get:
+      description: Gets the list of users that attends the course. The list containes personal details about the users, as a consequence in order to get user list it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: View the list of users that attends the course.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "View the list of users that attends the course."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                      description: "Link to the specific course"
+                    name:
+                      type: string
+                      description: "Name of the user"
+                    surname:
+                      type: string
+                      description: "Surname of the user"
+                    username:
+                      type: string
+                      description: "Username of the user"
+                    user:
+                      type: string
+                      description: "Link to the specific user"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /courses/{id}/participants_number:
+    get:
+      description: Gets the number of partecipants that attends the course. In this case no personal details are included in the response.
+      summary: View the number of partecipants that attends the course.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+      responses:
+        '200':
+          description: "View the number of partecipants that attends the course."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: "Link to the resource of the specific course"
+                  partecipants:
+                    type: integer
+                    description: "Number of partecipants"
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /courses/{id}/reviews:
+    get:
+      description: Gets the latest reviews of a course. The method returns the five most recent reviews about the specified course. The method returns also the average of the vote considering not only the more recent reviews but all the reviews published about a specific course.
+      summary: View the latest reviews of a course and average vote.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+      responses:
+        '200':
+          description: "View the latest reviews of a course and vote average"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course:
+                    type: string
+                    description: "Link to the resource of the specific course"
+                  reviews:
+                    type: array
+                    description: "Gets the 5 last reviews"
+                    items:
+                      type: object
+                      properties:
+                        vote:
+                          type: integer
+                          description: "Numerical vote"
+                        date:
+                          type: string
+                          description: "Pubblication date of the review"
+                  avarage:
+                    type: number
+                    description: "Avarage score of the course (take into accout all the reviews and not only the most recent ones)"
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      description: Adds a review. In order to add a review it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token. 
+      summary: Adds a review
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                review:
+                  type: integer
+                  description: "Score that you want to give to a course"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Reviews successfully published"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+
+  /courses/{id}/news:
+    get:
+      description: Gets the latest news of a course. The method returns the three most recent news about the specified course.
+      summary: View the latest news of a course
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+      responses:
+        '200':
+          description: "View the latest news of a course"
+          content:
+            application/json:
+              schema:
+                type: array
+                description: "3 latest news about the course"
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                      description: "Link to the resource of the specific news"
+                    course:
+                      type: string
+                      description: "Link to the resource of the specific course"
+                    text:
+                      type: string
+                      description: "Text content of the news"
+                    pubblication_date:
+                      type: string
+                      description: "Pubblication date of the news"
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  /courses/{id}/managers:
+    get:
+      description: Gets the managers of a specified course.
+      summary: View the managers of a specified course.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+      responses:
+        '200':
+          description: "View the managers of a specified course"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    course:
+                      type: string
+                      description: "Link to the resource of the specific course"
+                    manager:
+                      type: string
+                      description: "Link to the resource of the specific manager"
+                    name:
+                      type: string
+                      description: "Name of the manager"
+                    surname:
+                      type: string
+                      description: "Surname of the manager"
+                    email:
+                      type: string
+                      description: "Email address of the manager"
+                    birth_date:
+                      type: string
+                      description: "Birth date of the manager"
+                    username:
+                      type: string
+                      description: "Username of the manager"
+                    password:
+                      type: string
+                      description: "Pasword of the manager"
+                    society:
+                      type: string
+                      description: "Society where the manager works"
+                    courses_id:
+                      type: array
+                      description: "ID of the courses handled by the manager"
+                      items:
+                        type: string
+                        description: "Course ID"
+                    courses:
+                      type: array
+                      description: "Link to the specific courses handled by the manager"
+                      items:
+                        type: string
+                        description: "Links to the specific resource of a course"
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      description: Assign a manager to a course. In order to add a manager to a course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token. 
+      summary: Assign a manager to a course
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - manager_id
+              properties:
+                manager_id:
+                  type: string
+                  description: "ID of the manager to be assigned to the specified course"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Manager assigned to the specified course successfully"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+    delete:
+      description: Remove a manager from a specified course. In order to remove a manager from a course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token. 
+      summary: Remove a manager from a course
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the course
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - manager_id
+              properties:
+                manager_id:
+                  type: string
+                  description: "ID of the manager to be removed from the specified course"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Manager removed from the specified course successfully"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+  
+  /managers:
+    get:
+      description: Gets all the managers in the system.
+      summary: View all the managers
+      responses:
+        '200':
+          description: "Collection of managers"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                      description: link to the specific manager resource
+                    name:
+                      type: string
+                      description: name of the manager
+                    surname:
+                      type: string
+                      description: surname of the manager
+                    email:
+                      type: string
+                      description: email of tha manager
+                    birth_date:
+                      type: string
+                      description: date of birth of the manager
+                    username:
+                      type: string
+                      description: username of the manager
+                    password:
+                      type: string
+                      description: password of the manager
+                    society:
+                      type: string
+                      description: society where the manager works
+                    courses:
+                      type: array
+                      items:
+                        type: string
+                        description: ID of the course managed by the manager
+                    sport_center_id:
+                      type: string
+                      description: ID of the sport center where the manager works
+                    sport_center:
+                      type: string
+                      description: link to the specific sport center where the manager works
+    post:
+      description: Creates a new manager in the system. In order to create a new manager it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Register a new manager
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - surname
+                - username
+                - password
+                - sport_center_id
+                - token
+              properties:
+                name:
+                  type: string
+                  description: "Name of the manager"
+                surname:
+                  type: string
+                  description: "Surname of the manager"
+                email:
+                  type: string
+                  description: "Email of the manager"
+                birth_date:
+                  type: string
+                  description: "Birthday date of the manager"
+                username:
+                  type: string
+                  description: "Username of the manager"
+                password:
+                  type: string
+                  description: "Password of the manager"
+                society:
+                  type: string
+                  description: "Society the manager works for"
+                courses:
+                  type: array
+                  items:
+                    type: string
+                    description: ID of the course managed by the manager
+                sport_center_id:
+                  type: string
+                  description: ID of the sport center where the manager works
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '201':
+          description: 'Manager created successfully. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created manager.
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: "Conflict - the specified manager already exist"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "user already exists"
+                
+  /managers/{id}:
+    get:
+      description: Gets a manager with a specific ID in the system.
+      summary: View a single manager
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the manager to get
+      responses:
+        '200':
+          description: "View of a single manager"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: link to the specific manager resource
+                  name:
+                    type: string
+                    description: name of the manager
+                  surname:
+                    type: string
+                    description: surname of the manager
+                  email:
+                    type: string
+                    description: email of tha manager
+                  birth_date:
+                    type: string
+                    description: date of birth of the manager
+                  username:
+                    type: string
+                    description: username of the manager
+                  password:
+                    type: string
+                    description: password of the manager
+                  society:
+                    type: string
+                    description: society where the manager works
+                  courses:
+                    type: array
+                    items:
+                      type: string
+                      description: ID of the course managed by the manager
+                  sport_center_id:
+                    type: string
+                    description: ID of the sport center where the manager works
+                  sport_center:
+                    type: string
+                    description: link to the specific sport center where the manager works
+        '404':
+          $ref: '#/components/responses/NotFound'    
+    patch:
+      description: Modify a specific manager in the system from its ID. In order to modify a manager it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Update a specific manager
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the manager to be updated
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                name:
+                  type: string
+                  description: "Name of the manager"
+                surname:
+                  type: string
+                  description: "Surname of the manager"
+                email:
+                  type: string
+                  description: "Email of the manager"
+                birth_date:
+                  type: string
+                  description: "Birthday date of the manager"
+                username:
+                  type: string
+                  description: "Username of the manager"
+                password:
+                  type: string
+                  description: "Password of the manager"
+                society:
+                  type: string
+                  description: "Society the manager works for"
+                courses:
+                  type: array
+                  items:
+                    type: string
+                    description: ID of the course managed by the manager
+                sport_center:
+                  type: string
+                  description: ID of the sport center where the manager works
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: "ID of the manager which has been updated"
+                  name:
+                    type: string
+                    description: "Name of the manager"
+                  surname:
+                    type: string
+                    description: "Surname of the manager"
+                  email:
+                    type: string
+                    description: "Email of the manager"
+                  birth_date:
+                    type: string
+                    description: "Birthday date of the manager"
+                  username:
+                    type: string
+                    description: "Username of the manager"
+                  password:
+                    type: string
+                    description: "Password of the manager"
+                  society:
+                    type: string
+                    description: "Society the manager works for"
+                  courses:
+                    type: array
+                    items:
+                      type: string
+                      description: ID of the course managed by the manager
+                  sport_center:
+                    type: string
+                    description: ID of the sport center where the manager works
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+    delete:
+      description: Removing a specific manager in the system from its ID. In order to delete a manager it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Removing a specific manager
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the manager to delete
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '204':
+          $ref: '#/components/responses/DeleteSuccess'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /managers/{id}/courses:
+    get:
+      description: Gets the list of courses that a manager runs.
+      summary: View the list of courses that a manager runs.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the manager
+      responses:
+        '200':
+          description: "View the list of courses that a manager runs."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courses'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /news:
+    get:
+      description: Gets all the news.
+      summary: View all the news
+      responses:
+        '200':
+          description: "View all the news"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/news'
+    post:
+      description: Creates a new news. In order to create a news it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Creates a new news
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+                - course_id
+                - token
+              properties:
+                text:
+                  type: string
+                  description: "Text of the news"
+                course_id:
+                  type: string
+                  description: "ID of the course of the news"
+                pubblication_date:
+                  type: string
+                  description: "Date of pubblication"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '201':
+          description: 'News created successfully. Link in the Location header'
+          headers:
+            'Location':
+              schema:
+                type: string
+              description: Link to the newly created news.
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          
+  /news/{id}:
+    get:
+      description: Gets a specific news.
+      summary: Gets a specific news
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the news to get
+      responses:
+        '200':
+          description: "Gets a specific news"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/news'
+        '404':
+          $ref: '#/components/responses/NotFound' 
+    patch:
+      description: Modify a news. In order to modify a news it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Update a news
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the news to be updated
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                text:
+                  type: string
+                  description: "Text of the news"
+                course_id:
+                  type: string
+                  description: "ID of the course of the news"
+                pubblication_date:
+                  type: string
+                  description: "Pubblication date of the news"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Successfully updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: "ID of the news which has been updated"
+                  text:
+                    type: string
+                    description: "Text of the news"
+                  course_id:
+                    type: string
+                    description: "ID of the course of the news"
+                  pubblication_date:
+                    type: string
+                    description: "Pubblication date of the news"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+    delete:
+      description: Removing a specific news in the system from its ID. In order to delete a news it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token.
+      summary: Removing a specific news
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the news to delete
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '204':
+          $ref: '#/components/responses/DeleteSuccess'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  /registrations:
+    patch:
+      description: Register a specific user to a specific course. In order to register a user to a specific course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token. Both the id of the course and the id of the user are specified in the body of the request.
+      summary: Registration of a user to a course
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - course_id
+                - user_id
+                - token
+              properties:
+                course_id:
+                  type: string
+                  description: "ID of the course the user wants to register"
+                user_id:
+                  type: string
+                  description: "ID of the user who wants to subscribe to a course"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Registration successful"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+          
+  /unsubscribe:
+    patch:
+      description: Unsubscribe a specific user from a specific course. In order to unsubscribe a user from a specific course it is required to specify a JSON web token as a parameter. This token can be obtained following the authentication service offerd by the REST API. The token can be specified as a body parameter, a query parameter or in a header field named x-access-token. Both the id of the course and the id of the user are specified in the body of the request.
+      summary: Unsubscribing a user from a course
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - course_id
+                - user_id
+                - token
+              properties:
+                course_id:
+                  type: string
+                  description: "ID of the course the user wants to unsubscribe from"
+                user_id:
+                  type: string
+                  description: "ID of the user who wants to unsubscribe from the course"
+                token:
+                  type: string
+                  description: "JSON web token. It can be specified as a body parameter, a query parameter or in a header field named x-access-token"
+      responses:
+        '200':
+          description: "Unsubscribe successful"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '400':
+          $ref: '#/components/responses/BadInput'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'            
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UpdateError'
+          
+  /administrators:
+    get:
+      description: Gets all the administrators in the system.
+      summary: View all the administrators
+      responses:
+        '200':
+          description: "Collection of administrators"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Administrator'
+  /administrators/{id}:
+    get:
+      description: Gets a specific administrator user in the system from its ID.
+      summary: View a specific administrator user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the administrator to get
+      responses:
+        '200':
+          description: "View of a single administrator user"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrator'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+          example:
+            status: "error"
+    Unauthorized:
+      description: No token provided
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+          example:
+            success: false
+            message: "No token provided."
+    Forbidden:
+      description: Failed to authenticate token.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+          example:
+            success: false
+            message: "Failed to authenticate token."
+    DeleteSuccess:
+      description: Successfully deleted
+    UpdateError:
+      description: "An error has occured while updating the resource"
+      content:
+        text/plain:
+          schema:
+            type: string
+            description: "Error message"
+    BadInput:
+      description: "Bad input - some required information is missing"
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Bad input - missing required information"
+      
+  schemas:
+    Sport_center:
+      type: object
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific sport center"
+        name:
+          type: string
+          description: "Name of the sport center"
+        address:
+          type: object
+          required:
+            - city
+            - location
+          properties:
+            city:
+              type: string
+              description: "City of the sport center"
+            location:
+              type: string
+              description: "Location of the sport center"
+        description:
+          type: string
+          description: "Description of the sport center"
+        administrator:
+          type: string
+          description: "Link to the resource of the administrator of the sport center"
+    
+    Sport_facility:
+      type: object
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific sport facility"
+        name:
+          type: string
+          description: "Name of the sport facility"
+        description:
+          type: string
+          description: "Description of the sport facility"
+        id_s_c:
+          type: string
+          description: "Id of the sport center where the sport facility is placed"
+        sport_center:
+          type: string
+          description: "Link to the resource of the sport center where a sport facility is situated"
+    Courses:
+      type: object
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific course"
+        name:
+          type: string
+          description: "Name of the course"
+        description:
+          type: string
+          description: "Description of the course"
+        sport:
+          type: string
+          description: "Sport of the course"
+        sport_facility_id:
+          type: string
+          description: "ID of the sport facility where the course takes place"
+        sport_center_id:
+          type: string
+          description: "ID of the sport center where the course takes place"
+        sport_facility:
+          type: string
+          description: "Link to the resource of the specific sport facility where the course takes place"
+        sport_center:
+          type: string
+          description: "Link to the resource of the specific sport center where the course takes place"
+        managers_id:
+          type: array
+          items:
+            type: string
+            description: "ID of the manager of the course"
+        users:
+          type: array
+          items:
+            type: string
+            description: "ID of the users that attends the course"
+        reviews:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                description: "Date of the creation of a review"
+              vote:
+                type: integer
+                description: "Vote of a review"
+        periodic:
+          type: boolean
+          description: "Tells us if the course will be periodic or not"
+        specific_date:
+          type: string
+          description: "[ONLY ONCE EVENT ONLY] Date of a specific one time course"
+        specific_start_time:
+          type: string
+          description: "[ONLY ONCE EVENT ONLY] Start time of a specific one time course"
+        specific_end_time:
+          type: string
+          description: "[ONLY ONCE EVENT ONLY] End time of a specific one time course"
+        start_date:
+          type: string
+          description: "[RECURRENT EVENT ONLY] Start date of a periodic course"
+        end_date:
+          type: string
+          description: "[RECURRENT EVENT ONLY] End date of a periodic course"
+        time_schedules:
+          description: "[RECURRENT EVENT ONLY] Course week schedule"
+          type: object
+          properties:
+            monday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+            tuesday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+            wednesday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+            thursday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+            friday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+            saturday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+            sunday:
+              type: object
+              properties:
+                event:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      from:
+                        type: string
+                        description: "Start time of periodic courses"
+                      to:
+                        type: string
+                        description: "End time of periodic courses"
+        creation_date:
+          type: string
+          description: "Creation date of the course"
+        managers:
+          type: array
+          items:
+            type: string
+            description: "Link to the resource of the specific manager of the course"
+    Manager_Users:
+      type: object
+      properties:
+        self:
+          type: string
+          description: "Link to the resource of the specific manager user"
+        sport_center:
+          type: string
+          description: "Link to the sport center where the manager user works"
+        name:
+          type: string
+          description: "Name of the manager"
+        surname:
+          type: string
+          description: "Surname of the manager"
+        email:
+          type: string
+          description: "Email of the manager"
+        birth_date:
+          type: string
+          description: "Birthday date of the manager"
+        username:
+          type: string
+          description: "Username of the manager"
+        password:
+          type: string
+          description: "Password of the manager"
+        society:
+          type: string
+          description: "Society the manager works for"
+        courses_id:
+          type: array
+          items:
+            type: string
+            description: "ID of the courses the manager coordinates"
+        courses:
+          type: array
+          items:
+            type: string
+            description: "Link to the specific courses the manager coordinates"
+    User:
+        type: object
+        properties:
+          self:
+            type: string
+            description: "Link to the resource of the specific user"
+          name:
+            type: string
+            description: "Name of the user"
+          surname:
+            type: string
+            description: "Surname of the user"
+          email:
+            type: string
+            description: "Email of the user"
+          birth_date:
+            type: string
+            description: "Birthday of the user"
+          username:
+            type: string
+            description: "Userame of the user"
+          password:
+            type: string
+            description: "Password of the user"
+          courses_id:
+            type: array
+            items:
+              type: string
+              description: "ID of the courses that a user attends"
+                  
+    news:
+        type: object
+        properties:
+          self:
+            type: string
+            description: "Link to the resource of the specific news"
+          text:
+            type: string
+            description: "Text of the news"
+          course_id:
+            type: string
+            description: "ID of the course of the news"
+          course:
+            type: string
+            description: "Link to the resource of the specific course the news is about"  
+          pubblication_date:
+            type: string
+            description: "Date of pubblication"
+            
+    Administrator:
+        type: object
+        properties:
+          self:
+            type: string
+            description: "Link to the resource of the specific administrator"
+          name:
+            type: string
+            description: "Name of the administrator"
+          surname:
+            type: string
+            description: "Surname of the administrator"
+          email:
+            type: string
+            description: "Email of the administrator"
+          birth_date:
+            type: string
+            description: "Birthday of the administrator"
+          username:
+            type: string
+            description: "Userame of the admnistrator"
+          password:
+            type: string
+            description: "Password of the administrator"
+          sport_center:
+            type: string
+            description: "Link to the sport center which is managed by the administrator"
+          
