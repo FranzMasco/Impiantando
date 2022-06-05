@@ -6,7 +6,6 @@ const cors = require("cors");
 
 //Resource REST API VERSION 1
 const authentication = require('./routes/authentications.js');
-
 const sport_centers = require('./routes/sport_centers.js');
 const sport_facilities = require('./routes/sport_facilities.js');
 const courses = require('./routes/courses.js');

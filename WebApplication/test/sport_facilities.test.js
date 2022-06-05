@@ -16,10 +16,12 @@ describe('/api/v2/sport_facilities', () => {
     
     beforeAll( async() => {
         jest.setTimeout(50000);
-        connection = await mongoose.connect(process.env.DB_URL_TEST);
+        jest.unmock('mongoose');
+        connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
-    afterAll( () => { 
-        mongoose.connection.close(true);
+    
+    afterAll( async () => {
+        await mongoose.connection.close(true);
     });
 
     //Correct token
