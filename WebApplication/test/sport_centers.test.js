@@ -14,7 +14,7 @@ describe('/api/v2/sport_centers', () => {
     let connection;
     
     beforeAll( async() => {
-        jest.setTimeout(8000);
+        jest.setTimeout(50000);
         connection = await mongoose.connect(process.env.DB_URL_TEST);
     });
     afterAll( () => { 

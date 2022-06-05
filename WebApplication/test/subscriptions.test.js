@@ -14,7 +14,7 @@ describe('/api/v2/subscriptions', () => {
     let connection;
     
     beforeAll( async() => {
-      jest.setTimeout(10000);
+      jest.setTimeout(50000);
       jest.unmock('mongoose');
       connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });

@@ -25,7 +25,7 @@ describe('/api/v2/users', () => {
     let connection;
     
     beforeAll( async() => {
-        jest.setTimeout(8000);
+        jest.setTimeout(50000);
         jest.unmock('mongoose');
         connection = await mongoose.connect(process.env.DB_URL_TEST, {useNewUrlParser: true, useUnifiedTopology: true});
     });
