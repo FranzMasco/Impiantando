@@ -103,7 +103,7 @@ describe('/api/v2/sport_facilities', () => {
 
         //POST with valid data
         //store _id and another information about the created resource for future test cases
-        test('POST /api/v2/managers with correct data. Should respond with status 201', async () => {
+        test('POST /api/v2/sport_facilities with correct data. Should respond with status 201', async () => {
             
             //Prepare a random name to avoid conflicts
             new_sport_facility_name = "test"+getRandomIntInclusive(0,1000000)+getRandomIntInclusive(0,1000000);
